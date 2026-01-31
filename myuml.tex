@@ -1,0 +1,62 @@
+%$Id: myuml.tex,v 1.2 2011/02/17 20:04:21 ralf Exp ralf $
+\newcommand{\drawStartknoten}[3]{%
+  \cnode[fillstyle=solid,fillcolor=black](#1,#2){0.2}{#3}%
+}
+
+\newcommand{\drawEndeknoten}[3]{%
+  \cnode[linecolor=black,linestyle=solid,fillstyle=solid,fillcolor=white](#1,#2){0.2}{#3}%
+  \pscircle[fillstyle=solid,fillcolor=black](#1,#2){0.13}%
+}
+
+\newcommand{\drawVerzweigung}[3]{%
+  \rput(#1, #2){\dianode[linecolor=black,fillstyle=solid,fillcolor=white]{#3}{ }}%
+}
+\newcommand{\drawObjektzustand}[4]{%
+  \rput(#1, #2){%
+    \rnode{#3}{%
+      \psframebox[linestyle=solid,fillstyle=solid,fillcolor=white]{#4}%
+    }
+  }
+}
+
+\newcommand{\drawAktivitaet}[4]{%
+  \rput(#1, #2){%
+    \rnode{#3}{%
+      \psframebox[linestyle=solid,fillstyle=solid,fillcolor=white,linewidth=1pt,framearc=0.25]{#4}%
+    }
+  }
+}
+
+\newcommand{\drawJoin}[4]{%
+  \fnode*[framesize=#4 0.2,linecolor=black](#1, #2){#3}%
+}
+
+
+\newcommand{\drawKommentar}[5]{%
+  \rput(#1, #2){%
+    \rnode{#3}{%
+      \psframebox[linestyle=none]{\red #4 \black}%
+    }
+  }
+  \ncline[linecolor=red]{->}{#3}{#5}%
+}
+
+\newcommand{\HSquare}{%
+  \begin{pspicture}(0.25,0.5)%
+    \psframe[dimen=middle,fillstyle=solid,fillcolor=white](0.25, 0.5)%
+  \end{pspicture}%
+}
+\newcommand{\VSquare}{%
+  \begin{pspicture}(0.5,0.25)%
+    \psframe[dimen=middle](0.5, 0.25)%
+  \end{pspicture}%
+}
+
+
+\newcommand{\drawHMenge}[3]{%
+  \rput(#1,#2){%
+    \rnode{#3}{%
+      \makebox[1cm]{\HSquare \HSquare \HSquare \HSquare}%
+    }
+  }
+}

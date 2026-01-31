@@ -1,0 +1,39 @@
+% =================================================
+% Custom page style definitions (KOMA-Script)
+% =================================================
+\KOMAoptions{
+	automark,
+	headsepline,
+	footsepline
+}
+
+% Clear default settings
+\clearpairofpagestyles
+\clearplainofpairofpagestyles
+
+% -------------------------------------------------
+% Header
+% -------------------------------------------------
+% Chapter title on even pages (left pages)
+\ihead{\leftmark\hspace{0.1em}}
+% Section title on odd pages (right pages)
+\ohead{\rightmark\hspace{0.1em}}
+
+% -------------------------------------------------
+% Footer
+% -------------------------------------------------
+\ifoot[2D Game Programming with Pygame-ce\hspace{0.1em}]{2D Game Programming with Pygame-ce\hspace{0.1em}}
+\ofoot[Page \pagemark\ of \pageref{LastPage}\hspace{0.1em}]{Page \pagemark\ of \pageref{LastPage}\hspace{0.1em}}
+
+% -------------------------------------------------
+% Style activation
+% -------------------------------------------------
+\pagestyle{scrheadings}
+\KOMAoptions{headtopline=1.5pt}
+\KOMAoptions{headsepline=1pt}
+\KOMAoptions{footbotline=1.5pt}
+\KOMAoptions{footsepline=1pt}
+
+
+%\usepackage[paperwidth=6in,paperheight=9in,inner=25mm,outer=18mm,top=20mm,bottom=25mm]{geometry}
+

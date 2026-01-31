@@ -1,0 +1,444 @@
+% !TeX spellcheck = en_US
+\section{Pong}\index{Pong}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The ultimate beginner classic. This game has been played in countless variations since 1972.  Because the rules are simple and easy to understand, it is perfectly suited as a first programming project.
+
+We will develop this game step by step in a systematic way, assuming that the techniques from \kapref{secBasics} are already familiar. I will deliberately omit docstring comments in the source code, since everything is explained in the text and including them here would only make the listings unnecessarily long.  They are, of course, included in the final version.
+
+Note: At the very beginning, I once asked \glslink{chatgpt}{ChatGPT} to generate a Pong game for me. It was quite impressive to see that it produced a fully working game.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\Reqref{req0201Standard}: Standards}
+
+\br{Standard functionality}{req0201Standard}
+\begin{enumerate}
+	\item The window has an appropriate size.\label{req0201StandardGröße}
+	\item The background is a dark red playing field with a dashed center line.\label{req0201StandardHintergrund}
+	\item The game can be exited using the \keys{\esc} key or by clicking the red ``X''.\label{req0201StandardBeenden}
+	\item The game runs at a speed independent of the \emph{FPS}.\label{req0201StandardFps}
+\end{enumerate}
+\er
+
+And off we go. Here, the \texttt{config.py}. I assume that you have sufficient Python knowledge to extend it as needed.
+
+\lstsource{SRC/02 Examples/01 Pong/v01/config.py}{1}{10}{python}{Pong (\Reqref{req0201Standard}) -- \texttt{config.py}}
+{srcPong01a}
+
+
+\begin{wrapfigure}[9]{r}{6.5cm}%
+	\begin{center}%
+		\vspace{-1em}%
+		\myfigure{pong00.png}{0.2}{Pong: the background}{picPong00}%
+	\end{center}%
+\end{wrapfigure}%
+The background is not loaded from a bitmap this time, but created on the fly. There is no deep reason for this -- apart from showing that bitmaps do not always have to come from image files (see \secref[vref]{secCreateBitmaps}). Instead, they can be generated dynamically as well.
+
+To do this, a \texttt{Surface} object\myindex{pyg}{\texttt{Surface}} with the size of the screen is created first. It is then filled with a dark red color, meant to resemble a clay court. In \texttt{paint\_net()}, starting at \zeiref{srcPong0101}, the net is drawn as a sequence of small white rectangles.
+
+\lstsource{SRC/02 Examples/01 Pong/v01/pong01.py}{8}{23}{python}{Pong (\Reqref{req0201Standard}) -- the class \texttt{Background}}
+{srcPong01b}
+
+The class \texttt{Game} consists of the basic building blocks that we have already seen in \kapref{secBasics}. In \texttt{\_\_init\_\_()}, Pygame is initialized, the window and the clock are created, and the control flag for the main game loop is set up. The background is stored in a \texttt{Group\-Single} object\myindex{pyg}{\texttt{sprite}!\texttt{GroupSingle}}. The remaining methods should be fairly self-explanatory.
+
+\lstsource{SRC/02 Examples/01 Pong/v01/pong01.py}{26}{60}{python}{Pong (\Reqref{req0201Standard}) -- the class \texttt{Game}}
+{srcPong01c}
+
+For the sake of completeness:
+
+\lstsource{SRC/02 Examples/01 Pong/v01/pong01.py}{63}{999}{python}{Pong (\Reqref{req0201Standard}) -- the class \texttt{Game}}
+{srcPong01d}
+
+At this point, the application is not functional yet, but it already displays the background as you can see in \abbref[vref]{picPong00}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\Reqref{req0201Schläger}: The Paddles}
+
+\br{Paddles}{req0201Schläger}
+\begin{enumerate}
+	\item There is one rectangular paddle on the left side and one on the right side.\label{req0201SchlägerZwei}
+	\item The paddles have a width of \SI{15}{px} and a height of one tenth of the screen height.\label{req0201SchlägerGröße}
+	\item The paddles have a speed of $\frac{\text{screen height}}{2}~px/s$.\label{req0201SchlägerGeschwindigkeit}
+	\item Each paddle is positioned at a distance of \SI{50}{px} from the left or right edge, measured from its center.\label{req0201SchlägerOrt}
+	\item The left paddle is moved upward using \keys{w} and downward using \keys{s}.\label{req0201SchlägerTastenLinks}
+	\item The right paddle is moved upward using \keys{\arrowkeyup} and downward using  \keys{\arrowkeydown}.\label{req0201SchlägerTastenRechts}
+	\item The paddles cannot leave the playing field.\label{req0201SchlägerGefangen}
+\end{enumerate}
+\er
+
+
+In \zeiref{srcPong0201}, the size of the paddle is calculated (requirements~\ref{req0201Schläger}.\ref{req0201SchlägerZwei} and~\ref{req0201Schläger}.\ref{req0201SchlägerGröße}). Starting at \zeiref{srcPong0202}, the paddles are positioned. Vertically, they always start in the center of the screen. Horizontally, their start position depends on whether we are dealing with the left or the right paddle. In both cases, they are placed slightly away from the edge, exactly as specified in requirement~\ref{req0201Schläger}.\ref{req0201SchlägerOrt}.
+
+The paddle speed is set in \zeiref{srcPong0206} according to requirement~\ref{req0201Schläger}.\ref{req0201SchlägerGeschwindigkeit}.  
+Just like the background, this bitmap is not loaded from a file but created directly in the code (\zeiref{srcPong0203}) and filled with a bright yellow color.
+
+\lstsource{SRC/02 Examples/01 Pong/v02/pong02.py}{26}{42}{python}{Pong (\Reqref{req0201Schläger}) -- The constructor of \texttt{Paddle}}
+{srcPong02a}
+
+The method \texttt{update()} is responsible for distributing the tasks. With regard to movement, the attribute \texttt{self.direction} is adjusted accordingly (starting at \zeiref{srcPong0205}). If the paddle is supposed to change its position, the method \texttt{move()} is called in \zeiref{srcPong0204}.
+
+\lstsource{SRC/02 Examples/01 Pong/v02/pong02.py}{44}{50}{python}{Pong (\Reqref{req0201Schläger}) -- \texttt{Paddle.update()}}{srcPong02b}
+
+
+All that remains is the method \texttt{move()}. It looks more complicated than it actually is. After checking whether there is anything to do at all, the new vertical position is calculated in \zeiref{srcPong0207} (the horizontal position remains unchanged). After that, it is checked whether the paddle has left the playing field. If so, the paddle is moved back to the top or bottom edge accordingly.
+
+\lstsource{SRC/02 Examples/01 Pong/v02/pong02.py}{52}{58}{python}{Pong (\Reqref{req0201Schläger}) -- \texttt{Paddle.move()}}
+{srcPong02c}
+
+Now the paddles need to be integrated into the \texttt{Game} class. In \zeiref{srcPong0208}, a sprite group\myindex{pyg}{\texttt{sprite}!\texttt{Group}} is created first, which will hold all sprites except the background. After that, the two paddles are created and immediately added to the sprite group via constructor arguments.
+
+\lstsource{SRC/02 Examples/01 Pong/v02/pong02.py}{61}{72}{python}{Pong (\Reqref{req0201Schläger}) -- Constructor of \texttt{Game}}
+{srcPong02d}
+
+In \texttt{update()} and \texttt{draw()}, the only thing that happens is the corresponding method call on the sprite group and now the paddles finally show up on screen.
+
+\lstsource{SRC/02 Examples/01 Pong/v02/pong02.py}{86}{92}{python}{Pong (\Reqref{req0201Schläger}) -- \texttt{Game.update()} and \texttt{Game.draw()}}
+{srcPong02e}
+
+And now the keyboard events are handled. Pressing a key triggers a movement (starting at \zeiref{srcPong0211}), while releasing the key causes the corresponding paddle to stop (starting at \zeiref{srcPong0212}).
+
+In each case, the method \texttt{Paddle.update()} is called with an appropriate parameter:  for movement with \verb+action="up"+ or \verb+action="down"+, and for stopping with \verb+action="halt"+.
+
+\lstsource{SRC/02 Examples/01 Pong/v02/pong02.py}{94}{113}{python}{Pong (\Reqref{req0201Schläger}) -- \texttt{Game.watch\_for\_events()}
+}{srcPong02f}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\Reqref{req0201Ball}: The Ball}
+
+\br{Ball}{req0201Ball}
+\begin{enumerate}
+	\item The ball is a circle with a radius of \SI{10}{px}.\label{req0201BallGröße}
+	\item Its speed is $\frac{\text{screen width}}{3}~px/s$.\label{req0201BallGeschwindigkeit}
+	\item It starts in the center of the screen with a random horizontal and vertical direction.\label{req0201BallStart}
+	\item It bounces off the top and bottom edges of the screen.\label{req0201BallObenUnten}
+	\item When it touches the left edge, it is reset to the center. The same happens when it touches the right edge.\label{req0201BallRechtsLinks}
+	\item If the right edge is hit, player~1 scores a point; if the left edge is hit, player~2 scores a point.\label{req0201BallPunkt}
+\end{enumerate}
+\er
+
+Since we need to keep track of the players’ scores according to requirement~\ref{req0201Ball}.\ref{req0201BallPunkt}, a corresponding array is added to \texttt{config.py} (\zeiref{srcPong0300}).
+ 
+\lstsource{SRC/02 Examples/01 Pong/v03/config.py}{1}{99}{python}{Pong (\Reqref{req0201Ball}) -- \texttt{config.py}
+}{srcPong03A}
+
+In accordance with requirements~\ref{req0201Ball}.\ref{req0201BallGröße} and~\ref{req0201Ball}.\ref{req0201BallGeschwindigkeit}, the size and speed of the ball are defined in \zeiref{srcPong0301} and \zeiref{srcPong0302}. Since the ball needs to be restarted frequently, the initialization of its starting position and direction is moved into the separate method \texttt{service()} (\zeiref{srcPong0303}).
+
+\lstsource{SRC/02 Examples/01 Pong/v03/pong03.py}{62}{71}{python}{Pong (\Reqref{req0201Ball}) -- Constructor of \texttt{Ball}}
+{srcPong03a}
+
+In \texttt{update()}, the responsibilities are distributed.
+
+\lstsource{SRC/02 Examples/01 Pong/v03/pong03.py}{73}{79}{python}{Pong (\Reqref{req0201Ball}) -- \texttt{Ball.update()}}
+{srcPong03b}
+
+Let us now take a closer look at the helper methods, one by one. We start with \texttt{move()}. As expected, the position is updated using the velocity values. After that, starting at \zeiref{srcPong0304}, it is checked whether the ball has reached any of the four edges of the screen.
+
+If the top or bottom edge is hit (requirement~\ref{req0201Ball}.\ref{req0201BallObenUnten}), the sign of the vertical velocity is inverted by calling \texttt{vertical\_flip()} (\srcref[vref]{srcPong03e}). After the flip, the ball is clamped to the top or bottom edge, since it may already have crossed the boundary.
+
+Things are different when the ball reaches the left or right edge. In that case, the ball is served again according to requirement~\ref{req0201Ball}.\ref{req0201BallRechtsLinks} (see \srcref[vref]{srcPong03d}), and -- as specified in requirement~\ref{req0201Ball}.\ref{req0201BallPunkt} -- the appropriate player’s score is increased.
+
+\lstsource{SRC/02 Examples/01 Pong/v03/pong03.py}{81}{94}{python}{Pong (\Reqref{req0201Ball}) -- \texttt{Ball.move()}}
+{srcPong03c}
+
+When serving, the center of the ball is set to the center of the screen (requirement~\ref{req0201Ball}.\ref{req0201BallStart}). After that, the signs of the two velocity components are chosen randomly, which determines the direction of movement (left or right, and up or down). Since we do not have a score display yet, a temporary console output is implemented in \zeiref{srcPong0305}.
+
+\lstsource{SRC/02 Examples/01 Pong/v03/pong03.py}{96}{99}{python}{Pong (\Reqref{req0201Ball}) -- \texttt{Ball.service()}}{srcPong03d}
+
+The direction change is simply a sign flip. The method \texttt{flip\_hori\-zon\-tal()} is not used yet, but we will need it later when we want the ball to bounce off the paddle.
+
+\lstsource{SRC/02 Examples/01 Pong/v03/pong03.py}{101}{105}{python}{Pong (\Reqref{req0201Ball}) -- The flip methods of \texttt{Ball}}{srcPong03e}
+
+
+Typical reflection pitfalls when handling the ball:
+
+\begin{itemize}
+	\item \textbf{Sticky edge / multiple flips per frame}\index{sticky edge}  
+	
+	If the ball is still inside the wall after a flip (because it has already crossed the boundary), the velocity is inverted again in the next frame.  
+	The result is a ball that appears to jitter or stick to the edge.
+	
+	\emph{Fix:}  
+	After flipping the velocity, clamp the position explicitly (e.g.\ \texttt{rect.top = 1} or \texttt{rect.bottom = WINDOW.HEIGHT - 1}).
+	
+	\item \textbf{Checking the wrong reference (center vs.\ rect)}  
+	
+	A common mistake is to compute movement using the ball center or a position vector, but perform collision checks against \texttt{rect.left/right/top/bottom} (or vice versa). This usually leads to off-by-radius errors.
+	
+	\emph{Fix:}  
+	Be consistent: either check collisions exclusively using \texttt{rect.*},  
+	or use \texttt{center} together with \texttt{$\pm$ radius} -- but do not mix both approaches.
+	
+	\item \textbf{Flipping the wrong axis}  
+	
+	A classic error: when hitting the top or bottom wall, \texttt{speed.x} is inverted instead of \texttt{speed.y} (or the other way around).
+	
+	\emph{Fix:}
+	\begin{itemize}
+		\item Top / bottom collision: \texttt{speed.y *= -1}
+		\item Left / right collision: \texttt{x *= -1} (or trigger a service/reset)
+	\end{itemize}
+	
+	\item \textbf{Tunneling at high speed}  
+	
+	With large \texttt{DELTATIME} values or high velocities, the ball may jump over a wall between two frames and never register a collision.
+	
+	\emph{Fix (simple):}  
+	After moving the ball, check whether it has crossed a boundary and clamp it back.
+	
+	\emph{Fix (robust):}  
+	Split the movement into smaller steps (sub-stepping) or use swept collision detection.
+	
+	\item \textbf{Incorrect handling of multiple collisions in one frame}  
+	
+	If the ball hits, for example, a corner (top wall and paddle edge at the same time), naively flipping both axes can cancel out the reflection entirely.
+	
+	\emph{Fix:}  
+	Prioritize collisions (e.g.\ wall before paddle),  
+	or decide based on the smaller penetration depth.
+	
+	\item \textbf{Not pushing the ball out of the paddle after a hit}  
+	
+	If the ball remains inside the paddle rectangle after a bounce, it will flip direction again in the next frame and appear to vibrate.
+	
+	\emph{Fix:}  
+	After a paddle collision, move the ball explicitly in front of the paddle edge (clamp), and only then invert \texttt{vx}.
+\end{itemize}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\Reqref{req0201Punkte}: Scoring}
+
+\br{Scoring}{req0201Punkte}
+\begin{enumerate}
+	\item The score is displayed centered at the top of the screen.\label{req0201PunkteOben}
+\end{enumerate}
+\er
+
+For displaying the score, the class \texttt{Score} is used. In the end, it is just another sprite—but one that needs to be recreated from time to time, namely whenever the score changes. Since the current score is now stored in \zeiref{srcPong0405}, it can be removed from \texttt{config.py}.
+
+\lstsource{SRC/02 Examples/01 Pong/v04/pong04.py}{118}{126}{python}{Pong (\Reqref{req0201Punkte}) -- Constructor of \texttt{Score}}
+{srcPong04a}
+
+In this method, the current score is rendered using a font object and then positioned accordingly.
+
+\lstsource{SRC/02 Examples/01 Pong/v04/pong04.py}{134}{136}{python}{Pong (\Reqref{req0201Punkte}) -- \texttt{Score.render()}}
+{srcPong04b}
+
+In \texttt{update()}, the appropriate score value is updated and \texttt{render()} is called.
+
+\newpage
+\lstsource{SRC/02 Examples/01 Pong/v04/pong04.py}{128}{132}{python}{Pong (\Reqref{req0201Punkte}) -- \texttt{Score.update()}}
+{srcPong04c}
+
+What is still missing is a trigger for updating the score display. This is a perfect opportunity to introduce a user-defined event. Starting at \zeiref{srcPong0400}, everything required for such a user event is implemented. First, an event ID is defined, followed by the corresponding \texttt{pygame.e\-vent\-.E\-vent} object\myindex{pyg}{\texttt{event}!\texttt{Event()}}.
+
+\lstsource{SRC/02 Examples/01 Pong/v04/config.py}{1}{99}{python}{Pong (\Reqref{req0201Punkte}) -- \texttt{MyEvent}}{srcPong04d}
+
+Now the \texttt{Ball} class only has to trigger the appropriate event, and \texttt{Game} needs to handle it. Here are the required changes in \texttt{Ball}. Inside the method \texttt{move()}, the relevant code sections are replaced. For example, in \zeiref{srcPong0402} the number of the player who scores the point is packed into the event, and in \zeiref{srcPong0403} the event is dispatched.
+
+\lstsource{SRC/02 Examples/01 Pong/v04/pong04.py}{86}{101}{python}{Pong (\Reqref{req0201Punkte}) -- \texttt{Ball.move()}}{srcPong04g}
+
+Now all that remains is to catch the user-defined event inside \texttt{watch\_for\_events()} (starting at \zeiref{srcPong0404}).
+
+\lstsource{SRC/02 Examples/01 Pong/v04/pong04.py}{190}{191}{python}{Pong (\Reqref{req0201Punkte}) -- \texttt{Ball.watch\_for\_events()}}{srcPong04h}
+
+\subsubsection*{Why is a user-defined event more elegant than direct access?}
+
+Using a user-defined event is elegant mainly because it decouples the involved classes.
+
+\begin{itemize}
+	\item \textbf{No direct access from the ball to the score:} 
+	If the \texttt{Ball} were to call \texttt{Score.render()} or \texttt{Score.update()} directly, it would need to know about the \texttt{Score} object -- or even the \texttt{Game} class. This creates unnecessary dependencies and tightly couples classes that should remain independent.
+	
+	\item \textbf{Clear separation of responsibilities:}
+	The \texttt{Ball} only knows one thing:	\emph{A point was scored by player X.} The \texttt{Game}, on the other hand, decides what that means in practice. Update the score data, re-render the score display, maybe play a sound, reset the ball, or start the next serve.	Each class focuses on its own responsibility \index{SRP}(\randnotiz{SRP}).
+	
+	\item \textbf{A clean extension point:}
+	Later on, additional reactions can easily be attached to the same event -- such as sound effects, particle effects, a short pause, a change in serve direction, or logging -- without touching the \texttt{Ball} code again.
+	
+	\item \textbf{Better testability and maintainability:}
+	All scoring-related behavior is handled centrally in \texttt{Game.watch\_for\_events()}, instead of being scattered across multiple classes.
+	This makes the code easier to understand, test, and maintain.
+	
+\end{itemize}
+
+\textbf{Rule of thumb:} The ball reports what happened and the game decides what to do about it.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\Reqref{req0201Schlag}: Paddle hit}
+
+At first glance, the game already looks finished -- but it is still not really playable, because the paddles are not doing anything yet.
+
+\myebild{pong01.png}{0.3}{Pong: paddles, ball, and score}{picPong01}
+
+\br{Paddle hit}{req0201Schlag}
+\begin{enumerate}
+	\item When the ball touches a paddle, it bounces off and is returned to the opponent’s side of the field.\label{req0201SchlagZurück}
+	\item Each time the ball hits a paddle, its directional velocities are increased by a small random amount.\label{req0201SchlagGeschwindigkeit}
+\end{enumerate}
+\er
+
+To achieve this, we add the method \texttt{check\_collision()} to the \texttt{Game} class. This method checks whether the ball has hit one of the paddles. A good choice here is the method \texttt{pygame\-.sprite\-.coll\-ide\_rect()}\myindex{pyg}{\texttt{sprite}!\texttt{collide\_rect()}}.  
+
+If a collision is detected, the previously unused method \texttt{horizontal\_flip()} (see \srcref[vref]{srcPong03e}) is triggered via \texttt{update()}. Afterwards, the positions are adjusted so that the ball and the paddle no longer overlap. In addition, the method \texttt{respeed()} is called via \texttt{update()} to fulfill requirement~\ref{req0201Schlag}.\ref{req0201SchlagGeschwindigkeit}.
+
+\lstsource{SRC/02 Examples/01 Pong/v05/pong05.py}{199}{205}{python}{Pong (\Reqref{req0201Schlag}) -- \texttt{Game.check\_collision()}}
+{srcPong05a}
+
+In \texttt{respeed()}, small random values are added to the velocity components. Via the attribute \texttt{speed}, this variation is indirectly tied to the screen size.
+
+\lstsource{SRC/02 Examples/01 Pong/v05/pong05.py}{114}{116}{python}{Pong (\Reqref{req0201Schlag}) -- \texttt{Ball.respeed()}}
+{srcPong05b}
+
+Now the game finally becomes playable.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\Reqref{req0201Computer}: Computer-controlled player}
+
+Strictly speaking, we would be finished at this point -- but I would like to add a computer-controlled player. This allows the game to be played against the computer, or simply to let the computer play against itself for hours.
+
+\br{Computer player}{req0201Computer}
+\begin{enumerate}
+	\item Pressing \keys{1} toggles control of the left paddle between human and computer.\label{req0201Computer1}
+	
+	\item Pressing \keys{2} toggles control of the right paddle between human and computer.\label{req0201Computer2}
+	
+	\item When control is switched back to manual, the paddle should initially remain stationary.\label{req0201ComputerHalt}
+\end{enumerate}
+\er
+
+In \texttt{config.py}, a dictionary of flags is defined in \zeiref{srcPong0602}. These flags control, for each player, whether the paddle is controlled manually or by the computer.
+
+\lstsource{SRC/02 Examples/01 Pong/v06/config.py}{1}{99}{python}{Pong (\Reqref{req0201Computer}) -- \texttt{config.py}}{srcPong06a}
+
+In the \texttt{update()} method, starting at \zeiref{srcPong0603}, the flags are checked to determine whether a paddle is controlled by the computer.  
+If so, a corresponding controller method is called.
+
+\lstsource{SRC/02 Examples/01 Pong/v06/pong06.py}{185}{190}{python}{Pong (\Reqref{req0201Computer}) -- \texttt{Game.update()}}{srcPong06b}
+
+Let us now take a look at the controller method. The basic idea is simple: the paddle moves upward as long as the center of the ball is above the center of the paddle, and it moves downward as long as the ball’s center is below the paddle’s center.  
+
+There is no need to move all the way to the very top or bottom.  The last few pixels can be ignored, since a collision will usually be triggered before that anyway.
+
+\subsubsection*{Why does this simple computer player work so well?}
+
+At first glance, this controller logic looks almost trivial: the paddle simply follows the vertical position of the ball. Surprisingly, this already produces a reasonably strong computer opponent.
+
+The reason is that Pong is a very simple game in terms of physics and decision-making. The ball moves along a straight line between collisions, and its vertical position is the most important piece of information needed to intercept it. By continuously aligning the paddle’s center with the ball’s center, the computer ensures that the paddle is usually in the right place at the right time.
+
+Another advantage of this approach is that it is stable and predictable. The paddle does not overreact, oscillate wildly, or make unnecessary movements. Since the paddle speed is limited, it also cannot instantly teleport to the ball’s position, which keeps the game fair.
+
+Finally, stopping the paddle slightly before reaching the exact ball position is intentional. This avoids jitter and unnecessary micro-movements, and in practice a collision will occur anyway once the ball reaches the paddle.
+
+In short: For simple games like Pong, a straightforward \emph{follow the ball}\randnotiz{follow the ball} strategy is often more than sufficient -- and a great example of how simple rules can lead to convincing behavior.
+ 
+\lstsource{SRC/02 Examples/01 Pong/v06/pong06.py}{242}{248}{python}{Pong (\Reqref{req0201Computer}) -- \texttt{Game.paddlecontroler()}}{srcPong06c}
+
+In \texttt{watch\_for\_events()}, more extensive changes are required. First, manual control for a paddle must be disabled whenever that paddle is set to computer control. So, before calling the corresponding \texttt{update()} method, we first check whether the computer player currently has control. An example can be found in \zeiref{srcPong0604}.
+
+\myebild{pong02.png}{0.3}{Pong: paddle color indicates AI mode (left AI, right manual)}{picPong02}
+
+One remaining detail is requirement~\ref{req0201Computer}.\ref{req0201ComputerHalt}. For this, the corresponding flag is checked as shown in \zeiref{srcPong0605}, and the paddle is sent a halt signal.
+
+\lstsource{SRC/02 Examples/01 Pong/v06/pong06.py}{197}{232}{python}{Pong (\Reqref{req0201Computer}) -- \texttt{Game.watch\_for\_events()}}{srcPong06d}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\Reqref{req0201Sound}: Sound}
+
+A bit of sound would make the game feel much more lively.
+
+\br{Sound}{req0201Sound}
+\begin{enumerate}
+	\item Hitting the ball with a paddle should be accompanied by an appropriate sound effect.\label{req0201Sound1}
+	
+	\item Bouncing off the top and bottom edges should also be accompanied by a suitable sound effect.\label{req0201Sound2}
+	
+	\item Sound should be toggleable on and off using the \keys{F2}.\label{req0201Sound3}
+\end{enumerate}
+\er
+
+As a first step, we extend \texttt{Settings} by adding the flag \texttt{SOUNDFLAG} in \zeiref{srcPong0701}. This flag controls whether sound should be played or not and provides access to the sound files.
+
+\lstsource{SRC/02 Examples/01 Pong/v07/config.py}{1}{99}{python}{Pong (\Reqref{req0201Sound}) -- \texttt{config.py}}{srcPong07a}
+
+The actual sound playback is implemented in the \texttt{Ball} class. In the constructor, starting at \zeiref{srcPong0702}, the sound effects are loaded and a channel is selected through which the sounds will be played.
+
+\lstsource{SRC/02 Examples/01 Pong/v07/pong07.py}{81}{95}{python}{Pong (\Reqref{req0201Sound}) -- Constructor of \texttt{Ball}}{srcPong07b}
+
+ The first sound effect is implemented for paddle collisions in \texttt{horizontal\_flip()}. After checking whether sound output is enabled at all, it is determined whether the ball is bouncing off the left or the right paddle. This is done indirectly by checking the current horizontal direction of the ball (\zeiref{srcPong0703}). Based on this information\randnotiz{stereo panning}\index{stereo panning} (see \secref[vref]{secStereo}, the volume of the sound is adjusted so that it creates the impression that the bounce happens to the left or right of the listener.
+
+\lstsource{SRC/02 Examples/01 Pong/v07/pong07.py}{130}{139}{python}{Pong (\Reqref{req0201Sound}) -- \texttt{Ball.horizontal\_flip()}}{srcPong07d}
+
+This sound effect becomes a bit more dynamic in \texttt{vertical\_flip()}. In \zeiref{srcPong0704}, the relative horizontal position of the ball is calculated. If the center of the ball is on the left side, \texttt{rel\_pos} will be close to~0; if the ball is far to the right, the value will be close to~1.  
+
+These values can then be used directly as the left and right volume levels when calling \texttt{set\_volume()}, creating a simple but effective stereo panning effect.
+
+\lstsource{SRC/02 Examples/01 Pong/v07/pong07.py}{141}{146}{python}{Pong (\Reqref{req0201Sound}) -- \texttt{Ball.vertical\_flip()}}{srcPong07e}
+
+All that remains is toggling sound output on and off inside \texttt{watch\_for\_events()} in \zeiref{srcPong0705} using the function key \keys{F2}.
+
+\lstsource{SRC/02 Examples/01 Pong/v07/pong07.py}{213}{227}{python}{Pong (\Reqref{req0201Sound}) -- \texttt{Ball.watch\_for\_events()}}{srcPong07f}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\reqref{req0201PauseHelp}: Pause and Help Screen}
+
+\br{Pause and help}{req0201PauseHelp}
+\begin{enumerate}
+	\item Pressing \keys{p} pauses all activity and stops the game.  
+	Pressing \keys{p} again resumes the game.\label{req0201PauseHelp1}
+	
+	\item Pressing \keys{h} pauses the game and displays a help text.  
+	Pressing \keys{h} again resumes the game.\label{req0201PauseHelp2}
+\end{enumerate}
+\er
+
+For the pause functionality, we create a separate class—perhaps a bit overengineered, but nicely self-contained. The essential part can be found in \zeiref{srcPong0801}. There, a semi-transparent gray overlay is created using a \texttt{Surface} object with the same size as the screen. The surface is filled with a gray color whose alpha channel\index{Alpha channel} is set to~200, allowing the background to shine through.
+
+\lstsource{SRC/02 Examples/01 Pong/v08/pong08.py}{28}{33}{python}{Pong (\Reqref{req0201PauseHelp}) -- \texttt{Pause}}{srcPong08a}
+
+The help screen is implemented in an analogous way. The only difference is that an additional text is blitted onto the surface. The text is split into a left and a right column to improve readability.
+
+\lstsource{SRC/02 Examples/01 Pong/v08/pong08.py}{36}{50}{python}{Pong (\Reqref{req0201PauseHelp}) -- \texttt{Help}}{srcPong08b}
+
+In the constructor of \texttt{Game}, two flags now need to be created to represent the respective modes (\zeiref{srcPong0803} and \zeiref{srcPong0804}). After that, the two overlay objects are created and assigned to a \texttt{pygame.Group.Single} object.
+
+\lstsource{SRC/02 Examples/01 Pong/v08/pong08.py}{199}{216}{python}{Pong (\Reqref{req0201PauseHelp}) -- Constructor of \texttt{Game}}{srcPong08c}
+
+Once everything is prepared, the \texttt{update()} method is modified so that the actual game logic is only executed when neither pause mode nor help mode is active (\zeiref{srcPong0805}). If one of these modes is enabled, the game state is effectively frozen: positions, movements, and collisions are no longer updated, while the current screen remains visible.
+
+\lstsource{SRC/02 Examples/01 Pong/v08/pong08.py}{230}{236}{python}{Pong (\Reqref{req0201PauseHelp}) -- \texttt{Game.update()}}{srcPong08d}
+
+In \texttt{draw()}, the currently active mode is checked as well. If the game is paused or the help screen is active, the corresponding sprite is rendered on top of the game scene. Otherwise, only the current game state is rendered as usual.
+
+\lstsource{SRC/02 Examples/01 Pong/v08/pong08.py}{238}{245}{python}{Pong (\Reqref{req0201PauseHelp}) -- \texttt{Game.draw()}}{srcPong08e}
+
+\myebild{pong03.png}{0.3}{Pong: Help screen}{picPong03}
+
+\subsubsection*{Pause vs.\ Help -- what happens technically?}
+
+Both the pause mode and the help screen are based on the same fundamental idea: the game is still rendered visually, but the actual game simulation is stopped.
+
+\begin{itemize}
+	\item \textbf{Pause}:
+	All movement and state-changing calculations are suspended.	The current game situation is frozen and merely covered by a semi-transparent overlay.
+	
+	\item \textbf{Help}:
+	Technically identical to the pause mode, but extended by an additional text overlay. The player receives information about controls and gameplay while the game state itself remains unchanged.
+\end{itemize}
+
+The crucial point is that in both modes the method \texttt{update()} does not modify any game objects. Rendering continues, which keeps the game visually \emph{alive} while it is logically paused.
+
+This approach has several advantages:
+\begin{itemize}
+	\item No special-case logic inside individual sprite classes
+	\item A clear separation between \emph{game state} and \emph{presentation}
+	\item Easy to extend (e.\,g.\ for menus, dialogs, or settings)
+\end{itemize}
+
+Rule of thumb: \emph{Pausing does not mean drawing nothing -- it means changing nothing.}
+

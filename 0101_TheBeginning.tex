@@ -1,0 +1,306 @@
+% !TeX spellcheck = en_US
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Kind of Hello World!}
+\begin{diskbox}[So $\ldots$ where are the files?]
+ \url{https://github.com/adamsralf/pygame_skript/tree/main/src/00%20Einf%C3%BChrung/01%20Start}
+\end{diskbox}
+\subsection{The Very First Steps}
+\lstsource{src/00 Introduction/01 TheBeginning/v01/start.py}{1}{24}{python}{My first \emph{Game}, Version 1.0}{srcStart00}
+
+When you start the application now, you will see a nicely designed window with a green background (\abbref[vref]{picGreenPlane}). At the moment, however, not much is happening. The only thing you can do is close the window by clicking on the \emph{X} button in the upper right corner of the window frame.
+
+In order to use Pygame, the module \texttt{pygame} must be imported into the program (\zeiref{srcStart0001}). This makes the \glspl{constant}, \glspl{function}, \glspl{event}, and \glspl{class} of the \gls{namespace} available.
+
+\begin{wrapfigure}[11]{r}{6.5cm}
+	%\vspace{-1em}
+	\myfigure{greene_plane.png}{0.4}{Playground}{picGreenPlane}
+\end{wrapfigure}
+Pygame is not just about calling functions or creating objects; a hole subsystems must be initialized explicitly. In this example, this is done using the function
+\texttt{pygame.init()}. Pygame is now connected to parts of the \Gls{os} system, to deliver an receive required information and actions. In \zeiref{srcStart0003} the Pygame engine is started by calling \texttt{init()} \myindex{pyg}{\texttt{init()}|underline}\randnotiz{init()}. It ist also possible to start only parts of the engine e.g. the sound subsystem by \texttt{pygame.mixer.init()}\myindex{pyg}{\texttt{mixer}!\texttt{init()}}.
+
+For our games, we need a \emph{playfield}/a window in which everything takes place. The class \texttt{pygame.Window}\myindex{pyg}{\texttt{Window}}\randnotiz{Window}
+represents such a playfield. In \zeiref{srcStart0005}, the constructor receives one argument — namely the width and the height of the window as the 2-tuple
+\texttt{size}. Our window is therefore \SI{600}{px} wide and \SI{400}{px} high
+(see \Gls{PX}). The method \texttt{get\_surface()}
+\myindex{pyg}{\texttt{Window}!\texttt{get\_surface()}}\randnotiz{get\_surface()}
+in \zeiref{srcStart0012} returns a \texttt{pygame.Surface} object \myindex{pyg}{\texttt{Surface}}, which is roughly something like a \gls{bitmap}.
+
+In \zeiref{srcStart0012}, I store this return value in the
+\gls{variable} named \texttt{screen}\index{screen}\randnotiz{screen}.
+
+I can then assign a title to the window using the attribute \texttt{Window.title}\myindex{pyg}{\texttt{Window}!\texttt{title}}\randnotiz{title} (see \zeiref{srcStart0004}) and set the position of the window relative to the desktop using the attribute \texttt{Window.po\-si\-tion}\myindex{pyg}{\texttt{Window}!\texttt{position}}\randnotiz{position} (see \zeiref{srcStart0002}).
+
+The game itself -- just like all future games -- runs inside a \gls{mainloop}\index{main loop}\index{main loop}. The loop starts in \zeiref{srcStart0006} and ends in \zeiref{srcStart0011}. Inside this loop, three things will always happen in the future:
+
+\begin{enumerate}
+	\item Reading and processing events: As shown in \zeiref{srcStart0007}f., mouse, keyboard, or game events are detected and passed on to the game elements. In our case, only clicking the X in the upper right corner of the window is registered.
+
+	\item Updating the state of the game elements: Based on the events detected above and the current states of the game elements, the new states are determined
+	(the player moves, a projectile bounces off, points increase, etc.). In our case, only the \gls{flag}\index{Flag} \texttt{running} of the	main program loop is set to \false.
+	
+	\item Drawing the bitmaps of the game elements:	The game elements have a new position or a new appearance and must therefore be redrawn.	In this minimal example, only the background of the playfield is colored in \zeiref{srcStart0009}, and afterwards the \gls{doublebuffer}\index{Doublebuffer}\randnotiz{Double buffer} is swapped using \texttt{Window.flip()} \myindex{pyg}{\texttt{Window}!\texttt{flip()}}\randnotiz{flip()} in \zeiref{srcStart0010}.
+\end{enumerate}
+
+
+By calling \texttt{py\-game.\-init()}, Pygame places a kind of listener inside the operating system. More precisely, Pygame listens to the \emph{\gls{messagequeue}}. This is where the operating system collects all messages that are triggered by events.
+These can include \glslink{usb}{USB} connection messages, \glslink{ssd}{SSD} error messages, mouse actions, program starts or crashes, and many others.
+
+Pygame now retrieves from the message queue, using \texttt{pygame.event.get()} \myindex{pyg}{\texttt{event}!\texttt{get()}}\randnotiz{event.get()}, all events that could be relevant to the game. Using a \forSchleife, I then iterate over these events starting at \zeiref{srcStart0007} and pick out the ones that are relevant to me.
+
+First, I check which type of event (\texttt{pygame.event.type}) \myindex{pyg}{\texttt{event}!\texttt{type}}\randnotiz{event.type} is being offered.
+At the moment, only the type \texttt{pygame.QUIT} \randnotiz{QUIT}\myindex{pyg}{\texttt{QUIT}} is important to me. This type is triggered when the operating system sends a \emph{quit} message to the application. If I receive such a message, I set the flag \texttt{running} to \false{}, so that the main program loop is terminated.
+
+If I do not receive this signal, the main program loop continues to run happily and fills the entire playfield with a color in \zeiref{srcStart0009} using \texttt{screen.fill()} \myindex{pyg}{\texttt{Surface}!\texttt{fill()}} -- in this case, green. Please note that, similar to \zeiref{srcStart0005}, the function expects
+one argument -- namely a 3-tuple. This 3-tuple encodes the color using \glslink{rgb}{RGB}\randnotiz{RGB} values between 0 and 255. Predefined color names \randnotiz{color names}such as \emph{green} can also be used here.
+
+
+What remains is \zeiref{srcStart0010}: Here, the function \texttt{pygame.quit()}
+\myindex{pyg}{\texttt{quit()}}\randnotiz{quit()} is called. This function is essentially the opposite of \texttt{pygame.init()} in \zeiref{srcStart0003}. All reserved resources are released again, and the Pygame listeners are removed from the system. You should always make sure to call this function at the end of your application; do not simply terminate the game. The difference is similar to just running out of your apartment versus properly turning off the lights and locking the door when leaving.
+
+If we take a look at the game in the task manager (see~\abbref[vref]{picTaskManager00}), we might be a bit surprised: around \SI{30}{\%} of the CPU time is being used by this \emph{IAmActuallyDoingNothing} game.
+
+
+\myebild{TaskManager00.png}{0.7}{Resource usage without timing control}{picTaskManager00}
+
+However, if we take a closer look at the main program loop, this should not really be surprising. A bitmap is being drawn onto the screen without any limitation and without interruption. It would be better to allow enough time in each loop iteration to collect events, calculate the new states, and only then generate the screen output.
+The screen output itself should also not happen arbitrarily fast or too often; in general, about \SI{60}{\gls{fps}}\randnotiz{fps} are sufficient for motion to be perceived as smooth.
+
+\lstsource{src/00 Introduction/01 TheBeginning/v02/start.py}{1}{25}{python}{My first \emph{Game}, Version 1.1}{srcStart01}
+
+In \zeiref{srcStart0101}, a \texttt{pygame.time.Clock} \randnotiz{Clock}\myindex{pyg}{\texttt{time}!\texttt{Clock}|underline} object is created for timing control. With the help of this object, various time-related tasks can be handled; for the moment, however, we only need it for timing in \zeiref{srcStart0102}. There, \texttt{pygame.time.Clock.\-tick()} \randnotiz{tick()}\myindex{pyg}{\texttt{time}!\texttt{Clock}!\texttt{tick()}} is called with a frame rate measured in $fps$. This function ensures that the application now runs at a maximum of \SI{60}{fps}. This can be seen in the significantly reduced CPU usage shown in
+\abbref[vref]{picTaskManager01}.
+
+\textbf{Note:} The Pygame documentation points out that the function \texttt{tick()}
+is very resource-efficient, but somewhat imprecise. If accuracy is important for timing, the function \texttt{tick\_\_loop()}
+\randnotiz{tick\_busy\_loop()}\myindex{pyg}{\texttt{time}!\texttt{Clock}!\texttt{tick\_busy\_loop()}} is recommended instead. Its disadvantage, however, is that it consumes significantly more processing time than \texttt{tick()}.
+
+\myebild{TaskManager01.png}{0.7}{Resource usage with timing control}{picTaskManager01}
+
+\subsection{More Input}
+
+\subsubsection{Multiple Windows}\label{secMultipleWindows}
+You can also create multiple windows for a game (see \url{https://pyga.me/docs/ref/window.html}).
+
+\lstsource{src/00 Introduction/01 TheBeginning/v03/start.py}{1}{99}{python}{Multiple Windows}{srcStart02}
+
+\begin{figure}[hbtp] 
+	\begin{center}
+		\begin{tikzpicture}
+			\node (main) at (0.0, 0) {\fbox{\includegraphics[scale=0.7]{MainWindow.png}}};
+			\node (side) at (6.0, 0) {\fbox{\includegraphics[scale=0.7]{SideWindow.png}}};
+		\end{tikzpicture}
+		\caption{Multiple Windows}\label{picMultipleWindows}
+	\end{center}
+\end{figure}
+
+\subsubsection{Information About the Graphics Environment}
+
+Sometimes it is necessary to know information about the graphics environment: perhaps to identify performance problems, or perhaps to find out which display features are available. Using the function \texttt{pygame.display.Info()}\myindex{pyg}{\texttt{display}!\texttt{Info()}}\randnotiz{Info()}, various parameters can be queried. On my system, calling this function produced the output shown in \abbref[vref]{picInfo00}.
+
+Please refer to \tabref[vref]{tabDisplayInfo} for the meaning of the values (source: \url{https://pyga.me/docs/ref/display.html#pygame.display.Info}).
+
+
+\begin{longtable}{p{4cm} p{10cm}}
+	\caption{Fields of \texttt{pygame.display.Info()}}\label{tabDisplayInfo}\\
+	\toprule
+	\textbf{Field} & \textbf{Description} \\
+	\midrule
+	\endfirsthead
+	
+	\toprule
+	\textbf{Field} & \textbf{Description} \\
+	\midrule
+	\endhead
+	
+	\midrule
+	\multicolumn{2}{r}{\emph{continued on next page}} \\
+	\endfoot
+	
+	\bottomrule
+	\endlastfoot
+	
+	\texttt{hw} &
+	\texttt{1} if the display is hardware accelerated. \\
+	
+	\texttt{wm} &
+	\texttt{1} if windowed display modes can be used. \\
+	
+	\texttt{video\_mem} &
+	The amount of video memory on the display in megabytes.
+	This value is \texttt{0} if the amount is unknown. \\
+	
+	\texttt{bitsize} &
+	Number of bits used to store each pixel. \\
+	
+	\texttt{bytesize} &
+	Number of bytes used to store each pixel. \\
+	
+	\texttt{masks} &
+	Four values used to pack RGBA values into pixels. \\
+	
+	\texttt{shifts} &
+	Four values used to pack RGBA values into pixels. \\
+	
+	\texttt{losses} &
+	Four values used to pack RGBA values into pixels. \\
+	
+	\texttt{blit\_hw} &
+	\texttt{1} if hardware Surface blitting is accelerated. \\
+	
+	\texttt{blit\_hw\_CC} &
+	\texttt{1} if hardware Surface colorkey blitting is accelerated. \\
+	
+	\texttt{blit\_hw\_A} &
+	\texttt{1} if hardware Surface pixel alpha blitting is accelerated. \\
+	
+	\texttt{blit\_sw} &
+	\texttt{1} if software Surface blitting is accelerated. \\
+	
+	\texttt{blit\_sw\_CC} &
+	\texttt{1} if software Surface colorkey blitting is accelerated. \\
+	
+	\texttt{blit\_sw\_A} &
+	\texttt{1} if software Surface pixel alpha blitting is accelerated. \\
+	
+	\texttt{current\_w}, \texttt{current\_h} &
+	Width and height of the current video mode, or of the desktop mode if
+	called before \texttt{display.set\_mode()}.
+	The values are \texttt{-1} on error. \\
+	
+	\texttt{pixel\_format} &
+	The pixel format of the display surface as a string,
+	for example \texttt{PIXELFORMAT\_RGB888}. \\
+	
+\end{longtable}
+
+
+\lstsource{SRC/00 Introduction/03 Bitmaps/ginfo.py}{5}{9}{python}{\texttt{pygame.display.Info()}}{Info01}
+
+\myebild{ginfo.png}{1.0}{Infos about the graphical environment}{picInfo00}
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{What was new?}
+
+To start a minimal Pygame application, you need to do the following:
+
+\begin{itemize}
+	\item Import the Pygame library.
+	\item Initialize the Pygame system.
+	\item Create a window / a playfield.
+	\item Set up a main program loop:
+	\begin{enumerate}
+		\item Poll events.
+		\item Update game objects.
+		\item Render the screen contents.
+		\item Control the timing of the loop iterations.
+	\end{enumerate}
+	\item Shut down the Pygame system when exiting.
+\end{itemize}
+
+The following Pygame elements were introduced:
+
+
+\begin{itemize}
+	\item \texttt{import pygame}:\\ \url{https://pyga.me/docs/tutorials/en/import-init.html}
+	
+	\item \texttt{pygame.init()}:
+	\myindex{pyg}{\texttt{init()}}\\
+	\url{https://pyga.me/docs/ref/pygame.html#pygame.init}
+	
+	\item \texttt{pygame.quit()}:
+	\myindex{pyg}{\texttt{quit()}}\\
+	\url{https://pyga.me/docs/ref/pygame.html#pygame.quit}
+
+	\item \texttt{pygame.QUIT}:
+	\myindex{pyg}{\texttt{QUIT}}\\
+    \url{https://pyga.me/docs/ref/event.html#pygame.event.EventType.type}
+	
+	\item \texttt{pygame.WINDOWCLOSE}:
+	\myindex{pyg}{\texttt{WINDOWCLOSE}}\\
+	\url{https://pyga.me/docs/ref/event.html#pygame.event.EventType.type}
+
+	\item \texttt{pygame.event.get()}:
+	\myindex{pyg}{\texttt{event}!\texttt{get()}}\\
+	\url{https://pyga.me/docs/ref/event.html#pygame.event.get}
+	
+	\item \texttt{pygame.event.type}:
+	\myindex{pyg}{\texttt{event}!\texttt{type}}\\
+	\url{https://pyga.me/docs/ref/event.html#pygame.event.EventType.type}
+
+	\item \texttt{pygame.time.Clock}:
+	\myindex{pyg}{\texttt{time}!\texttt{Clock}}\\
+	\url{https://pyga.me/docs/ref/time.html#pygame.time.Clock}
+
+	\item \texttt{pygame.time.Clock.tick()}:
+	\myindex{pyg}{\texttt{time}!\texttt{Clock}!\texttt{tick()}}\\
+	\url{https://pyga.me/docs/ref/time.html#pygame.time.Clock.tick}
+	
+	\item \texttt{pygame.time.Clock.tick\_busy\_loop()}:
+	\myindex{pyg}{\texttt{time}!\texttt{Clock}!\texttt{tick\_busy\_loop()}}\\
+	\url{https://pyga.me/docs/ref/time.html#pygame.time.Clock.tick_busy_loop}
+	
+	\item \texttt{pygame.Surface.fill()}:
+	\myindex{pyg}{\texttt{Surface}!\texttt{fill()}}\\
+	\url{https://pyga.me/docs/ref/surface.html#pygame.Surface.fill}
+
+	\item \texttt{pygame.Window}:
+	\myindex{pyg}{\texttt{Window}}\\
+	\url{https://pyga.me/docs/ref/window.html}
+	
+	\item \texttt{pygame.Window.destroy()}:
+	\myindex{pyg}{\texttt{Window}!\texttt{destroy()}}\\
+	\url{https://pyga.me/docs/ref/window.html#pygame.Window.destroy}
+
+	\item \texttt{pygame.Window.flip()}:
+	\myindex{pyg}{\texttt{Window}!\texttt{flip()}}\\
+	\url{https://pyga.me/docs/ref/window.html#pygame.Window.flip}
+	
+	\item \texttt{pygame.Window.get\_surface()}:
+	\myindex{pyg}{\texttt{Window}!\texttt{get\_surface()}}\\
+	\url{https://pyga.me/docs/ref/window.html#pygame.Window.get_surface}
+	
+	\item \texttt{pygame.Window.title}:
+	\myindex{pyg}{\texttt{Window}!\texttt{title}}\\
+	\url{https://pyga.me/docs/ref/window.html#pygame.Window.title}
+	
+	\item \texttt{pygame.Window.position}:
+	\myindex{pyg}{\texttt{Window}!\texttt{position}}\\
+	\url{https://pyga.me/docs/ref/window.html#pygame.Window.position}
+\end{itemize}
+
+\subsection{Homework}
+Please have a look at \url{https://pyga.me/docs/ref/window.html} and then try to solve the following small exercises: 
+
+\begin{enumerate}
+	\item Set up a working environment for your game programming. Install Python, your preferred editor, and the latest pygame-ce version. Open the directory containing your Pygame source code and try to run \texttt{start01.py}.
+	
+	\item Change the background color of the window. Use RGB values as well as named colors.
+	
+	\item Change the size of the window.
+	
+	\item Change the position of the window. Use position values and also try
+	\texttt{WINDOWPOS\-\_CENTERED}
+	\randnotiz{WINDOWPOS\_CENTERED}\myindex{pyg}{\texttt{WINDOWPOS\_CENTERED}}
+	and
+	\texttt{WINDOWPOS\-\_UNDEFINED}
+	\randnotiz{WINDOWPOS\_UNDEFINED}\myindex{pyg}{\texttt{WINDOWPOS\_UNDEFINED}}.
+	
+	\item Create the window as a resizable window and try to resize it.
+	
+	\item Define a minimum an maximum window size, show the actual size in the title bar, and try to resize the window to its limits.
+	
+	\item Show the actual window position in the title bar.
+	
+	\item Play a little bit with the \texttt{opacity} attribute of the window. 
+	
+	\item Change the title of the window during runtime according to a counter. Shut down the program if counter is greater~600.
+	
+	\item Create a borderless window.
+	
+	\item Try a fullscreen window.
+	
+	\item Try to arrange three windows in a row. Compute the x-position of the second and third window based on the window size and a useful gap between them. 
+	
+	
+\end{enumerate}

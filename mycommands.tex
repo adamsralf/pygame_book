@@ -1,0 +1,235 @@
+\newref{tab}{name=table~,names=tables~,Name=Table~,Names=Tables~}
+\newref{abb}{name=figure~,Name=Figure~}
+\newref{abschnitt}{name=section~,Name=Section~}
+\newref{sec}{name=section~,Name=Section~}
+\newref{kap}{name=chapter~,Name=Chapter~}
+\newref{zei}{name=line~,names=lines~,Name=Line~,Names=Lines~}
+\newref{src}{name=source code~,names=source codes~,Name=Source Code~,Names=Source Codes~}
+\newref{req}{name=requirement~,Name=Requirement~}
+\newref{glei}{name=equation~,Name=Equation~}
+
+% Farbdefinitionen
+\definecolor{stateblue}{RGB}{173, 216, 230}      % Hellblau für normale Zustände
+\definecolor{initialgreen}{RGB}{144, 238, 144}   % Hellgrün für Startzustand
+\definecolor{gameoverred}{RGB}{240, 128, 128}    % Hellrot für Spielende
+\definecolor{arrowblack}{RGB}{0, 0, 0}           % Schwarz für Pfeile
+\definecolor{textblack}{RGB}{0, 0, 0}            % Schwarz für Text
+\definecolor{white}{RGB}{255, 255, 255}          % Weiß für Label-Hintergrund
+
+
+%Abkürzungen
+\newcommand{\true}{\texttt{True}}
+\newcommand{\false}{\texttt{False}}
+\newcommand{\forSchleife}{\texttt{for}-loop}
+\newcommand{\whileSchleife}{\texttt{while}-loop}
+
+\newcommand{\myindex}[2]{\setindex{#1}\index{#2}\setindex{main}}
+
+\newcommand{\randnotiz}[1]{%
+  \marginline{%
+    \begin{tiny}%
+%    \fbox{%
+      \parbox{1.5cm}{\color{Red}#1}%
+%    }
+    \end{tiny}%
+  }%
+}
+
+%Requirement
+\floatstyle{ruled}
+\newfloat{Requirement}{H}{lor}
+\newcommand{\br}[2]%
+        {\begin{Requirement}%
+                        \caption[#1]{\parbox[c][1.5ex][c]{7cm}{#1\color{White}gD}}\label{#2}\index{#1}%
+                        \begin{quote}%
+                                \begin{itshape}%
+                                \vspace{-0.7em}
+        }
+\newcommand{\er}%
+        {%
+                                \end{itshape}%
+                        \end{quote}%
+                        \vspace{-1.5ex}
+        \end{Requirement}%
+        \vspace{-1.5ex}
+        }
+
+
+
+%Definition
+\floatstyle{ruled}
+\newfloat{Definition}{H}{lod}
+\newcommand{\bd}[2]%
+        {\begin{Definition}%
+                        \caption[#1]{\parbox[c][1.5ex][c]{7cm}{#1\color{White}gD}}\label{#2}\index{#1}%
+                        \begin{quote}%
+                                \begin{itshape}%
+                                \vspace{0.4em}
+        }
+\newcommand{\ed}%
+        {%
+                                \end{itshape}%
+                        \end{quote}%
+                        \vspace{-1.5ex}
+        \end{Definition}%
+        \vspace{-1.5ex}
+        }
+%Source Code Listen
+\floatstyle{ruled}
+\newfloat{Source Code}{H}{losc}
+%% lstSource ist die neue Version, sollte immer verwendet werden!
+%#1 Dateiname
+%#2 Startzeile
+%#3 Endezeile
+%#4 Sprache
+%#5 Überschrift
+%#6 Label
+\newcounter{StartZeilenNr}%
+\newcommand{\lstsource}[6]%
+{%
+  \setcounter{StartZeilenNr}{#2}%
+  \addtocounter{StartZeilenNr}{0}%
+  \lstset%
+  {%
+    language={#4},%
+    numbers={left},%
+    numberstyle=\color[gray]{0.5},%
+    escapechar={§},%
+    basicstyle={\ttfamily\scriptsize},%
+    firstnumber={#2},%
+    breaklines=true,%
+    breakatwhitespace=true,%
+    frame={tb},%
+    framextopmargin={1mm},%
+    xleftmargin={0mm},%
+    framexleftmargin={0mm},%
+    belowcaptionskip={5pt},%
+    abovecaptionskip={4mm},%
+    keywordstyle={\color{blue}},%
+    commentstyle={\color{ForestGreen}},%
+    stringstyle={\color{BrickRed}},%
+    showspaces=false,%
+    showstringspaces=false,%
+    literate=%
+    {Ö}{{\"O}}1%
+    {Ä}{{\"A}}1%
+    {Ü}{{\"U}}1%
+    {ß}{{\ss}}1%
+    {ü}{{\"u}}1%
+    {ä}{{\"a}}1%
+    {ö}{{\"o}}1%
+  }%
+  \lstinputlisting[caption={#5},label={#6},firstline={#2},lastline={#3}]{#1}%
+}%
+
+%Aufgaben
+\newtheorem{aufgabe}{Exercise}[chapter]
+
+
+\newcommand{\myfigure}[4]{%
+\renewcommand{\figurename}{Fig.}
+ \includegraphics[scale=#2,clip=true]{#1}%
+ \caption{#3}\label{#4}%
+\renewcommand{\figurename}{Figure}
+}
+
+%Bilder
+\newenvironment{ebild}[4]
+{
+	\begin{figure}[hbtp]
+		\begin{center}%
+			\includegraphics[scale=#2,clip=true]{#1}%
+			\caption{#3}\label{#4}%
+		\end{center}%
+	}
+	{
+	\end{figure}
+}
+% #1 = file
+% #2 = scale
+% #3 = caption
+% #4 = label
+\newcommand{\myebild}[4]{\begin{ebild}{#1}{#2}{#3}{#4} \end{ebild}}
+
+
+\newenvironment{ezweihbild}[8]
+        {%
+                \begin{figure}[hbtp]%
+                        \centering%
+                        \begin{minipage}[b]{6.5cm}%
+                                \centering%
+                                \includegraphics[scale=#2]{#1}%
+                                \caption{#3}\label{#4}%
+                        \end{minipage}%
+                \hfil%
+                        \begin{minipage}[b]{6.5cm}%
+                                \centering%
+                                \includegraphics[scale=#6]{#5}%
+                                \caption{#7}\label{#8}%
+                        \end{minipage}%
+        }
+        {
+                \end{figure}%
+        }
+\newcommand{\myezweihbild}[8]{\begin{ezweihbild}{#1}{#2}{#3}{#4}{#5}{#6}{#7}{#8} \end{ezweihbild}}
+
+\newenvironment{ezweivbild}[8]
+        {%
+                \begin{figure}[hbtp]%
+                        \centering%
+                        \begin{minipage}[b]{13cm}%
+                                \centering%
+                                \includegraphics[scale=#2]{#1}%
+                                \caption{#3}\label{#4}%
+                        \end{minipage}%
+                \vfil%
+                        \begin{minipage}[b]{13cm}%
+                                \centering%
+                                \includegraphics[scale=#6]{#5}%
+                                \caption{#7}\label{#8}%
+                        \end{minipage}%
+        }
+        {
+                \end{figure}%
+        }
+\newcommand{\myezweivbild}[8]{\begin{ezweivbild}{#1}{#2}{#3}{#4}{#5}{#6}{#7}{#8} \end{ezweivbild}}
+
+\DeclareDocumentCommand{\newdualentry}{ O{} O{} m m m m } {
+  \newglossaryentry{gls-#3}{name={#5},text={#5\glsadd{#3}},
+    description={#6},#1
+  }
+  \makeglossaries
+  \newacronym[see={[Glossar:]{gls-#3}},#2]{#3}{#4}{#5\glsadd{gls-#3}}
+}
+
+
+% --- in die Präambel ---
+% zartblau definieren (ggf. anpassen)
+\definecolor{boxblue}{RGB}{232,242,255}
+\definecolor{boxblueborder}{RGB}{120,165,220}
+
+% Umgebung: breakable = Seitenumbrüche erlaubt
+\newtcolorbox{diskbox}[1][]{%
+	breakable,
+	enhanced,
+	colback=boxblue,
+	colframe=boxblueborder,
+	boxrule=0.6pt,
+	arc=2mm,
+	left=10mm, right=4mm, top=2mm, bottom=2mm,
+	before skip=10pt, after skip=10pt,
+	toptitle=2mm,
+	bottomtitle=1mm,
+	% kleines Icon links oben
+	overlay={%
+		\node[anchor=north west, inner sep=2mm]
+		at (frame.north west) {\large\faSave};
+	},
+	% optionaler Titel/Parameter
+	title={#1},
+	fonttitle=\bfseries,
+}
+
+% --- im Dokument ---
+
+

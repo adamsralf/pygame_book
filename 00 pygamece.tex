@@ -1,0 +1,180 @@
+% !TeX spellcheck = en_US
+\documentclass[12pt, twoside, openright]{scrbook}
+\usepackage{showframe}
+
+% -------------------------------------------------
+% Language & Localization
+% -------------------------------------------------
+\usepackage[english]{babel}
+\usepackage[english]{varioref}
+\usepackage[english,nokeyprefix]{refstyle}
+% -------------------------------------------------
+% Typography & Fonts (LuaLaTeX)
+% -------------------------------------------------
+\usepackage{fontspec}
+% -------------------------------------------------
+% Colors & Graphics
+% -------------------------------------------------
+\usepackage[dvipsnames]{xcolor}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{flafter}
+\usepackage{float}
+% -------------------------------------------------
+% Math & Units
+% -------------------------------------------------
+\usepackage{amsmath}
+\usepackage{siunitx}
+\sisetup{
+	locale = US,
+	detect-all,
+	evaluate-expression = true
+}
+% -------------------------------------------------
+% Code Listings
+% -------------------------------------------------
+%\usepackage[newfloat]{minted}
+\usepackage{listings}
+\usepackage{verbatim}
+% -------------------------------------------------
+% Enumerations
+% -------------------------------------------------
+\usepackage{enumerate}
+% -------------------------------------------------
+% Hyperlinks & PDF Metadata
+% -------------------------------------------------
+\usepackage[
+	luatex,
+	unicode=true,
+	breaklinks=true,
+	bookmarksnumbered=true,
+	colorlinks,
+	linkcolor=blue,
+	linktocpage,
+	pdfauthor={Ralf Adams},
+	pdftitle={Introduction to Pygame-ce},
+	pdfsubject={Game Development with Python and Pygame-ce},
+	pdfkeywords={Python, Pygame, Game Development, Programming},
+	pdfcreator={LuaLaTeX},
+	pdfproducer={LaTeX}
+]{hyperref}
+% -------------------------------------------------
+% Tables
+% -------------------------------------------------
+\usepackage{longtable}
+\usepackage{booktabs}
+% -------------------------------------------------
+% Filebox
+% -------------------------------------------------
+\usepackage[most]{tcolorbox}
+\usepackage{fontawesome5} % liefert \faSave (Diskette)
+
+\usepackage[footsepline,plainfootsepline,footbotline,plainfootbotline,draft=false]{scrlayer-scrpage}
+\usepackage{manyind}
+\usepackage{colortbl}
+\usepackage[font={small}]{caption}
+\usepackage{lastpage}
+\usepackage[acronym]{glossaries}
+\usepackage{xparse}
+\usepackage{tikz}
+\usepackage{tkz-euclide}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{positioning}
+\usetikzlibrary{calc}
+\usetikzlibrary{angles}
+\usetikzlibrary{quotes}
+\usetikzlibrary{fit}
+\usetikzlibrary{automata}
+\usepackage{pgf-umlcd}
+\usepackage{multirow}
+\usepackage{colortbl}
+\usepackage{chngcntr}
+\usepackage[os=win]{menukeys}
+
+\graphicspath{{./pics/}}
+\selectlanguage{english}
+
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+\deffootnote[1.0em]{1.1em}{1.1em}{\textsuperscript{\thefootnotemark\ }}
+
+\input{mycommands.tex}
+%\lstloadlanguages{C}
+%\renewcommand{\lstlistingname}{Source Code}
+%\renewcommand{\lstlistlistingname}{Quelltexte}
+
+\input{mypagestyle}
+\counterwithin*{Requirement}{section}
+
+
+%%%%%%%%%%%%%%%%%%%%%%% START DOKUMENT %%%%%%%%%%%%%%%%%%%%%%%%%%%
+\loadglsentries[main]{gloss.tex}
+
+\makeindex
+\makeglossaries
+
+
+\begin{document}
+
+  \title{Introduction to \\ Pygame-ce\\2D Game Programming}
+  \author{Ralf Adams}
+  \date{Version 1.0 (\today)}
+%  \maketitle
+  
+\begin{titlepage}
+	\centering
+	\includegraphics[clip=true, width=0.7\textwidth]{pygame_ce_lofi.png}\par\vspace{1cm}
+	{\Huge\bfseries Introduction to Pygame-ce\\\par}
+	\vspace{1cm}
+	{\Large 2D Game Programming\par}
+	\vfill
+	{\large Ralf Adams\par}
+	{\large Version 1.0 (\today)\par}
+\end{titlepage}
+  
+  
+  \tableofcontents
+
+%%%%%%%% Einige eigene Einstellungen
+\setlength{\parindent}{0.0em}
+\setlength{\parskip}{1.0ex plus0.5ex minus0.5ex}
+\setlength{\itemsep}{-0.3ex plus0.2ex}
+
+%%%%%%%%%%%%%%%%%%%%%%% START TEXT
+
+\chapter{Goals}\label{secGoals}
+	\input{0001_Goals.tex}
+\chapter{Basics}\label{secBasics}
+	\input{0101_TheBeginning}
+	\input{0102_Primitives}
+	\input{0103_BitmapLoadingBlitting}
+	\input{0104_BitmapMoving}
+	\input{0105_Sprite}
+	\input{0106_Keyboard}
+	\input{0107_Fonts}
+	\input{0108_Collision}
+	\input{0109_Time}
+	\input{0110_Mouse}
+	\input{0111_Sound}
+	\input{0112_Events}
+\chapter{Techniques}\label{secTechniques}
+	\input{0201_Animation}
+	\input{0202_TileMaps}
+	\input{0203_WorldScrolling}
+	%TODO: Zustandautomaten
+	%TODO: Vorbeiziehende Gebirge (Hintergründe) mit 3D-Optik
+\chapter{Examples}\label{secExamples}
+	\input{0301_Pong}
+	\input{0302_Bubbles}
+	\input{0303_Moonlander}
+\listoffigures
+\listoftables
+%\lstlistoflistings
+
+\printglossaries
+\printindex
+\printindex[pyg][Index of the \texttt{pygame} Namespace]
+
+\end{document}

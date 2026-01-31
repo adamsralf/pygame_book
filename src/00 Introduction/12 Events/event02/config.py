@@ -1,0 +1,18 @@
+import pygame
+
+
+class MyEvents:
+    BUTTONPRESSED = pygame.USEREVENT + 0
+    OVERFLOW = pygame.USEREVENT + 1
+    NEWPARTICLES = pygame.USEREVENT + 2
+
+
+WINDOW = pygame.rect.Rect((0, 0), (600, 150))
+FPS = 60
+DELTATIME = 1.0 / FPS
+STARTNOFPARTICLES = 500
+NEWNOFPARTICLES = 10
+NOFBOXES = 5
+BOXWIDTH = 50
+
+

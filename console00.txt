@@ -1,0 +1,18 @@
+<Event(769-KeyUp {'unicode': 'd', 'key': 100, 'mod': 4096, 'scancode': 7, 'window': None})>
+<Event(768-KeyDown {'unicode': 'a', 'key': 97, 'mod': 4096, 'scancode': 4, 'window': None})>
+<Event(771-TextInput {'text': 'a', 'window': None})>
+<Event(768-KeyDown {'unicode': ' ', 'key': 32, 'mod': 4096, 'scancode': 44, 'window': None})>
+<Event(771-TextInput {'text': ' ', 'window': None})>
+<Event(1024-MouseMotion {'pos': (299, 143), 'rel': (-1, 0), 'buttons': (0, 0, 0), 'touch': False, 'window': None})>
+<Event(1024-MouseMotion {'pos': (297, 143), 'rel': (-2, 0), 'buttons': (0, 0, 0), 'touch': False, 'window': None})>
+<Event(1025-MouseButtonDown {'pos': (230, 118), 'button': 1, 'touch': False, 'window': None})>
+<Event(1026-MouseButtonUp {'pos': (230, 118), 'button': 1, 'touch': False, 'window': None})>
+<Event(1027-MouseWheel {'flipped': False, 'x': 0, 'y': 1, 'precise_x': 0.0, 'precise_y': 1.0, 'touch': False, 'window': None})>
+<Event(1025-MouseButtonDown {'pos': (230, 118), 'button': 5, 'touch': False, 'window': None})>
+<Event(1026-MouseButtonUp {'pos': (230, 118), 'button': 5, 'touch': False, 'window': None})>
+<Event(1027-MouseWheel {'flipped': False, 'x': 0, 'y': -1, 'precise_x': 0.0, 'precise_y': -1.0, 'touch': False, 'window': None})>
+<Event(1024-MouseMotion {'pos': (572, 0), 'rel': (3, -1), 'buttons': (0, 0, 0), 'touch': False, 'window': None})>
+<Event(32768-ActiveEvent {'gain': 0, 'state': 1})>
+<Event(32784-WindowLeave {'window': None})>
+<Event(32787-WindowClose {'window': None})>
+<Event(256-Quit {})>

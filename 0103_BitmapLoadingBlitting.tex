@@ -1,0 +1,329 @@
+% !TeX spellcheck = en_US
+\newpage
+\section{Load and Blit Bitmaps}\label{secBitmapLaden}\index{Bitmap}\index{Bitmap!load}\index{Bitmap!blit}
+\subsection{Introduction}
+\lstsource{SRC/00 Introduction/03 Bitmaps/config.py}{1}{3}{python}{Load and blit bitmaps: config.py (1)}{src03Config01}
+
+In Python, it is common practice to move program settings, global variables, and similar configuration data into a file named \texttt{config.py}.
+
+\lstsource{SRC/00 Introduction/03 Bitmaps/invader01.py}{1}{999}{python}{Load and blit bitmaps, Version 1.0}{srcInvader01}
+
+In \srcref{srcInvader01}, two bitmaps -- in this case two \Gls{png} files -- are loaded and displayed on the screen.
+
+Loading is done using the function \texttt{pygame.image.load()}\myindex{pyg}{\texttt{image}!\texttt{load()}}\randnotiz{load()}. In \zeiref{srcInvader0101}f., the bitmaps -- also called \glspl{sprite} -- are loaded and converted into a \texttt{Surface} object. In \zeiref{srcInvader0102} the two bitmaps are then printed onto the \texttt{screen} surface without any further processing using \texttt{pygame.Sur\-face.\-blit()}\myindex{pyg}{\texttt{Surface}!\texttt{blit()}}\randnotiz{blit()}. The first parameter of \texttt{blit()} is the \texttt{Surface} object
+that is to be drawn, followed by the position. Here, the horizontal (x) coordinate is specified first, and then the vertical (y) coordinate. Unlike in school mathematics, the origin is not at the lower left, but at the upper left. You can \emph{admire} the result in \abbref[vref]{picInvader01}.
+
+\myebild{invader01.png}{0.8}{Load and blit bitmaps, Version 1.0}{picInvader01}
+
+We now want to adapt the bitmaps a bit to better suit our needs. First, the documentation recommends converting the bitmap into a format that is easier for Pygame to process after loading.
+In addition, I want to adjust the size ratios of the two bitmaps, because the enemy appears too large compared to the defender.
+
+\lstsource{SRC/00 Introduction/03 Bitmaps/invader02.py}{15}{19}{python}{Load and blit bitmaps, Version 1.1}{srcInvader02}
+
+\begin{wrapfigure}[8]{r}{4cm}%
+    \vspace{-1em}%
+	\myfigure{invader02.png}{0.8}{Sizes OK}{picInvader02}%
+\end{wrapfigure}%
+The function \texttt{pygame.Surface.load()} returned a \texttt{Surface} object. The \texttt{Surface} class now provides a method that performs the desired conversion: \texttt{pygame.Surface\-.convert()}\myindex{pyg}{\texttt{Surface}!\texttt{convert()}}\randnotiz{convert()}. As an example, please refer to \zeiref{srcInvader0201}.\label{pageTransparenz}
+ 
+Resizing is done using \texttt{pygame\-.trans\-form\-.scale()}\myindex{pyg}{\texttt{transform}!\texttt{scale()}|underline}\randnotiz{scale()}. In \zeiref{srcInvader0202}, the image is scaled to the specified $(width, height)$ in the unit of pixels. The result shown in \abbref{picInvader02} does not quite meet my
+expectations.
+
+I do like the size ratios now, but why does a black background suddenly appear? The reason is that the conversion using \texttt{convert()} caused the transparency information\index{Transparency|underline} to be lost. Transparency controls how \emph{see-through} a pixel is. This is achieved by storing not only the three RGB values for each
+pixel, but also an opacity value. This additional piece of information is called the
+\emph{alpha channel}\index{Alpha channel}\randnotiz{Alpha channel}.
+
+I now have two options to make this transparency available again:
+\begin{itemize}
+	\item \texttt{pygame.Surface.convert\_alpha()}\myindex{pyg}{\texttt{Surface}!\texttt{convert\_alpha()}}\randnotiz{convert\_alpha()}: Put very simply, the alpha channel is preserved during the
+	conversion.	If possible, this should be your method of choice.
+	
+	\item \texttt{pygame.Surface.set\_colorkey()}\myindex{pyg}{\texttt{Surface}!\texttt{set\_colorkey()}}\randnotiz{set\_colorkey()}: Here, you pass the color that Pygame should skip when drawing onto the target surface. This can lead to two disadvantages. First, transparency levels between fully visible and fully invisible cannot be represented. It would therefore not be possible to make a pixel \emph{semi-transparent}. Second, parts of the figure that have the same color as the background will also appear transparent. If our alien had a black eye in the middle, it would disappear and the alien would have a hole in the center.
+\end{itemize}
+
+
+\lstsource{SRC/00 Introduction/03 Bitmaps/invader03.py}{15}{20}{python}{Load and blit bitmaps, Version 1.2}{srcInvader03}
+
+
+\begin{wrapfigure}[6]{r}{4cm}
+    \vspace{-1.5em}
+	\myfigure{invader03.png}{0.8}{$\alpha$ OK}{picInvader03}
+\end{wrapfigure}In \srcref[vref]{srcInvader03}, I tried out both variants, and you can see the result in \abbref[vref]{picInvader03}. Now both bitmaps are visible without a black background; the white background shows through again.
+
+What I still do not like is the position and the number of attackers. I want to place the defender centered at the bottom and the attackers along the top edge of the screen, arranged so that they are horizontally \gls{aequidistant}\index{equidistant}\randnotiz{equidistant}. There are two ways to do this: I can specify a minimum spacing and compute the number of attackers, or I can specify the maximum number of attackers and compute the spacing. Which approach I choose depends on my game logic; in most cases, the number is fixed in advance.
+
+\lstsource{SRC/00 Introduction/03 Bitmaps/config.py}{1}{4}{python}{Load and blit bitmaps: config.py (2)}{src03Config02}
+
+\lstsource{SRC/00 Introduction/03 Bitmaps/invader04.py}{15}{42}{python}{Bitmap: positioning, Version 1.4}{srcInvader04}
+
+In \srcref[vref]{srcInvader04}, the requirements above have been implemented. Let us take a closer look at the individual aspects. 
+
+The defender should be positioned centered at the bottom. We remember that the function \texttt{blit()} also expects the coordinates of the upper-left corner. So this position has to be calculated first. For the sake of clarity -- in a normal source code I would not write the calculation in such a fine-grained way -- I calculate the coordinates separately here.
+
+The top edge is fairly easy to determine. If we set \texttt{defender\_top} to the full height of the screen, \texttt{cfg.WINDOWS\_HEIGHT}, we would not see the defender because it would stick out below the screen completely. So by how many pixels do we need to move the top edge upward? Exactly by the height of the spaceship, \SI{30}{px}:
+
+
+\lstset{firstnumber=18}
+\begin{lstlisting}
+	defender_pos_top = cfg.WINDOWS_HEIGHT - 30
+\end{lstlisting}
+
+However, I do not like how the defender looks glued to the edge this way. So I give it an additional \SI{5}{px} of space, making it look more as if it were floating in space:
+
+\lstset{firstnumber=18}
+\begin{lstlisting}
+	defender_pos_top = cfg.WINDOWS_HEIGHT - 30 - 5
+\end{lstlisting}
+
+In \zeiref{srcInvader0401}, the distance of the left edge of the bitmap from the edge of the playfield is calculated. Using
+
+
+\lstset{firstnumber=17}
+\begin{lstlisting}
+	defender_pos_left = cfg.WINDOWS_WIDTH // 2
+\end{lstlisting}
+
+we would calculate the horizontal center of the screen. However, we cannot use this value, because it would place the left edge of the defender at the horizontal center -- that is, too far to the right (see \abbref[vref]{picInvader04a}).
+
+\myebild{invader04a.png}{0.7}{Bitmaps positioning defender}{picInvader04a}
+
+However, we can determine exactly how many pixels we have shifted too far to the right and then subtract this value: it is exactly half of the width of the defender (here \SI{30}{px}):
+
+\begin{lstlisting}{firstnumber=17}
+	defender_pos_left = cfg.WINDOWS_WIDTH // 2 - 30 // 2
+\end{lstlisting}
+
+With the help of a little fraction arithmetic, the expression can be simplified:
+
+\begin{lstlisting}{firstnumber=17}
+	defender_pos_left = (cfg.WINDOWS_WIDTH - 30) // 2
+\end{lstlisting}
+
+Now we move on to the aliens. In the first approach, we want to display them one after another at the top without any overlap. The top edge \texttt{alien\_top} can be set to a constant value with a pleasant distance of \SI{10}{px} from the upper edge:
+
+\lstset{firstnumber=35}
+\begin{lstlisting}
+	alien_top = 10 
+\end{lstlisting}
+
+The left position \texttt{alien\_left} has to be determined individually for each alien. Since they are placed directly next to each other at first, the left edge of one alien is exactly one alien width away from the left edge of the next one. So if I am at the $0$th alien, its horizontal coordinate is directly at the left edge of the screen. For the $1$st alien it is exactly $1 \times \SI{50}{px}$, for the $2$nd exactly $2 \times \SI{50}{px}$, and so on, since the alien is
+\SI{50}{px} wide. Written as a \forSchleife, it looks like this:
+
+\lstset{firstnumber=36}
+\begin{lstlisting}
+	for i in range(cfg.ALIENS_NOF):
+	   alien_left = i * 50
+	   alien_pos = (alien_left, alien_top)
+	   screen.blit(alien_image, alien_pos)
+\end{lstlisting}
+
+
+\myebild{invader04b.png}{0.8}{Bitmaps positioning alien, Version 1}{picInvader04b}
+
+The entire remaining space after the last alien can now be distributed before, between, and after the aliens in such a way that the spacing is the same between the aliens, between the leftmost alien and the left edge of the screen, and between the rightmost alien and the right edge of the screen. So how many gaps are there? First of all, the two outer gaps on the far left and far right -- that makes~2:
+
+\lstset{firstnumber=25}
+\begin{lstlisting}
+	space_nof = 2  
+\end{lstlisting}
+
+Then there are the gaps between the aliens. This is always one less than the number of aliens (count it to check!):
+
+\lstset{firstnumber=25}
+\begin{lstlisting}
+	space_nof = cfg.ALIENS_NOF - 1 + 2
+\end{lstlisting}
+
+thus:
+
+\lstset{firstnumber=25}
+\begin{lstlisting}
+	space_nof = cfg.ALIENS_NOF + 1     
+\end{lstlisting}
+
+Now the available space \texttt{space\_available} behind the aliens still has to be calculated.
+I do this by first calculating the space occupied by the aliens, \texttt{space\_\-for\_\-aliens}
+
+\lstset{firstnumber=28}
+\begin{lstlisting}
+	space_for_aliens = cfg.ALIENS_NOF * 50     
+\end{lstlisting}
+
+and subtract this value from the screen width.
+
+\lstset{firstnumber=24}
+\begin{lstlisting}
+	space_availible = cfg.WINDOWS_WIDTH - space_for_aliens
+\end{lstlisting}
+
+So I now have the available space stored in \texttt{space\_available} and the number of gaps that need to be filled stored in \texttt{space\_nof}. If I now want to determine the width of the gaps,
+\texttt{space\_between\_\-aliens}, I simply have to divide these two values:
+
+\lstset{firstnumber=26}
+\begin{lstlisting}
+	space_between_aliens = space_availible // space_nof
+\end{lstlisting}
+
+Now we only need to adjust the calculation of \texttt{alien\_left}. First, we shift the starting position by one such gap (see \abbref[vref]{picInvader04c}):
+
+\lstset{firstnumber=36}
+\begin{lstlisting}
+	for i in range(cfg.ALIENS_NOF):
+	   alien_left = space_between_aliens + i * 50
+	   alien_pos = (alien_left, alien_top)
+	   screen.blit(alien_image, alien_pos)
+\end{lstlisting}
+
+\myebild{invader04c.png}{0.8}{Bitmaps positioning alien, Version 2}{picInvader04c}
+
+Now the distance from one left edge to the next, which previously consisted only of the width of the alien, must be extended by the spacing \texttt{space\_between\_aliens}:
+
+\lstset{firstnumber=36}
+\begin{lstlisting}
+	for i in range(cfg.ALIENS_NOF):
+	   alien_left = (i + 1) * space_between_aliens + i * 50
+	   alien_pos = (alien_left, alien_top)
+	   screen.blit(alien_image, alien_pos)
+\end{lstlisting} 
+
+And just like that, everything fits (see \abbref[vref]{picInvader04d}).
+
+
+\myebild{invader04d.png}{0.8}{Bitmaps positioning alien, Version 3}{picInvader04d}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{More Input}
+
+
+\subsubsection{Blitting Parts of a Bitmap}
+
+Very often, only parts of a bitmap need to be blitted. For this purpose, the function \texttt{Surface.blit()}\myindex{pyg}{\texttt{Surface}!\texttt{blit()!\texttt{area}}} provides the parameter \texttt{area}\randnotiz{area}.
+
+\begin{wrapfigure}[16]{l}{7cm}
+	\vspace{-1.0em}
+	\myfigure{part\_of\_a\_bitmap.png}{0.5}{Tiles to build a forest}{picPartofabitmap00}
+\end{wrapfigure}As an example, I use a bitmap that consists of tiles of size $\SI{32}{px}\times\SI{32}{px}$. From these tiles, I could build a forest and lake landscape for a game. The logic of this small application is that, using the arrow keys, I jump \SI{32}{px} to the right, left, up, or down, and in this way move from tile to tile. The tile currently selected is marked with a red rectangle (\zeiref{srcBlitofparts02}) and drawn as a sub-image into the lower right corner of the window -- in this example, a tent or a small hut.
+
+Using \texttt{clamp()}\myindex{pyg}{\texttt{math}!\texttt{clamp()}}\randnotiz{clamp()} I make sure that I cannot wander outside the image.
+
+ In \zeiref{srcBlitofparts01}, this approach is applied as shown in \abbref[vref]{picPartofabitmap00}. The first parameter of \texttt{blit()} is the bitmap — here referenced as \texttt{image} -- that is to be drawn. The second parameter \texttt{(512-32, 512-32)} specifies the position within the window where the image should be drawn. How do we arrive at these values? The entire image has a width of \SI{512}{px} and a height of \SI{512}{px}. Each tile has a size of $\SI{32}{px}\times\SI{32}{px}$, and therefore the upper-left corner of the tile must be positioned \SI{32}{px} away from the edges. The third parameter -- the \texttt{area} -- is a 4-tuple. Its values represent \emph{left}, \emph{top}, \emph{width}, and \emph{height}. The variables \verb+x+ and \verb+y+ are determined by movement using the arrow keys, which is a preview of later sections of this book. The width and height of the tiles are fixed at \SI{32}{px}.
+
+\lstsource{SRC/00 Introduction/03 Bitmaps/blitofparts.py}{1}{99}{python}{Blit a part of a bitmap}{blitofparts01}
+
+
+\subsubsection{Message Box}\index{Messagebox}
+
+A message box is a simple way to communicate an \Gls{information}, a \Gls{warning}, or an \Gls{error} to the player. Its appearance can only be customized to a very limited extent and it usually does not fit into the visual design concept of a game. For this reason, message boxes are almost never used for in-game interactions. However, they are well suited for use during installation or configuration, or when real errors occur that require quick and clear interaction.
+
+
+\begin{wrapfigure}[14]{l}{5cm}
+	%\vspace{-1.0em}
+\renewcommand{\figurename}{Fig.}%
+	\begin{tikzpicture}%
+		\node (info) at (0, 4.0) {\fbox{\includegraphics[scale=0.5]{message_info.png}}};
+		\node (warn) at (0, 2.0) {\fbox{\includegraphics[scale=0.5]{message_warning.png}}};
+		\node (error) at (0, 0.0) {\fbox{\includegraphics[scale=0.5]{message_error.png}}};
+	\end{tikzpicture}%
+	\caption{Messageboxes}\label{picMessages}%
+\renewcommand{\figurename}{Figure}%
+\end{wrapfigure}Here, I have only shown the crucial part of the program in \srcref[vref]{messageboxes01}; the rest is not important. The call is made using \texttt{pygame.display.message\_box()}\myindex{pyg}{\texttt{display}!\texttt{message\_box()}|underline}\randnotiz{message\-\_box()}.
+
+In \zeiref{srcMessageboxes01}, an information message is displayed. The first parameter is the text of the window’s title bar. The second parameter is the message text, which can also be much longer and formatted. After that, the type of the message box is specified. There are three -- self-explanatory -- types available: \texttt{info}, \texttt{warn}, and \texttt{error}. This setting determines the icon that is shown (see \abbref[vref]{picMessages}). The call for an error message works in exactly the same way, as shown in \zeiref{srcMessageboxes03}.
+
+A bit more is demonstrated with the warning call starting at \zeiref{srcMessageboxes02}. First of all, you can see that the named parameter \texttt{buttons} \randnotiz{Button}\index{Button} is passed. It contains a list of strings. Each string is the label text of one displayed button (see \abbref[vref]{picMessages}). So how do we find out which button was pressed? By using the return value. Internally, the list of button labels is numbered, and each button is assigned an index\randnotiz{Index}\index{Index (Button)}. The index value of the pressed button is then returned and -- as in this example with \texttt{a} -- stored in a variable. Which button has which index, and how to proceed afterwards, is something you need to keep in mind. In this example, the value is simply printed to demonstrate the effect.
+
+\lstsource{SRC/00 Introduction/03 Bitmaps/messageboxes.py}{19}{32}{python}{Types of Messageboxes}{messageboxes01}
+
+
+\subsubsection{Creating Bitmaps}\label{secCreateBitmaps}
+
+Bitmaps do not necessarily have to be loaded from disk using \texttt{pygame.image.load()}. It is also possible to create a bitmap at runtime using \texttt{pygame.Surface()}\myindex{pyg}{\texttt{Surface()}|underline}\randnotiz{Surface()}. Let us take another look at \secref[vref]{secLandscape}. In that section, an animated landscape was created using drawing primitives. These primitives are drawn in every frame -- for example 60 times per second. In the end, this is an enormous waste of computing time.
+
+A much more efficient approach is to draw the graphics once onto a \texttt{Surface} object and then only blit this bitmap to the correct position. Blitting \texttt{Surface} objects is much faster than drawing the shapes again and again.
+
+Let us look at this starting with the \texttt{Meadow} class. In the constructor, a \texttt{Surface} object is created in \zeiref{srcLandscapeBit00}. For that, we need a width and a height. Both values are computed beforehand and stored in the local variable \texttt{widthheight}; this does not need to be a class attribute anymore, because the information is only required to create the bitmap and is not needed later. After that, the surface is filled completely with a green color. Now we have a finished meadow graphic, and in \texttt{draw()} it only needs to be blitted.
+
+\lstsource{SRC/00 Introduction/03 Bitmaps/landscape.py}{6}{16}{python}{Creating Bitmaps: Class \texttt{Meadow}}{landscapebitmaps01}
+
+The \texttt{Sky} class follows a similar approach. In the constructor, a \texttt{Surface} object is created and filled with a shade of blue, and in \texttt{draw()} the bitmap is simply blitted. Only \texttt{update()} remains computationally more expensive, since the color of the sky changes depending on the position of the sun.
+
+\lstsource{SRC/00 Introduction/03 Bitmaps/landscape.py}{18}{34}{python}{Creating Bitmaps: Class \texttt{Sky}}{landscapebitmaps02}
+
+The \texttt{Tree} class is more similar to \texttt{Meadow}. In \zeiref{srcLandscapeBit01}, the bitmap is created and its contents are drawn using drawing primitives. However, the \texttt{Surface} object is created with the additional parameter \texttt{pygame.SRCALPHA}\myindex{pyg}{\texttt{SRCALPHA}|underline}\randnotiz{SRCALPHA}. This parameter ensures that the unpainted background of the \texttt{Surface} object remains transparent. Otherwise, a black background with the size of the \texttt{Surface} object would appear around the tree; with transparency enabled, the sky, sun, and meadow can be seen through it.
+
+\lstsource{SRC/00 Introduction/03 Bitmaps/landscape.py}{36}{46}{python}{Creating Bitmaps: Class \texttt{Tree}}{landscapebitmaps03}
+
+The same approach is used in the \texttt{House} class in \zeiref{srcLandscapeBit03}.
+
+
+\lstsource{SRC/00 Introduction/03 Bitmaps/landscape.py}{49}{64}{python}{Creating Bitmaps: Class \texttt{House}}{landscapebitmaps04}
+
+And, for the sake of completeness, the \texttt{Sun} class as well.
+
+\lstsource{SRC/00 Introduction/03 Bitmaps/landscape.py}{67}{85}{python}{Creating Bitmaps: Class \texttt{Sun}}{landscapebitmaps05}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{What was new?}
+
+The position values are needed when drawing on the screen. Later, we will see that we also need these position values for other questions, such as \Gls{kollisionserkennung}. The position always refers to the upper-left corner of the bitmap, or in other words: \emph{The coordinate system has its origin in the upper	left, not in the lower left.}
+
+We often have to perform basic geometry calculations, and it is best to do them step by step.
+For such geometry calculations, the following information is needed: the position of the bitmap, its width, and its height. So far, we have treated width and height as constants, but that is not a good long-term solution.
+
+The following Pygame elements were introduced:
+
+\begin{itemize}
+	\item \texttt{pygame.display.Info()}	
+	\myindex{pyg}{\texttt{display}!\texttt{Info()}}:\\	\url{https://pyga.me/docs/ref/display.html#pygame.display.Info}
+	
+	\item \texttt{pygame.display.message\_box()}    \myindex{pyg}{\texttt{display}!\texttt{message\_box()}}:\\    \url{https://pyga.me/docs/ref/display.html#pygame.display.message_box}
+
+	\item \texttt{pygame.image}
+	\myindex{pyg}{\texttt{image}}:\\
+	\url{https://pyga.me/docs/ref/image.html}
+
+	\item \texttt{pygame.image.load()}
+	\myindex{pyg}{\texttt{image}!\texttt{load()}}:\\
+	\url{https://pyga.me/docs/ref/image.html#pygame.image.load}
+	
+	\item \texttt{pygame.Surface()}:
+	\myindex{pyg}{\texttt{Surface()}}\\
+	\url{https://pyga.me/docs/ref/surface.html}
+	
+	\item \texttt{pygame.Surface.blit()}:
+	\myindex{pyg}{\texttt{Surface}!\texttt{blit()}}\\
+	\url{https://pyga.me/docs/ref/surface.html#pygame.Surface.blit}
+
+	\item \texttt{pygame.Surface.convert()}:
+	\myindex{pyg}{\texttt{Surface}!\texttt{convert()}}\\
+	\url{https://pyga.me/docs/ref/surface.html#pygame.Surface.convert}
+	
+	\item \texttt{pygame.Surface.convert\_alpha()}:
+	\myindex{pyg}{\texttt{Surface}!\texttt{convert\_alpha()}}\\
+	\url{https://pyga.me/docs/ref/surface.html#pygame.Surface.convert\_alpha}
+	
+	\item \texttt{pygame.Surface.set\_colorkey()}:
+	\myindex{pyg}{\texttt{Surface}!\texttt{set\_colorkey()}}\\
+	\url{https://pyga.me/docs/ref/surface.html#pygame.Surface.set\_colorkey}
+	
+	\item \texttt{pygame.SRCALPHA}:
+	\myindex{pyg}{\texttt{SRCALPHA}}\\
+	\url{https://pyga.me/docs/ref/surface.html}
+
+	\item \texttt{pygame.transform.scale()}:
+	\myindex{pyg}{\texttt{transform}!\texttt{scale()}}\\
+	\url{https://pyga.me/docs/ref/transform.html#pygame.transform.scale}
+	
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Homework}
+
+\begin{enumerate}
+	\item Look for freely available sources of game graphics (sprites). If you know that you want to work with this more intensively, also look for sources that are behind a paywall.
+
+	\item Blit your own graphics to sensible positions within your window. 
+	
+	\item Try to build a realistic background for a simple game using graphics. If needed, make use of the option to blit sub-images from a larger bitmap.
+\end{enumerate}

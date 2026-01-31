@@ -1,0 +1,394 @@
+% !TeX spellcheck = en_US
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Events}\label{secEvents}\index{Event}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Introduction}
+We have already used events (\gls{event}) in two places without examining them in more detail.  On the one hand, this happened when we talked about the keyboard in \kapref[vref]{secTastatur}, and on the other hand when we discussed the mouse in \kapref[vref]{secMaus}. 
+
+Here, we will take a closer look at three aspects: 
+
+\begin{itemize}
+	\item What information is actually contained in an event?
+	\item How can I create an event myself?
+	\item How can events be generated periodically?
+\end{itemize}
+
+
+\subsubsection{What Information is Contained in an Event?}
+
+The program shown in \srcref[vref]{srcEvent00a} simply creates a gray window and prints the event to the console using \texttt{print()} in \zeiref{srcEvents0001}.
+
+\lstsource{SRC/00 Introduction/12 Events/event00/events.py}{29}{36}{python}{Events -- outputting information}{srcEvent00a} 
+
+If you now move the mouse back and forth, press a few keys, or close the application, something like the following will appear in the console. Many redundant lines have been removed here:
+
+\lstsource{console00.txt}{1}{999}{python}{Events -- console output}{srcConsole00a} 
+
+At first, it becomes apparent that the event information is provided in the form of a dictionary. The first entry (the number with a hyphen followed by a name) can be accessed via \texttt{event.type}\myindex{pyg}{\texttt{Event}!\texttt{type}}. So that you do not have to memorize these numbers, Pygame provides corresponding constants; an overview for the keyboard can be found in \tabref[vref]{tabKey}, and for the mouse in \tabref[vref]{tabMousebutton}.
+
+The key/value pairs inside the curly braces contain the information associated with the event.  For keyboard events, this includes, for example, the representation as a Unicode character or its Unicode number. Mouse events are sensibly provided with the position and the button number. Clicking the \emph{window close} button in the upper right corner triggers several events; the last four of the list are shown here.
+
+We will soon see that, for user-defined events, this information can be defined according to our own requirements.
+
+
+\subsubsection{How can I Create and Use User-defined Events?}
+
+As an example, I will use two simple buttons here, each of which should generate an event when the left mouse button is clicked. Inside the screen, \texttt{NOFSTARTPARTICLES} many particles move around. Using the \texttt{Stop} and \texttt{Start} buttons, the particles can be stopped and started again.
+
+\myebild{event01.png}{0.7}{User-defined events}{picEvent01}
+
+As an additional feature, a kind of counter is implemented. The boxes in the center absorb the particles and count them. The logic works as follows: Each time a particle hits a box, a counting event is triggered. In this process, a~1 is always added to the box on the far right.
+
+When the rightmost box reaches the value~10, it generates an overflow to the next digit to its left and resets itself to~0. This process continues from right to left. In this way, the boxes display the total number of particles that have already been absorbed.
+
+Now let us look at the whole setup in detail. In the console output above (see page~\pageref{srcConsole00a}), a unique number can be seen for each event, which can be used to identify the event. Pygame reserves a range of numbers for user-defined events between the constants \texttt{pygame.USEREVENT}\randnotiz{USEREVENT}\myindex{pyg}{\texttt{USEREVENT}|underline} and \texttt{pygame.NUMEVENTS~-~1}\randnotiz{NUM\-EVENTS}\myindex{pyg}{\texttt{NUMEVENTS}|underline}. For each user-defined event, such a unique number must be assigned. The simplest approach is to define these centrally using \texttt{USEREVENT~+~}$n$. You can find corresponding examples in \zeiref{srcEvent0101} and \zeiref{srcEvent0102}.  
+
+I encapsulate these definitions in a static class for no other reason than that it allows me to make good use of the editor’s auto-completion (\zeiref{srcEvent0100}). 
+
+\lstsource{SRC/00 Introduction/12 Events/event01/config.py}{1}{99}{python}{Events (2) -- \texttt{config.py}}{srcEvent01a}
+
+The \texttt{Button} class should also be understandable for the most part. The first interesting section can be found in \zeiref{srcEvent0103}. Here, a new \texttt{pygame.event.Event}\randnotiz{Event} object\myindex{pyg}{\texttt{event}!\texttt{Event}|underline} is created. As the first parameter, the previously mentioned ID must be specified. After that, any number of additional pieces of information can be passed as event data. In our example, the button text is included so that it can later be determined which button was pressed.
+
+Afterwards, in \zeiref{srcEvent0104}, the event is dispatched using \texttt{pygame.event.post()}\randnotiz{post()}\myindex{pyg}{\texttt{event}!\texttt{post()}|underline}.
+
+\lstsource{SRC/00 Introduction/12 Events/event01/events.py}{17}{32}{python}{Events (2) -- Class \texttt{Button}}{srcEvent01b}
+
+The \texttt{Particle} class consists of a lot of source code with little that is new. Particles of random size, color, direction, and speed move across the screen and may bounce off the edges. They do not contain any event-specific functionality. The attribute \texttt{halted} is used to stop the particle or let it move again after the buttons have been pressed.
+
+\lstsource{SRC/00 Introduction/12 Events/event01/events.py}{35}{66}{python}{Events (2) -- Class \texttt{Particle}}{srcEvent01c}
+
+With \texttt{Box}, a kind of digit box is implemented. The constructor receives a position and an index as parameters. The meaning of the parameter \texttt{position} should be clear. Using \texttt{index}, it can later be determined which box caused an overflow to the next higher power of ten.
+
+In \texttt{update()}, the internal counter \texttt{count} is increased by~1 each time. If the value~10 is reached (\zeiref{srcEvent0105}), an event is generated and the index is passed as event data. This allows the main program to determine which box now needs to receive an \texttt{update()} call.
+
+\lstsource{SRC/00 Introduction/12 Events/event01/events.py}{69}{94}{python}{Events (2) -- Klasse \texttt{Box}}{srcEvent01d}
+
+And now the main program: In the constructor, the buttons, boxes, and particles are created and assigned to sprite groups.
+
+\lstsource{SRC/00 Introduction/12 Events/event01/events.py}{97}{113}{python}{Events (2) --  Constructor of \texttt{Game}}{srcEvent01e}
+
+The \texttt{run()} method is almost boring.
+
+\lstsource{SRC/00 Introduction/12 Events/event01/events.py}{115}{125}{python}{Events (2) --  \texttt{Game.run()}}{srcEvent01f}
+
+User-defined events are handled in exactly the same way as predefined ones. First, you check the \texttt{type}, and then you process the event data. In \zeiref{srcEvent0106}, it is checked whether one of the two buttons was pressed. Afterwards, the message is forwarded to the particles via the event field \texttt{text}, telling them whether they should stop or keep moving. The same idea is used starting at \zeiref{srcEvent0107}. First, it is checked whether a box has overflowed, and then the next box is informed---using the event field \texttt{index}---that it has to increase by~1.
+
+\lstsource{SRC/00 Introduction/12 Events/event01/events.py}{127}{141}{python}{Events (2) --  \texttt{Game.watch\_for\_events()}}{srcEvent01g}
+
+The rest is shown here for completeness.
+
+\lstsource{SRC/00 Introduction/12 Events/event01/events.py}{143}{169}{python}{Events (2) --  The Rest of \texttt{Game}}{srcEvent01h}
+
+Finally, I would like to briefly explain the whole mechanism of the counter again using \abbref[vref]{picCounter01}, in order to make it clearer how the event \texttt{MyEvent.OVERFLOW} works in this context.
+
+\begin{itemize}
+	\item $t_0$: First, a standard collision check determines that a particle has hit the rectangle of the rightmost field (see \abbref[vref]{picEvent01}, the box with the~6). As a result, the method \verb+update(counter="inc")+ is called.
+	
+	\item $t_1$: This causes the event \texttt{MyEvents.OVERFLOW} to be triggered in the \texttt{Box} class with the index value~0. This event is caught in \texttt{watch\_for\_event()} and forwarded to the appropriate box -- that is, the one with index \texttt{index+1} -- together with the instruction to also execute \verb+update(counter="inc")+ there.
+	
+	\item $t_2$: Since this box currently contains the value~9, \texttt{MyEvents.OVERFLOW} is triggered again in this box, but now with the next index value, namely~1. This event is again caught in \texttt{watch\_for\_event()} and forwarded to box~2 with \verb+update(counter="inc")+.
+	
+	\item $t_3$: The value of the leftmost box is currently~0 and is increased by~1 by the call to \verb+update(counter="inc")+. Since no overflow is generated in this case, the chain of events stops here.
+\end{itemize}
+
+
+\begin{figure}[H]
+	\begin{center}
+		\begin{tikzpicture}[font=\small,>=Latex]
+			
+			% Styles
+			\tikzset{
+				digit/.style={draw, rounded corners=2pt, minimum width=1.2cm, minimum height=1.0cm, align=center},
+				label/.style={font=\scriptsize, text=black!70},
+				arrow/.style={->, thick}
+			}
+			
+			\node[label] at (1.0,0.9) {$10^2$};
+			\node[label] at (2.8,0.9) {$10^1$};
+			\node[label] at (4.6,0.9) {$10^0$};
+			
+			
+			% --- t0 ---
+			\node[label] at      (0.0,0) {$t_0$};
+			\node[digit] (h1) at (1.0,0) {0};
+			\node[digit] (z1) at (2.8,0) {9};
+			\node[digit] (e1) at (4.6,0) {(9+1)};
+			
+			% --- Pfeil ---
+			\draw[arrow] (10.0,0) -- (5.5,0) node[midway, above] {\texttt{update(counter="inc")}};
+			
+			% --- t1 ---
+			\node[label] at      (0.0,-1.5) {$t_1$};
+			\node[digit] (h2) at (1.0,-1.5) {0};
+			\node[digit] (z2) at (2.8,-1.5) {(9+1)};
+			\node[digit] (e2) at (4.6,-1.5) {0};
+			
+			% --- t2 ---
+			\node[label] at      (0.0,-3.0) {$t_2$};
+			\node[digit] (h3) at (1.0,-3.0) {(0+1)};
+			\node[digit] (z3) at (2.8,-3.0) {0};
+			\node[digit] (e3) at (4.6,-3.0) {0};
+			
+			% --- t3 ---
+			\node[label] at      (0.0,-4.5) {$t_3$};
+			\node[digit] (h4) at (1.0,-4.5) {1};
+			\node[digit] (z4) at (2.8,-4.5) {0};
+			\node[digit] (e4) at (4.6,-4.5) {0};
+			
+			% --- Übertrags-Pfeile ---
+			\draw[arrow, bend right=30] (e2.north) to node[above, label] {OVERFLOW} (z2.north);
+			\draw[arrow, bend right=30] (z3.north) to node[above, label] {OVERFLOW} (h3.north);
+		\end{tikzpicture}
+		\caption{How the counter works}\label{picCounter01}
+	\end{center}
+\end{figure}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{More Input}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{How can periodic events be generated?}\label{eventtime}
+
+This is actually quite simple. The previous example is extended so that new particles are created at intervals of $500~ms$.
+
+To achieve this, a new ID \texttt{NEWPARTICLES} is first defined for the user event.
+
+\lstsource{SRC/00 Introduction/12 Events/event02/config.py}{4}{99}{python}{Events (3) --  \texttt{config.py}}{srcEvent02a}
+
+In the constructor of \texttt{Game}, a periodic timer is set in \zeiref{srcEvent0201} using \texttt{pygame.time.set\_timer()}\randnotiz{set\_timer()}\myindex{pyg}{\texttt{time}!\texttt{set\_timer()}|underline}. This timer fires the corresponding event ID every~\SI{500}{ms}.
+
+\lstsource{SRC/00 Introduction/12 Events/event02/events.py}{122}{124}{python}{Events (3) -- \texttt{Timer} in the constructor of \texttt{Game}}{srcEvent02b}
+
+Like the other events, this one is caught in \texttt{watch\_for\_event()} (\zeiref{srcEvent0202}) and processed. In this case, this is done by calling the method \texttt{generate\_particles()}.
+
+\lstsource{SRC/00 Introduction/12 Events/event02/events.py}{153}{154}{python}{Events (3) -- Catching a periodical event}{srcEvent02c}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Structuring the Event Loop Correctly}
+
+Best practice:
+\begin{enumerate}
+	\item In each frame, the event loop should follow a clear and consistent structure:
+	\item Retrieve all events from the event queue
+	\item Process the events
+	\item Update the game state
+	\item Render the scene
+\end{enumerate}
+
+\lstset{firstnumber=1}
+\begin{lstlisting}
+...
+	for event in pygame.event.get():
+		if event.type == pygame.QUIT:
+			running = False
+	handle_event(event)
+...
+	update()
+	draw()
+\end{lstlisting}
+
+Failing to regularly process events can cause the application window to become unresponsive.
+
+Common mistake: Forgetting to call \texttt{pygame.event.get()} or processing events only sporadically.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Choosing the Right Event Retrieval Method}
+
+Pygame provides different ways to access events:
+\begin{itemize}
+	\item \texttt{pygame.event.get()}\myindex{pyg}{\texttt{event}!\texttt{get()}} retrieves all pending events (standard choice for games)
+	\item \texttt{pygame.event.poll()}\myindex{pyg}{\texttt{event}!\texttt{poll()}} retrieves a single event
+	\item \texttt{pygame.event.wait()}\myindex{pyg}{\texttt{event}!\texttt{wait()}} blocks until an event occurs
+\end{itemize}
+
+Best practice: Use \texttt{event.get()} in real-time applications and games.
+
+Common mistake: Using \texttt{event.wait()} in the main loop, which can block rendering and updates.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Avoid Generating Events Every Frame}
+
+Events should represent state changes, not continuous states.
+
+Common mistake: Posting custom events or playing sounds inside the \texttt{update()} method every frame, which can flood the event queue and cause performance issues.
+
+Best practice: Generate events only when a condition changes (edge-triggered behavior).
+
+\lstset{firstnumber=1}
+\begin{lstlisting}
+	if not was_pressed and is_pressed:
+		pygame.event.post(pygame.event.Event(MyEvents.FIRE))
+		was_pressed = is_pressed
+\end{lstlisting}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Defining Event Data Clearly and Consistently}
+
+When creating custom events, meaningful and consistent event data should be attached.
+
+\lstset{firstnumber=1}
+\begin{lstlisting}
+	pygame.event.post(pygame.event.Event(MyEvents.BUTTON, {"action": "start"}))
+\end{lstlisting}
+
+Best practice: Use clear, descriptive keys (e.g. action, index, pos) and stick to a consistent naming scheme (snake\_case).
+
+Common mistake: Using inconsistent field names across different events, making event handling error-prone.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Managing User-Defined Event IDs}
+
+Pygame reserves a specific range for user-defined events.
+
+Best practice: Define all custom event IDs centrally, for example in a configuration file.
+
+\lstset{firstnumber=1}
+\begin{lstlisting}
+BUTTON_EVENT   = pygame.USEREVENT + 1
+OVERFLOW_EVENT = pygame.USEREVENT + 2
+NEWPARTICLES   = pygame.USEREVENT + 3
+\end{lstlisting}
+
+Common mistake: Defining event IDs in multiple files, which can lead to accidental ID collisions.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Use \texttt{set\_timer()} Correctly!}
+
+Best practices: Set timers only once (e.g. in the constructor) and disable timers when they are no longer needed\myindex{pyg}{\texttt{time}!\texttt{set\_timer()}}:
+
+\lstset{firstnumber=1}
+\begin{lstlisting}
+	pygame.time.set_timer(NEWPARTICLES, 0)
+\end{lstlisting}
+
+Common mistakes: Setting the same timer multiple times and forgetting to disable timers when restarting a game or switching scenes.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Filtering Events for Performance}
+
+In event-heavy applications, it may be useful to restrict which events are allowed.
+
+\lstset{firstnumber=1}
+\begin{lstlisting}
+    pygame.event.set_allowed([pygame.QUIT, 
+                              pygame.KEYDOWN, 
+                              pygame.MOUSEBUTTONDOWN, 
+                              NEWPARTICLES])
+\end{lstlisting} 
+Best practice: Use event filtering sparingly and only when necessary.
+
+Common mistake: Blocking too many events and accidentally preventing essential input from being processed.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Event-Based Input vs. State-Based Input}
+
+There are two complementary approaches to input handling:
+\begin{enumerate}
+	\item Event-based input: Reacts to discrete events (\texttt{KEYDOWN}, \texttt{KEYUP}) and is ideal for actions like shooting, opening menus, or triggering sounds.
+	
+	\item State-based input: Uses continuous state queries (\texttt{key.get\_pressed()}) and can be used for movement and continuous control.
+\end{enumerate}
+
+Best practice: Combine both approaches appropriately.
+
+Common mistake: Using only \texttt{KEYDOWN} for movement, causing objects to move only one step per key press.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Window Focus and Application State}
+
+Games should respond appropriately when the window loses focus or is minimized.
+
+Best practice: Pause the game or mute sound when focus is lost and always handle the QUIT event reliably.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Debugging Events Effectively}
+
+Printing events to the console is useful during development but should be done selectively.
+
+\lstset{firstnumber=1}
+\begin{lstlisting}
+	for event in pygame.event.get():
+		if event.type != pygame.MOUSEMOTION:
+			print(event)
+\end{lstlisting}			
+
+Common mistake: Logging every mouse movement event, which can overwhelm the console and reduce performance.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Structuring Event Handling Code}
+
+As projects grow, large if–elif blocks become hard to maintain.
+
+Best practice: Use handler functions or dispatch tables.
+
+\lstset{firstnumber=1}
+\begin{lstlisting}
+	handlers = {
+		pygame.KEYDOWN: handle_keydown,
+		pygame.MOUSEBUTTONDOWN: handle_mouse,
+		NEWPARTICLES: handle_newparticles,
+	}
+
+	for event in pygame.event.get():
+		handlers.get(event.type, handle_default)(event)
+\end{lstlisting}
+
+This approach improves readability and scalability.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{What was new?}
+
+The advantage of user-defined events becomes very clear here. If this were implemented in a different way, the objects would have to know about each other. For example, all boxes would have to know their predecessor or successor via references in order to report an overflow. While this can also be a valid approach, using events decouples the classes, and the main program can control and organize the forwarding of information via the event data.
+
+In particular, clicking on the buttons can be implemented very easily using events.
+
+The following Pygame elements have been introduced:
+
+\begin{itemize}
+	\item \texttt{USEREVENT}
+    \myindex{pyg}{\texttt{USEREVENT}}:\\
+    \url{https://pyga.me/docs/ref/event.html#pygame.event}
+
+    \item \texttt{NUMEVENTS}
+    \myindex{pyg}{\texttt{NUMEVENTS}}:\\
+    \url{https://pyga.me/docs/ref/event.html#pygame.event}
+
+	\item \texttt{pygame.event.Event}:
+	\myindex{pyg}{\texttt{event}!\texttt{Event}}\\
+	\url{https://pyga.me/docs/ref/event.html#pygame.event.Event}
+	
+	\item \texttt{pygame.event.get()}
+    \myindex{pyg}{\texttt{event}!\texttt{get()}}:\\
+    \url{https://pyga.me/docs/ref/event.html#pygame.event.get}
+
+	\item \texttt{pygame.event.poll()}
+	\myindex{pyg}{\texttt{event}!\texttt{poll()}}:\\
+	\url{https://pyga.me/docs/ref/event.html#pygame.event.poll}
+
+	\item \texttt{pygame.event.post()}:
+	\myindex{pyg}{\texttt{event}!\texttt{post()}}\\
+	\url{https://pyga.me/docs/ref/event.html#pygame.event.post}
+	
+	\item \texttt{pygame.event.wait()}:
+	\myindex{pyg}{\texttt{event}!\texttt{wait()}}\\
+	\url{https://pyga.me/docs/ref/event.html#pygame.event.wait}
+
+	\item \texttt{pygame.time.set\_allowed()}:
+	\myindex{pyg}{\texttt{time}!\texttt{set\_allowed()}}\\
+	\url{https://pyga.me/docs/ref/time.html#pygame.time.set_allowed}
+
+	\item \texttt{pygame.time.set\_timer()}:
+	\myindex{pyg}{\texttt{time}!\texttt{set\_timer()}}\\
+	\url{https://pyga.me/docs/ref/time.html#pygame.time.set_timer}
+
+	\item \texttt{pygame.WINDOWPOS\_CENTERED}:
+	\myindex{pyg}{\texttt{locals}!\texttt{WINDOWPOS\_CENTERED}}\\
+	\url{https://pyga.me/docs/ref/window.html#pygame.Window.position}
+\end{itemize}
+
+

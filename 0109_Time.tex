@@ -1,0 +1,270 @@
+% !TeX spellcheck = en_US
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Time-based Actions}\index{Time-based}\label{secZeitstuerung}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Introduction}
+In games, time-based actions are needed in many situations: a bomb drops every half second, a shield is active for 10~seconds, after 3~jumps the \emph{jump} ability is not available for 5~minutes, animation frames should be displayed every $1/30$~second, and so on.
+
+Let us first look at the screen output of \srcref[vref]{srcTime00a}ff. shown in \abbref[vref]{pictime00}. The fireballs are obviously released in very quick succession, so that they appear like a chain. Because the enemy is moving horizontally, this results in a slanted line -- which is clearly not the intended behaviour.
+
+\myebild{time00.png}{0.8}{Fireball using frame-based movement}{pictime00}
+
+Before we take a closer look at time control itself, let us briefly look at the program. The  \texttt{config.py} doesn't introduce anything new.
+
+
+\lstsource{SRC/00 Introduction/09 Time/v01/config.py}{1}{99}{python}{Time-based actions (1), \texttt{config.py}}{srcTime00a} 
+
+The \texttt{Enemy} class does not introduce anything particularly exciting either. With a spacing of \SI{10}{px}, the enemy continuously moves back and forth from left to right and vice versa.
+
+\lstsource{SRC/00 Introduction/09 Time/v01/time.py}{9}{24}{python}{Time-based actions (2), Version 1.0: \texttt{Enemy}}{srcTime00b} 
+
+The \texttt{Bullet} class is also largely a repetition of what we have seen before. What may be more interesting is \zeiref{srcTime0004}. The method \texttt{pygame.sprite.Sprite.kill()}\myindex{pyg}{\texttt{sprite}!\texttt{Sprite}!\texttt{kill()}|underline}\randnotiz{kill()} is not a true self-destruction mechanism. Instead, this method removes the \texttt{Sprite} object from all sprite groups. 
+
+If all references to the object are lost as a result, the object is of course destroyed. However, if a reference still exists somewhere, the object will remain alive. In practice, \texttt{Sprite} objects are usually managed in groups (that is, in \texttt{pygame.sprite.Group} objects) and are therefore effectively destroyed by calling \texttt{kill()}.  
+
+You can see this effect in \abbref[vref]{pictime00}: the fireball disappears about $30~px$ before reaching the bottom edge of the screen.
+
+\lstsource{SRC/00 Introduction/09 Time/v01/time.py}{27}{40}{python}{Time-based actions (3), Version 1.0: \texttt{Bullet}}{srcTime00c} 
+
+In the constructor of the \texttt{Game} class, a sprite group for the fireballs is created, as well as a \texttt{GroupSingle} object for the enemy.  In \texttt{run()}, the usual game loop tasks are carried out by calling the appropriate methods.  
+
+I would like to briefly draw attention to \zeiref{srcTime0005}ff. By calling \texttt{pygame.time.Clock.tick()}\myindex{pyg}{\texttt{time}!\texttt{Clock}!\texttt{tick()}}\randnotiz{tick()}, the game loop is timed -- in this case to $1/60$ of a second -- and the \emph{delta time}\randnotiz{delta time}\index{delta time} is calculated afterwards.
+
+\lstsource{SRC/00 Introduction/09 Time/v01/time.py}{43}{66}{python}{Time-based actions (4), Version 1.0: Constructor and \texttt{run()} of \texttt{Game}}{srcTime00d} 
+
+The methods \texttt{watch\_for\_events()} and \texttt{draw()} also do not contain anything special.
+
+\lstsource{SRC/00 Introduction/09 Time/v01/time.py}{68}{80}{python}{Time-based actions (5), Version 1.0:  \texttt{watch\_for\_events()} and \texttt{draw()} of \texttt{Game}}{srcTime00e} 
+
+The \texttt{update()} method is only worth mentioning with regard to \zeiref{srcTime0006}, because a new fireball is created (dropped) there by calling the \texttt{new\_bullet()} method. The starting position is derived from the current position of the enemy. The horizontal center of the fireball and the enemy should be the same, while the vertical center is shifted slightly downward, which looks better visually.
+
+\lstsource{SRC/00 Introduction/09 Time/v01/time.py}{82}{88}{python}{Time-based actions (6), Version 1.0:  \texttt{update()} and \texttt{new\_bullet()} of \texttt{Game}}{srcTime00f} 
+
+
+Back to the actual problem. As we saw above, the application is timed to $1/60$ of a second by \texttt{FPS} and the call to \texttt{tick()} in \zeiref{srcTime0005}. In other words, up to 60~fireballs per second are currently created, which is nonsense.
+
+A naive idea would be to reduce the frame rate. So, if I want to create a fireball only every half second, I would have to set the tick rate to~2. Try it! The result is disappointing: the entire game becomes slower. That is not the point.
+
+A next -- and actually quite good -- idea is to introduce a counter. The idea is: if the tick rate is $1/60$, I count up to~30 and only then drop a fireball.
+
+In the first step, two attributes are added to the \texttt{Game} class for this purpose (\zeiref{srcTime0101} and \zeiref{srcTime0102}).
+
+\lstsource{SRC/00 Introduction/09 Time/v02/time.py}{52}{55}{python}{Time-based actions (7), Version 1.1: Konstruktor von \texttt{Game}}{srcTime01a} 
+
+
+In the \texttt{new\_bullet()} method, these two values are now used to control the time interval between two drops. First, the counter is increased by~1 each time the method is called. Since the method is called once per iteration of the main program loop and each iteration is timed, this effectively counts the number of ticks.
+ 
+If the counter exceeds its upper limit (30 in our example), half a second has passed since the last drop, and a new fireball is released.
+
+Finally, the counter must be reset to~0, because we now have to wait for the next 30~ticks again. The result can be seen in \abbref[vref]{pictime01}: only two fireballs are visible now.
+
+\lstsource{SRC/00 Introduction/09 Time/v02/time.py}{89}{93}{python}{Time-based actions (8), Version 1.1: \texttt{new\_bullet()} of \texttt{Game}}{srcTime01b} 
+
+\myebild{time01.png}{0.8}{Fireball using counter-based movement}{pictime01}
+
+The advantages of this approach are clear: it is easy to implement, and the speed of the game itself is not affected.
+
+However, there is a decisive disadvantage: this approach only works if the tick rate does not change and always behaves as expected. In reality, this is not guaranteed. As we remember, calling \texttt{tick()} ensures that the loop is executed \emph{at most} 60~times per second. Under heavy load, it may run less often. In addition, many games determine the number of \emph{frames per second} dynamically in order to adapt to different hardware performance. Therefore, coupling time control to the tick rate is not a truly stable solution.
+
+A better approach is to couple time control to a real time source. The method \texttt{pygame\-.time\-.get\_ticks()}\myindex{pyg}{\texttt{time}!\texttt{get\_ticks()}}\randnotiz{get\_ticks()} is very helpful here. This method returns the amount of time since the start of the game in \gls{ms}, and this value is independent of the performance of the hardware or the program.
+
+Now the source code can be reworked. First, in \zeiref{srcTime0201}, the current number of~$ms$ since program start is measured, and in \zeiref{srcTime0202} it is defined how many~$ms$ a time interval should last. We want to drop a fireball every half second, so this value is~500.
+
+\lstsource{SRC/00 Introduction/09 Time/v03/time.py}{51}{55}{python}{Time-based actions (9), Version 1.2: Construktor of \texttt{Game}}{srcTime02a} 
+
+ After that, \texttt{new\_bullet()} checks whether the end of the interval has been reached. In \zeiref{srcTime0204}, the current time is measured again using \texttt{pygame.time.get\_ticks()}. If this value is greater than the previous interval start plus the interval duration -- which is the same as the interval end -- then \SI{500}{ms} have passed and a new fireball is dropped.  
+
+Now only the new interval start has to be determined, which is done in \zeiref{srcTime0205}.
+
+\lstsource{SRC/00 Introduction/09 Time/v03/time.py}{89}{92}{python}{Time-based actions (10), Version 1.2: \texttt{new\_bullet()} of \texttt{Game}}{srcTime02b} 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{More Input}
+
+Note: Time control using events is introduced in \secref[vref]{eventtime}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{The Class Timer}\label{secClassTimer}\index{time!class Timer}
+
+Since we need this logic multiple times, I encapsulated it in the \texttt{Timer}~class\randnotiz{Class Timer}\index{Timer|underline}. The core of this class again consists of two attributes, which store the interval duration (\texttt{duration}) and the end of the interval (\texttt{next}). Unlike before, the interval start is no longer stored; instead, the interval end is saved -- which slightly reduces the required computation.
+
+The optional parameter \texttt{with\_start} is particularly interesting. It allows us to control whether the code should wait until the first interval ends, or whether the very first call to \texttt{is\_next\_stop\_reached()} should already return \true.
+   
+What does this mean for our example? If \texttt{with\_start} is set to \true, the first fireball is dropped immediately in the very first loop iteration. If the value is \false, the first fireball is only dropped after \SI{500}{ms}.
+
+In \texttt{is\_next\_stop\_reached()}, it is checked whether the end of the interval has been reached, and, if necessary, a new interval end is calculated. The method returns \true\ if the interval end has been reached or exceeded; otherwise, it returns \false.
+
+\lstsource{SRC/00 Introduction/09 Time/v04/time.py}{9}{22}{python}{Time-based actions (11), Version 1.3: Class \texttt{Timer}}{srcTime03a} 
+
+How is this timer used now?  First, an appropriate object is created in the constructor (\zeiref{srcTime0301}); the two variables used previously are no longer needed.
+
+\lstsource{SRC/00 Introduction/09 Time/v04/time.py}{68}{70}{python}{Time-based actions (12), Version 1.3: creating a \texttt{Timer} object}{srcTime03b} 
+
+The \texttt{new\_bullet()} method has now become simpler, since it no longer has to take care of the internal timer logic. It only checks in \zeiref{srcTime0302} whether the interval end has been reached -- and that’s it!
+
+
+\lstsource{SRC/00 Introduction/09 Time/v04/time.py}{104}{106}{python}{Time-based actions (13), Version 1.3: Using a \texttt{Timer} object verwenden}{srcTime03c} 
+
+For the sake of comparability -- which may have been a bit confusing just now -- I have placed the four workflows side by side in \abbref[vref]{picTimeVergleich01}.
+
+\begin{figure}[H]
+	\begin{center}\begin{tikzpicture}[
+	font=\small,
+	>=latex,
+	line/.style={->, thick},
+	block/.style={rectangle, draw, rounded corners, align=center, minimum width=3.0cm, minimum height=8mm},
+	decision/.style={diamond, draw, aspect=2.2, align=center, inner sep=1pt, minimum width=3.0cm, minimum height=8mm},
+	title/.style={rectangle, draw, fill=gray!10, rounded corners, align=center, minimum width=5.2cm, minimum height=7mm},
+	note/.style={align=left, text width=5.0cm}
+	]
+	
+	% --- Helper: base loop blocks as nodes inside each panel ---
+	% Panel 1: time00 ---------------------------------------------------------
+	\begin{scope}[shift={(0,0)}, scale=0.7, transform shape]
+		\node[title] (t00) {time00: Spawn \textbf{every frame} (no timer)};
+		\node[block, below=6mm of t00] (t00_events) {Events (QUIT, ESC, input)};
+		\node[block, below=4mm of t00_events] (t00_update) {Update};
+		\node[block, below=4mm of t00_update] (t00_spawn) {Spawn bullet\\\textbf{always} in update()};
+		\node[block, below=4mm of t00_spawn] (t00_move) {Move sprites using $\Delta t$};
+		\node[block, below=4mm of t00_move] (t00_draw) {Draw + flip};
+		\node[block, below=4mm of t00_draw] (t00_tick) {clock.tick(FPS) + compute $\Delta t$};
+		\node[note, below=3mm of t00_tick] {\textit{Characteristic: FPS-dependent, very high bullet count}};
+		\draw[line] (t00_events) -- (t00_update);
+		\draw[line] (t00_update) -- (t00_spawn);
+		\draw[line] (t00_spawn) -- (t00_move);
+		\draw[line] (t00_move) -- (t00_draw);
+		\draw[line] (t00_draw) -- (t00_tick);
+		\draw[line] (t00_tick.west) -- ++(-10mm,0) |- (t00_events.west);
+	\end{scope}
+	
+	% Panel 2: time01 ---------------------------------------------------------
+	\begin{scope}[shift={(7.2,0)}, scale=0.7, transform shape]
+		\node[title] (t01) {time01: Spawn every \textbf{N Frames} (Counter)};
+		\node[block, below=6mm of t01] (t01_events) {Events (QUIT, ESC, input)};
+		\node[block, below=4mm of t01_events] (t01_update) {Update};
+		\node[block, below=4mm of t01_update] (t01_inc) {counter \,+= 1};
+		\node[decision, below=4mm of t01_inc] (t01_dec) {counter $\ge$ limit?};
+		\node[block, below=4mm of t01_dec] (t01_move) {Move sprites using $\Delta t$};
+		\node[block, right=13mm of t01_dec] (t01_spawn) {Spawn bullet\\reset counter};
+		\node[block, below=4mm of t01_move] (t01_draw) {Draw + flip};
+		\node[block, below=4mm of t01_draw] (t01_tick) {clock.tick(FPS) + compute $\Delta t$};
+		\node[note, below=3mm of t01_tick] {\textit{Characteristic: FPS-dependent, but simple}};
+		\draw[line] (t01_events) -- (t01_update);
+		\draw[line] (t01_update) -- (t01_inc);
+		\draw[line] (t01_inc) -- (t01_dec);
+		\draw[line] (t01_dec) -- node[left]{no} (t01_move);
+		\draw[line] (t01_dec.east) -- node[above]{yes} (t01_spawn.west);
+		\draw[line] (t01_spawn) |- (t01_move);
+		\draw[line] (t01_move) -- (t01_draw);
+		\draw[line] (t01_draw) -- (t01_tick);
+		\draw[line] (t01_tick.west) -- ++(-10mm,0) |- (t01_events.west);
+	\end{scope}
+	
+	% Panel 3: time02 ---------------------------------------------------------
+	\begin{scope}[shift={(0,-8.5)}, scale=0.7, transform shape]
+		\node[title] (t02) {time02: Spawn per \textbf{Timestamp} (get\_ticks)};
+		\node[block, below=6mm of t02] (t02_events) {Events (QUIT, ESC, input)};
+		\node[block, below=4mm of t02_events] (t02_update) {Update};
+		\node[decision, below=4mm of t02_update] (t02_dec) {ticks $\ge$ \\stamp + duration?};
+		\node[block, right=13mm of t02_dec] (t02_spawn) {Spawn bullet\\stamp = ticks};
+		\node[block, below=4mm of t02_dec] (t02_move) {Move sprites using $\Delta t$};
+		\node[block, below=4mm of t02_move] (t02_draw) {Draw + flip};
+		\node[block, below=4mm of t02_draw] (t02_tick) {clock.tick(FPS) + compute $\Delta t$};
+		\node[note, below=3mm of t02_tick] {\textit{Characteristic: FPS-independent, but logic not encapsulated}};
+		\draw[line] (t02_events) -- (t02_update);
+		\draw[line] (t02_update) -- (t02_dec);
+		\draw[line] (t02_dec) -- node[left]{no} (t02_move);
+		\draw[line] (t02_dec.east) -- node[above]{yes} (t02_spawn.west);
+		\draw[line] (t02_spawn) |- (t02_move);
+		\draw[line] (t02_move) -- (t02_draw);
+		\draw[line] (t02_draw) -- (t02_tick);
+		\draw[line] (t02_tick.west) -- ++(-10mm,0) |- (t02_events.west);
+	\end{scope}
+	
+	% Panel 4: time03 ---------------------------------------------------------
+	\begin{scope}[shift={(7.2,-8.5)}, scale=0.7, transform shape]
+		\node[title] (t03) {time03: Spawn per \textbf{Timer-Class}};
+		\node[block, below=6mm of t03] (t03_events) {Events (QUIT, ESC, input)};
+		\node[block, below=4mm of t03_events] (t03_update) {Update};
+		\node[decision, below=4mm of t03_update] (t03_dec) {is\_next\_stop\_reached()?};
+		\node[block, right=13mm of t03_dec] (t03_spawn) {Spawn bullet};
+		\node[block, below=4mm of t03_dec] (t03_move) {Move sprites using $\Delta t$};
+		\node[block, below=4mm of t03_move] (t03_draw) {Draw + flip};
+		\node[block, below=4mm of t03_draw] (t03_tick) {clock.tick(FPS) + compute $\Delta t$};
+		\node[note, below=3mm of t03_tick] {\textit{Characteristic: FPS-independent, but logic encapsulated (SRP)}};
+		\draw[line] (t03_events) -- (t03_update);
+		\draw[line] (t03_update) -- (t03_dec);
+		\draw[line] (t03_dec) -- node[left]{no} (t03_move);
+		\draw[line] (t03_dec.east) -- node[above]{yes} (t03_spawn.west);
+		\draw[line] (t03_spawn) |- (t03_move);
+		\draw[line] (t03_move) -- (t03_draw);
+		\draw[line] (t03_draw) -- (t03_tick);
+		\draw[line] (t03_tick.west) -- ++(-10mm,0) |- (t03_events.west);
+	\end{scope}
+	
+\end{tikzpicture}
+\caption{Comparison of the 4 algorithms}\label{picTimeVergleich01}
+\end{center}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Accumulated Time}\index{time!accumulated}
+
+Sometimes it is sufficient to locally detect the progression of a time interval. For this purpose, one can use the \texttt{Timer} class, but it is also possible to accumulate the elapsed time and then compare the sum against a threshold.
+
+Here is a small example:
+
+\lstset{firstnumber = 1}
+\begin{lstlisting}
+	elapsed += cfg.DELTATIME
+	if elapsed >= 0.5:
+		elapsed = 0.0
+		spawn()	
+\end{lstlisting}
+
+By using \texttt{DELTATIME}, a frame-rate–independent and fairly precise measurement of elapsed time is achieved. This logic is well suited for periodic actions or for animations.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Cool Down}\index{time!cool down}
+
+If you want to let a certain amount of time pass -- for example for shields or the time between two shots -- the following small logic is commonly used:
+
+\lstset{firstnumber = 1}
+\begin{lstlisting}
+	if now() - last_shot >= cooldown:
+		shoot()
+		last_shot = now()
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Start Delay}\index{time!start delay}
+
+If you want to let a certain amount of time pass between two actions -- for example because a start screen should be visible for a certain time -- you can use the following approach:
+
+\lstset{firstnumber = 1}
+\begin{lstlisting}
+	start_time = pygame.time.get_ticks()
+	if pygame.time.get_ticks() - start_time > 3000:
+		do_something()
+\end{lstlisting}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{What was new?}
+Time-based events or time intervals should be made independent of the frame rate and should be based on the actual elapsed time. Since this is a frequently used logic, it is encapsulated in a separate class.
+
+The following Pygame elements were introduced:
+
+\begin{itemize}
+	\item \texttt{pygame.time.get\_ticks()}:
+	\myindex{pyg}{\texttt{time}!\texttt{get\_ticks()}}\\ 
+    \url{https://pyga.me/docs/ref/time.html#pygame.time.get_ticks}
+	
+	\item \texttt{pygame.sprite.Sprite.kill()}:
+	\myindex{pyg}{\texttt{sprite}!\texttt{Sprite}!\texttt{kill()}}\\ 
+	\url{https://pyga.me/docs/ref/sprite.html#pygame.sprite.Sprite.kill}
+
+\end{itemize}

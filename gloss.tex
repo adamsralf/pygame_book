@@ -1,0 +1,759 @@
+% !TeX spellcheck = en_US
+\newglossaryentry{python}
+{
+	name={Python},
+	text={Python},
+	description={Python is a high-level interpreted programming language that supports both procedural and object-oriented paradigms. It was created in 1991 by Guido van Rossum and is currently	one of the most popular programming languages}
+}
+
+\newglossaryentry{pygame}
+{
+	name={Pygame-ce},
+	text={Pygame-ce},
+	description={A free and open-source library written in Python for developing 2D~games and multimedia applications. Pygame-ce is based on the C library SDL and provides functions for graphics rendering, event handling, audio playback, and input control via keyboard, mouse, and game controllers. Pygame was originally created by Pete Shinners in the year~2000 and for many years was the standard framework for Python-based game development. However, since the original project did not receive updates	for a long period of time, a fork called Pygame Community Edition (pygame-ce) was created in 2020. This version is actively developed by a community in order to support modern Python versions, improved graphics features (for example, alpha blending and better transformations),	and higher performance}
+}
+
+\newglossaryentry{constant}
+{
+	name={Constant},
+	plural={constants},
+	text={constant},
+	description={A constant is a value that cannot be changed while a program is running. In many programming languages, variables can be declared as constants -- that is, as unchangeable values -- using keywords such as \texttt{const}. Direct numeric or string values written in the source code are also constants. Python does not have true constants at the language level; instead, a common convention is used to write constants in CAPITAL LETTERS (for example, \texttt{PI = 3.14159}). Although the value is technically still changeable, this naming style signals to other developers that the variable is intended to remain unchanged}
+}
+
+\newglossaryentry{event}
+{
+	name={Event},
+	plural={events},
+	text={event},
+	description={In software engineering, an event is used to control the flow of a program. The program is not executed in a strictly linear way; instead, specific event-handling routines (such as listeners, observers, or event handlers) are executed whenever a particular event occurs. Event-driven programming is considered part of parallel programming techniques and therefore shares their advantages and disadvantages (source: Wikipedia)}
+}
+
+\newglossaryentry{function}
+{
+	name={Function},
+	plural={functions},
+	text={function},
+	description={In programming, a function is a block of instructions that has a name. It can take one or more parameters and can return results using \texttt{return}. In most cases, the principle applies that all values inside a function are local.	In Python, a function definition starts with the keyword \texttt{def}}
+}
+
+\newglossaryentry{class}
+{
+	name={Class},
+	plural={classes},
+	text={class},
+	description={A class describes the properties (attributes) and the methods (functions) of a logically self-contained programming unit.	In practice, there are many different kinds of classes, but in	principle a class defines which information belongs to it (for example, the brand, color, and year of manufacture of a car) and what can be done with an object of that class (for example, accelerating, buying, or refueling a car). The information is called \emph{attributes}, and the possible actions	are called \emph{methods} or \emph{member functions}. In Python, classes are defined using the keyword \texttt{class} and are initialized with \texttt{\_\_init\_\_()}}
+}
+
+\newglossaryentry{namespace}
+{
+	name={Namespace},
+	plural={namespaces},
+	text={namespace},
+	description={A namespace is a structural area in which identifiers such as variable names, function names, or class names are defined. Namespaces prevent name collisions by allowing a clear and unique mapping of names to objects.	In Python, there are, among others, local, global, and module-level namespaces. Example: A variable in a module can be accessed using \texttt{modulename.variable}}
+}
+
+
+\newdualentry{os}
+	{OS}
+	{Operating System}  % long form
+	{An operating system (OS) is the basic software that controls a computer and manages its hardware and software resources. It acts as an interface between the user, application programs, and the computer hardware. The operating system is responsible for tasks such as process management, memory management, file access, and input/output control. Examples of operating systems include Windows, Linux, and macOS}
+
+\newdualentry{PX} % label
+	{px}            % abbreviation
+	{Pixel}         % long form
+	{The smallest addressable unit of a digital image or screen display. A pixel typically represents a color that is composed of individual color channels (for example, red, green, and blue). The combination of many pixels forms a complete image. The more pixels a screen or image has, the higher the possible
+	resolution and level of detail} % description
+
+\newglossaryentry{bitmap}
+{
+	name={Bitmap},
+	plural={bitmaps},
+	text={bitmap},
+	description={The term bitmap has two levels of meaning in this context. In general, it refers to the color and transparency information of an image stored in a file. Typical examples are files in the formats \Gls{jpg}, \Gls{png}, or 	\Gls{bmp}.	More specifically, it can also refer to the bitmap file format used	for image storage (Windows Bitmap, BMP)}
+}
+
+\newdualentry{bmp} % label
+	{BMP}            % abbreviation
+	{Windows Bitmap Format}  % long form
+	{Image information stored in the Windows Bitmap format} % description
+
+
+\newdualentry{jpg} % label
+	{JPEG}            % abbreviation
+	{Joint Photographic Experts Group}  % long form
+	{A widely used raster image format for the compressed storage of digital images.
+	JPEG uses lossy compression, in which fine details and color differences are partially removed or smoothed in order to significantly reduce file size.
+	The compression level can be adjusted: Higher compression results in smaller files, but also in visible artifacts.
+	\begin{itemize}
+		\item Supports up to 24-bit color depth (true color)
+		\item No transparency channel (alpha channel) as in \gls{png}
+		\item Ideal for photos, textures, and realistic graphics
+		\item Less suitable for pixel art or UI elements with sharp edges
+	\end{itemize}
+	JPG files are commonly used in games, web applications, and	desktop publishing (DTP) projects when storage space or loading time is more important than perfect image fidelity.	In graphics libraries such as \gls{pygame}, JPG files can be loaded directly and used as \textit{surfaces}} % description
+
+
+\newdualentry{png} % label
+	{PNG}            % abbreviation
+	{Portable Network Graphics}  % long form
+	{A widely used raster image format that supports lossless compression and optionally an alpha channel for transparent pixels. PNG is especially well suited for graphics with sharp edges, text, or transparency effects and is often used in games and user interfaces} % description
+
+\newglossaryentry{mainloop}
+{
+	name={Main Loop},
+	text={main loop},
+	description={Every non-trivial program must decide whether it should continue running or whether processing can be finished. If processing cannot or should not be finished yet, the program must continue with user interaction or other program functions, and it must do so until the program can or should be terminated. This behavior is usually controlled by a main loop.	Examples: An operating system runs until it is shut down. A Windows application runs until ALT+F4 is pressed}
+}
+
+\newglossaryentry{flag}{
+	name={Flag},
+	text={flag},
+	plural={flags},
+	description={A variable that stores only a Boolean value (\texttt{True} or \texttt{False}) and is used to control the flow of a program. Flags are often used to represent states such as \emph{program running}, \emph{game finished}, or
+		\emph{input allowed}. By setting or resetting the flag, the behavior of a program can be controlled in a targeted way. Example in Python: \texttt{running = True}}
+}
+
+\newglossaryentry{doublebuffer}
+{
+	name={Double Buffer},
+	text={double buffer},
+	plural={double buffers},
+	description={This is a second memory area (back buffer) that has the same size as the screen memory (front buffer). When something is drawn onto the playfield, it is first drawn into the back buffer. Only after all game elements have been drawn in their new appearance	is the front buffer swapped with the back buffer in a single step. With certain hardware or graphics configurations, it can happen that the screen memory is redrawn even though the game has not yet finished updating all states. This can lead to ugly artifacts or flickering. Double buffering is used to prevent this effect}
+}
+
+\newglossaryentry{messagequeue}
+{
+	name={Message Queue},
+	text={message queue},
+	plural={message queues},
+	description={A queue provided by the operating system in which events and messages that are directed to applications or processes are stored. Such messages can include, for example, keyboard and mouse input, window events, or system signals. Programs regularly read from the message queue in order to react to 	current events. In event-driven applications such as graphical user interfaces or games, reading the message queue is a central part of the main program loop}
+}
+
+\newdualentry{usb} % label
+	{USB}            % abbreviation
+	{Universal Serial Bus}  % long form
+	{A bit-serial data transmission protocol used to connect peripheral	devices to a computer} % description
+
+
+\newdualentry{ssd} % label
+	{SSD}            % abbreviation
+	{Solid-State Drive}  % long form
+	{A mass storage technology that is not based on magnetic principles	but on semiconductor technology} % description
+
+\newdualentry{rgb} % label
+	{RGB}            % abbreviation
+	{Red Green Blue}  % long form
+	{An additive color model in which colors are represented by combining the three primary colors red, green, and blue. Each color channel typically has a value range from~0 to~255. By mixing different intensity levels, $256^3 = 16{,}777{,}216$	representable colors are created. The RGB model is used in digital displays, graphics programming,	and image processing} % description
+
+\newdualentry{fps} % label
+	{FPS}            % abbreviation
+	{Frames Per Second}  % long form
+	{Maximum number of images/frames per second} % description
+
+\newglossaryentry{alpha}
+{
+	name={Alpha Channel},
+	text={alpha channel},
+	plural={alpha channels},
+	description={For each pixel of an image, color information is usually stored in the \glslink{rgb}{RGB} format: the red channel, the green channel, and the blue channel. Using an additional piece of information, it is also possible to specify how transparent the pixel should be. This additional information is called the alpha channel}
+}
+
+\newglossaryentry{alphablending}{
+	name={Alpha Blending},
+	text={alpha blending},
+	plural={alpha blendings},
+	description={A technique used in computer graphics for transparency	and color blending. In this process, the color values of a foreground pixel are combined with those of a background pixel based on an alpha value ($\alpha$). The alpha value specifies how opaque a pixel is: $\alpha = 1$ means fully visible (opaque), $\alpha = 0$ means fully transparent. Formula:
+	\[
+	C_\text{new} = \alpha \cdot C_\text{foreground}
+	+ (1 - \alpha) \cdot C_\text{background}
+	\]
+	Pygame supports alpha blending through surfaces with an alpha channel (RGBA). This makes semi-transparent effects such as shadows, glow, or light effects possible. The quality and performance of alpha blending depend on the hardware and the SDL version. In the pygame-ce version, extended alpha operations and faster blit methods are available}
+}
+
+\newglossaryentry{semantik}
+{
+	name={Semantics},
+	text={semantics},
+	description={The meaning of a statement or specification. It is usually used in contrast to the \Gls{syntax} of a statement}
+}
+
+\newglossaryentry{syntax}
+{
+	name={Syntax},
+	text={syntax},
+	description={The form or grammar of a statement or specification. It is usually used in contrast to the \Gls{semantik} of a statement}
+}
+
+\newglossaryentry{polygon}
+{
+	name={Polygon},
+	text={polygon},
+	description={A closed \gls{linienzug}. It is usually defined by a sequence of points, where the last point is connected to the first one}
+}
+
+\newglossaryentry{linienzug}
+{
+	name={Polyline},
+	text={polyline},
+	description={A sequence of connected lines. It is usually defined by a sequence of points. A closed polyline is called a \gls{polygon}}
+}
+
+\newglossaryentry{ruleofthumb}
+{
+	name={Rule of Thumb},
+	plural={rules of thumb},
+	text={rule of thumb},
+	description={A practical guideline based on experience rather than on strict theory or precise calculations. A rule of thumb provides a quick and useful approximation that works well in many situations, even though it may not be mathematically exact. Such rules are commonly used in programming, engineering, and everyday problem solving}
+}
+
+\newglossaryentry{sprite}
+{
+	name={Sprite},
+	plural={sprites},
+	text={sprite},
+	description={A single two-dimensional graphical element that typically represents a game character, an object, or an animation. Sprites are rendered independently of the background and can be moved, rotated, or scaled. Many game engines and libraries such as Pygame provide special	sprite classes for efficient management and updating of game objects. Other names include \emph{movable object (MOB)} or \emph{blitter object (BOB)}}
+}
+
+\newglossaryentry{aequidistant}
+{
+	name={Equidistant},
+	text={equidistant},
+	description={The spacing between elements is always the same. For elements of equal size, this means that the space between them is always identical. For elements of different sizes, a reference point is required. For example, should the centers of the elements always have the same distance, or should the right edge of one element always have the same distance to the left edge of the next one? A distinction is also made between horizontal and vertical 	equidistance}
+}
+
+\newglossaryentry{kollisionserkennung}
+{
+	name={Collision Detection},
+	text={collision detection},
+	plural={collision detections},
+	description={The process of checking whether two bitmaps \emph{touch} each other in any way. In Pygame, we use three types of collision detection: checking whether the bounding rectangles of the bitmaps intersect, checking whether the inner circles of the bitmaps intersect, and checking whether non-transparent pixels of the bitmaps share the same coordinates}
+}
+
+\newglossaryentry{information}
+{
+	name={Information},
+	text={information},
+	plural={information},
+	description={A message that provides additional details or context about the current state of a program. Information messages do not indicate a problem and do not require 	immediate action. They are often used to inform the user about successful operations,	current settings, or progress}
+}
+
+\newglossaryentry{warning}
+{
+	name={Warning},
+	text={warning},
+	plural={warnings},
+	description={A message that indicates a potential problem or an unusual situation. A warning does not stop the program, but it signals that something may lead to errors or unexpected behavior if it is not addressed. Warnings are meant to draw attention to issues before they become serious problems}
+}
+
+\newglossaryentry{error}
+{
+	name={Error},
+	text={error},
+	plural={errors},
+	description={A message that indicates a serious problem that prevents a program or part of a program from continuing correctly. Errors usually require immediate action, such as fixing the code, correcting input data, or restarting the program. In many cases, an error causes the program to terminate}
+}
+
+\newglossaryentry{float}
+{
+	name={Floating-point Number},
+	text={floating-point number},
+	plural={floating-point numbers},
+	description={A floating-point number represents values as sums of powers of two, where the exponent can also be negative. Example: $6.75 = 2^2 + 2^1 + 2^{-1} + 2^{-2}$.Because storage space is limited, or because some numbers do not have a finite representation, this sum must be truncated at some point. The omitted terms lead to rounding errors}
+}
+
+\newglossaryentry{roundingerror}
+{
+	name={Rounding Error},
+	text={rounding error},
+	plural={rounding errors},
+	description={A rounding error occurs when a floating-point number cannot be represented exactly due to limited precision. Floating-point numbers are stored as sums of powers of two, and many decimal values (such as $\tfrac{1}{10}$ or $\tfrac{1}{60}$) do not have an exact finite representation in this system. As a result, values are stored as close approximations. When such approximations are used repeatedly in calculations, the small errors can accumulate and lead to noticeable deviations, especially in simulations, animations, and game loops}
+}
+
+
+\newglossaryentry{int}
+{
+	name={Integer},
+	text={integer},
+	plural={integers},
+	description={An integer represents numbers as sums of powers of two	with non-negative exponents. Example: $17 = 2^4 + 2^0$. The range of representable values is determined by the amount of	memory allocated to the integer. With~$n$ bits available, unsigned integers can represent values in the range $[0, 2^n - 1]$, while signed integers can represent values	in the range $[-2^{n-1}, 2^{n-1} - 1]$}
+}
+
+\newglossaryentry{framework}
+{
+	name={Framework},
+	text={framework},
+	plural={frameworks},
+	description={In computer science, a framework refers to a working environment that provides predefined structures and functionality. This can include individual classes, function libraries, or even complete development environments such as an \Gls{ide}}
+}
+
+\newglossaryentry{subclass}
+{
+	name={Subclass},
+	text={subclass},
+	plural={subclasses},
+	description={A specialization of a parent class. A subclass inherits all non-private attributes and methods of its parent and can use them as if they were its own. In addition, it can extend or override functionality to implement more specific behavior}
+}
+
+\newdualentry{ide} % label
+	{IDE}            % abbreviation
+	{Integrated Development Environment}  % long form
+	{An integrated development environment. It is called \emph{integrated} because it does not only include a compiler and linker, but also tools such as a code editor, debugger,	profiler, and other utilities that support the entire development process} % description
+
+\newdualentry{srp} % label
+	{SRP}            % abbreviation
+	{Single Responsibility Principle}  % long form
+	{Each class or function should have exactly one responsibility. It should focus on that single task and do it well. A solution to a specific problem should be encapsulated in one class or one method, and changes to that responsibility should affect only that part of the code} % description
+
+\newdualentry{lsp} % label
+	{LSP}            % abbreviation
+	{Liskov Substitution Principle}  % long form
+	{A principle of object-oriented programming stating that objects of a derived class must be usable anywhere an object of the base class is expected, without altering the correct behavior of the program. Formulated by Barbara Liskov in 1987. The LSP ensures that inheritance does not introduce unexpected side effects and that class hierarchies remain consistent} % description
+
+\newglossaryentry{signature}
+{
+	name={Signature},
+	text={signature},
+	plural={signatures},
+	description={The signature of a function or method describes its formal properties that are visible from the outside. These include its visibility, return type, name, and parameters. 	The signature defines how a function or method can be called and how it interacts with other parts of the program}
+}
+
+\newglossaryentry{dontasktell}{
+	name={Don't ask -- tell},
+	text={don't ask -- tell},
+	description={A design principle of object-oriented programming which states that an object should not ask another object about its internal state and then make decisions based on that information. Instead, an object should tell another object \emph{what} to do, while the \emph{how} remains fully encapsulated within the object itself. This improves encapsulation, substitutability, and maintainability, and reduces coupling between classes}
+}
+
+\newglossaryentry{garbagecollector}
+{
+	name={Garbage Collector},
+	text={garbage collector},
+	plural={garbage collectors},
+	description={The garbage collector is a memory management component responsible for automatically freeing memory that is no longer in use. In Python, it detects objects that are no longer referenced by any part of the program and releases the memory they occupy. 	This helps prevent memory leaks and allows developers to focus on program logic rather than manual memory management. Python primarily uses reference counting, complemented by a garbage collection mechanism to detect and clean up cyclic references}
+}
+
+\newglossaryentry{superclass}
+{
+	name={Superclass},
+	text={superclass},
+	plural={superclasses},
+	description={In object-oriented programming, a superclass is a class from which another class (the subclass) inherits attributes and methods. The superclass defines common behavior and interfaces that can be	reused and extended by subclasses. In Python, the superclass can be accessed using the \texttt{super()} function, which allows a subclass to call methods of its superclass, such as the constructor \texttt{\_\_init\_\_()}}
+}
+
+\newglossaryentry{boss}
+{
+	name={Boss Key},
+	text={boss key},
+	plural={boss keys},
+	description={A boss key is a special key or key combination that immediately exits, hides, or pauses a game without asking for confirmation. Historically, it was used to make a game disappear instantly when a boss, teacher, or other authority figure approached. The feature became popular in early PC games and is often mentioned	with a touch of humor, but it can also serve as a practical shortcut for emergency exits or quick interruptions}
+}
+
+\newglossaryentry{binaryand}
+{
+	name={Binary AND Operation},
+	text={binary AND operation},
+	plural={binary AND operations},
+	description={The binary AND operation combines two integer values by comparing their bits. For each bit position, the result is \texttt{1} if and only if both of the corresponding bits are \texttt{1}; otherwise, it is \texttt{0}. In Python, the binary AND operation is performed using the operator \texttt{\&}. It is commonly used with bit masks, for example to test or combine modifier keys such as \keys{\shift}, \keys{\ctrl}, or \keys{\Alt} in keyboard events}
+}
+
+\newglossaryentry{infix}
+{
+	name={Infix},
+	text={infix},
+	plural={infixes},
+	description={An infix is a morphological element that is inserted inside a word stem to modify its grammatical or semantic meaning. In contrast to prefixes, which appear 	before the stem, and suffixes, which appear after the stem, an infix is placed within the stem itself. Infixes are common in many languages (for example Tagalog or Indonesian) but are rare in English and German. In English, infixes are mostly found in informal or expressive language, such as the emphatic insertion \emph{-bloody-} in \emph{abso\textbf{bloody}lutely}}
+}
+
+\newglossaryentry{render}
+{
+	name={Rendering},
+	text={rendering},
+	description={Refers to the process of creating a concrete, displayable image from abstract data (e.\,g.\ text, vectors, sprites, or 3D models). In computer graphics and in frameworks such as Pygame, rendering typically means that an object computes its visual representation (a \emph{Surface} or \emph{Bitmap}) and prepares it for display on the screen. Rendering is often performed only when the content or state of an object has changed, in order to save computational resources}
+}
+
+\newdualentry{oo} % label
+	{OO}            % abbreviation
+	{Object Oriented}  % long form
+	{The analysis, the design or the implementation based on objects -- software entities that encapsulates data and functions} % description
+
+
+\newglossaryentry{font}
+{
+	name={Font},
+	text={font},
+	plural={fonts},
+	description={Refers to a complete, digitally stored set of characters that contains information	about the graphical representation of letters, digits, and symbols. A font defines typographic properties such as style, stroke weight, spacing, and size. In Pygame, a font is represented by a Font object, which is used to render text into a bitmap or Surface. Fonts can be installed system-wide or loaded from separate files (e.\,g.\ \texttt{.ttf}, \texttt{.otf})}
+}
+
+
+\newdualentry{pt} % label
+	{pt}            % abbreviation
+	{DTP point}     % long form
+	{Unit of measurement used in desktop publishing (DTP) and digital typography. A DTP point (also called a PostScript point) is defined as \emph{one seventy-second of an inch} and therefore corresponds exactly to \textbf{\SI{1}{pt} = \SI{1/72}{inch} $\approx$~\SI{0.3528}{mm}}. This definition was originally introduced by Adobe with the PostScript standard and has become the industry standard for layout, printing, and graphics software. In contrast, traditional typography sometimes uses slightly different point sizes	(e.\,g.\ 1 pica point = 0.3515\,mm). The DTP point is used to specify font sizes, spacing, and page margins in layout programs such as InDesign, Scribus, or \LaTeX. Many graphics libraries (e.\,g.\ \gls{pygame}) and GUI frameworks also use DTP points indirectly via pixel conversions for precise on-screen rendering} % description
+
+
+
+\newdualentry{ttf} % label
+	{TTF}            % abbreviation
+	{TrueType Font}  % long form
+	{The font information is not stored in bitmap form, but in a vector-based format. This allows text to be rendered at \emph{arbitrary} font sizes without losing quality. TrueType fonts are therefore well suited for scaling, high-resolution	displays, and dynamic text rendering in applications and games} % description
+
+
+\newglossaryentry{unicode}
+{
+	name={Unicode},
+	description={A way of coding characters and symbols. Most popular implementations are UTF-8, UTF-16, and UTF-32} 
+}
+
+\newglossaryentry{dictionary}
+{
+	name={Dictionary},
+	description={A data structure that stores values under a unique key. Other common names are: \index{lookup table}lookup table, \index{associative array}associative array, \index{hash table}hash table}
+}
+
+\newglossaryentry{array}
+{
+	name={Array},
+	description={A data structure that stores values under a unique index (usually a non-negative integer). In the strict sense, arrays contain only elements of the same data type. This restriction does not apply to languages such as PHP or Python}
+}
+
+\newglossaryentry{slicing}
+{
+	name={Slicing},
+	description={A technique that allows convenient extraction of subsets from strings or arrays}
+}
+
+\newglossaryentry{mask}
+{
+	name={Mask},
+	text={mask},
+	plural={masks},
+	description={A mask is a bitmap that makes it possible to distinguish important pixels from unimportant pixels of a sprite. For sprites with transparency, the mask can easily be created by treating all transparent pixels as unimportant. To save memory and computing time, masks are often not stored in common bitmap formats, but bit by bit. One byte can therefore encode the mask information for 8~pixels} 
+}
+
+\newglossaryentry{functionpointer}{
+	name={Function Pointer},
+	text={function pointer},
+	plural={function pointers},
+	description={A function pointer refers to a variable or reference that points to a function and allows it to be treated like a value. Function pointers make it possible to pass functions as parameters, store them in data structures, or select them dynamically. In languages such as C or C++, function pointers are used explicitly, while in Python functions are first-class objects and can therefore be used as function pointers without any special syntax. In Python, this is often referred to as a callable}
+}
+
+\newdualentry{ms} % label
+	{ms}            % abbreviation
+	{Milliseconds}  % long form
+	{One thousandth ($1/1000$) of a second} % description
+
+
+\newglossaryentry{pylance}
+{
+	name={Pylance},
+	description={Pylance is the default Python extension for Visual Studio Code that supports Python development. Its main features are type checking and code completion. Pylance helps detect errors early by analyzing code statically}
+}
+
+\newglossaryentry{degree}
+{
+	name={Degree (\unit{°})},
+	text={degree},
+	plural={degrees},
+	description={A unit for measuring angles. A full circle has $2\pi °$}
+}
+
+\newglossaryentry{radian}
+{
+	name={Radian (rad)},
+	text={radian},
+	plural={radians},
+	description={A unit for measuring angles. A full circle has $2\pi\unit{\radian}$} 
+}
+
+\newdualentry{ram} % label
+	{RAM}            % abbreviation
+	{Random Access Memory}  % long form
+	{RAM (Random Access Memory) is the main working memory of a computer. It stores data and program code that are currently being used so that the processor can access them quickly. The contents of RAM are volatile, meaning they are lost when the computer is powered of} % description
+
+\newglossaryentry{ogg}
+{
+	name={OGG},
+	description={An audio file encoding format. The name comes from the English verb \emph{to ogg}. The goal was to provide a license-free, simple, and efficient audio encoding format} 
+}
+
+\newglossaryentry{mp3}
+{
+	name={MP3},
+	description={Short for \emph{ISO MPEG Audio Layer 3}. An audio encoding and compression method for sound and music, developed largely by the German electrical engineer and mathematician Karlheinz Brandenburg} 
+}
+
+\newglossaryentry{fade}
+{
+	name={Fade},
+	text={fade},
+	plural={fades},
+	description={Derived from the English verb \emph{to fade}. In music and graphics, a distinction is made between \emph{fade-in} and \emph{fade-out}. During a fade-in, an image appears gradually or the volume is increased from zero to the target level. A fade-out does the opposite} 
+}
+
+\newglossaryentry{stereopanning}{
+	name={Stereo Panning},
+	text={stereo panning},
+	plural={stereo pannings},
+	description={An audio technique that places a sound in space by changing its volume on the left and right speakers. With stereo panning, the sound of a source is placed more strongly on the left or right channel depending on its horizontal position in space. In game development, for example with Pygame, stereo panning is used to make the position of an object audible, typically by controlling the left and right audio channels of a sound separately}
+}
+
+\newdualentry{Stereo} % label
+	{Stereo}            % abbreviation
+	{Stereophony}       % long form
+	{Refers to a two-channel audio technique in which a sound signal is played back separately through a left and a right channel. Different volume levels or signals on the two channels create a spatial listening impression. In game development, stereo is often used to convey the position of a sound source in space, for example through stereo panning, where the volume of a sound is adjusted depending on the horizontal position of an object} % description
+
+\newglossaryentry{singleton}
+{
+	name={Singleton},
+	text={singleton},
+	plural={singletons},
+	description={A design pattern that ensures that there is exactly one instance of a class. This instance is usually provided in a (semi-)public way. Due to its conceptual similarity to global variables, the Singleton pattern is considered controversial}
+}
+
+\newglossaryentry{gravity}
+{
+	name={Gravity},
+	text={gravity},
+	description={A force that produces a constant acceleration acting on objects with mass. In game development, gravity is commonly implemented as a fixed acceleration vector applied each frame, rather than a full physical simulation}
+}
+
+\newglossaryentry{variable}{
+	name={Variable},
+	text={variable},
+	plural={variables},
+	description={A named reference to an object in memory. In Python, a variable is not a container that stores a fixed data type, but a flexible name that can refer to arbitrary objects. Unlike a constant, the value of a variable can be changed at any time by assigning a new object using assignment (\texttt{=}). Examples: \texttt{x = 10} or \texttt{name = "Alice"}}
+}
+
+\newglossaryentry{vscode}{
+	name={Visual Studio Code},
+	description={A free, cross-platform source code editor developed by Microsoft. It supports numerous programming languages and provides an integrated extension manager, debugging features, and a customizable interface. Due to its lightweight architecture, Git integration, and wide range of extensions, Visual Studio Code is suitable for both beginners and professional software development},
+	text={VS~Code}
+}
+
+\newglossaryentry{spritelib}{
+	name={SpriteLib},
+	text={SpriteLib},
+	description={A freely available collection of 2D game \glspl{sprite}, often used for prototyping games and for educational purposes. SpriteLib provides graphics such as characters, objects, and animations 	that can be used in game engines or frameworks like Pygame}
+}
+
+\newglossaryentry{csvdatei}{
+	name={CSV File},
+	plural={CSV Files},
+	text={CSV files},
+	description={A simple, text-based file format (\emph{Comma-Separated Values}) used for storing tabular data. Values are separated by delimiters such as commas or semicolons. CSV files can be easily processed by programs such as spreadsheet applications, databases, or scripts}
+}
+
+\newglossaryentry{tiled}{
+	name={Tiled},
+	description={A free, cross-platform tile map editor for creating 2D tile-based maps for games. Tiled supports various map formats (e.\,g.\ orthogonal, isometric, hexagonal) as well as flexible tileset structures. The created maps can be exported in numerous formats and integrated into game frameworks such as Pygame, Godot, or Unity. More information can be found at \url{https://www.mapeditor.org/}}
+}
+
+\newglossaryentry{gadget}{
+	name={Gadget},
+	plural={gadgets},
+	text={gadget},
+	description={An interactive or usable game element that provides a player character with special abilities, advantages, or tools. Gadgets may appear as equipment, aids, or technical devices and often influence gameplay, puzzle solving, or combat mechanics in a video game}
+}
+
+\newglossaryentry{modulo}{
+	name={Modulo},
+	text={modulo},
+	description={A mathematical operator that returns the remainder of an integer division. The expression $a \bmod b$ yields the remainder that results when the number $a$ is divided by $b$. The modulo operator is frequently used in computer science, for example for periodic processes, index calculations, or checking divisibility}
+}
+
+\newglossaryentry{clamp}
+{
+	name={Clamp},
+	text={clamp},
+	description={In programming, clamp (to \emph{clamp} or \emph{limit}) refers to a function that keeps a numerical value within a predefined range. If the value is below the minimum, the minimum is returned; if it is above the maximum, the maximum is returned. In games, clamping is commonly used to restrict camera positions, movements, or physical values (e.g.\ speed or zoom factor) to reasonable bounds—for example, to prevent the camera from scrolling outside the game world}
+}
+
+\newglossaryentry{margin}
+{
+	name={Margin},
+	plural={margins}
+	text={margin},
+	description={Denotes the outer spacing of an element relative to other objects or to the boundary of a surrounding container. In \textit{graphics} and \textit{UI programming}, \emph{margin} is used to specify how much empty space should exist outside a frame or surface. In contrast, \gls{padding} describes the inner spacing between content and its border. In applications such as \texttt{CameraView}, \emph{margin} can be used to define an outer safety area of the visible game region, determining how close objects or the camera are allowed to approach the edge}
+}
+
+\newglossaryentry{padding}
+{
+	name={Padding},
+	text={padding},
+	plural={paddings},
+	description={Refers to additional spacing between an inner area and an outer boundary. In \textit{graphics programming} and \textit{UI layout}, \emph{padding} specifies how much empty space exists inside a frame (e.\,g.\ a rectangle or surface) between the actual content and its border. In contrast, \gls{margin} denotes the outer spacing between an element and other objects. In games or camera implementations (e.\,g.\ in \texttt{CameraView}), \emph{padding} can be used to define a safety zone around the player character or the visible area before a camera movement is triggered}
+}
+
+\newglossaryentry{strategypattern}{
+	name={Strategy Pattern},
+	text={strategy pattern},
+	plural={strategy patterns},
+	description={A \textbf{design pattern} from the category of \textbf{behavioral patterns}. It is used to make a specific behavior of an object \textbf{interchangeable} without modifying the object’s class. The Strategy Pattern encapsulates a family of algorithms in separate classes that all implement a common interface. The context object delegates the execution of a particular task to the currently selected strategy. This allows the behavior to be changed dynamically at runtime}
+}
+
+\newdualentry{chatgpt}
+	{ChatGPT}
+	{Generative Pre-trained Transformer}  % long form
+	{ChatGPT is a prototype of a chatbot—that is, a text-based dialog system used as a user interface—based on machine learning. The chatbot was developed by the U.S.-based company OpenAI and was released in November 2022. (Source: Wikipedia)}
+
+\newdualentry{ita}
+	{ITA}
+	{Information Technology Assistants}
+	{A state-recognized educational program at vocational colleges in North Rhine-Westphalia, Germany, providing school-based vocational training in the field of information technology. The program combines theoretical foundations with practical content from computer science, programming, network technology, databases, software development, and IT systems. Depending on the specific program, students may also obtain the advanced technical college entrance qualification or the general higher education entrance qualification. Graduates are qualified for employment in IT-related professional fields or well prepared for further academic studies}
+
+\newglossaryentry{endlosschleife}
+{
+	name={Infinite loop},
+	text={infinity loop},
+	plural={infinity loops},
+	description={In computer science, an infinite loop is a sequence of instructions that repeats endlessly and has no defined termination condition. In most cases, infinite loops are unintended and therefore represent an error in an application. They often arise from incorrect loop conditions. However, infinite loops are sometimes used intentionally, for example: \texttt{while True:}} 
+}
+
+\newglossaryentry{pythagoras}
+{
+	name={Pythagorean theorem},
+	description={In a right-angled triangle, the sum of the squares of the legs is equal to the square of the hypotenuse: $c^2 = a^2 + b^2$. The theorem is named after the mathematician \emph{Pythagoras of Samos} (ca.~570~BC to ca.~510~BC)} 
+}
+
+\newglossaryentry{toggling}
+{
+	name={Toggling},
+	text={toggling},
+	description={In computer science, this means that the value of a boolean variable switches from \true\ to \false\ or from \false\ to \true: \emph{to toggle} = \emph{to switch}} 
+}
+
+\newglossaryentry{socket}
+{
+	name={Socket},
+	text={socket},
+	plural={sockets},
+	description={In computer science, a socket is an endpoint for communication between two programs over a network. It provides a standardized interface for sending and receiving data using protocols such as TCP or UDP. A socket is typically identified by an IP address and a port number and is commonly used in client--server architectures}
+}
+
+\label{GRENZE}
+% ------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\newglossaryentry{umgebungsvari}
+{
+  name={Umgebungsvariable},
+  plural={Umgebungsvariablen},
+  description={Dies sind Variablen, die nicht vom Programm, sondern von der Programmumgebung verwaltet werden. Die Programmumgebung kann das Betriebssystem sein, aber auch eine Server. Über Umgebungsvariablen kann die Umgebung mit meinem Programm Informationen austauschen. In unserem Beispiel wird der Fensterverwaltung bzw. dem Betriebssystem mitgeteilt, an welcher Koordinate die linke obere Ecke des Fensters auf dem Bildschirm erscheinen soll} 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\newglossaryentry{listcomp}
+{
+	name={List Comprehension},
+	description={In Python kann man den Inhalte einer Liste, eines Tupels, eines Arrays oder eines Dictionarys nicht nur durch explizite Vorgaben festelegen, sondern auch indem man eine Generierungsvorschrift formuliert: \texttt{squares = [x**2 for x in range(10)]}} 
+}
+
+
+
+
+
+
+
+
+
+\newglossaryentry{tradeoff}
+{
+    name={Trade-off},
+    description={Jeder Vorteil wird durch einen Nachteil erkauft. Algorithmisch muss dann anhand der Datenlage abgewägt werden, ob in der Gesamtbetrachtung der Nutzen die Kosten überwiegt. Beispiel: Durch die Verwendung von Indizes werden Zugriffe auf Datenbankinhalte dramatisch beschleunigt (Nutzen). Um diese Beschleunigung zu erreichen, müssen Dateien angelegt werden, und das Anlegen, Ändern und Löschen von Daten wird langsamer, da diese Dateien dann mitgepflegt werden müssen (Kosten). In der Softwareentwicklung beschreibt ein Trade-off häufig die bewusste Abwägung zwischen konkurrierenden Faktoren wie Genauigkeit und Rechenaufwand, Speicherverbrauch und Geschwindigkeit oder Flexibilität und Komplexität. Trade-offs sind unvermeidlich und erfordern eine situationsabhängige Entscheidung} 
+}
+
+
+
+
+
+
+
+
+\newglossaryentry{elakoll}
+{
+	name={Elastische Kollision (2D)},
+	description={Zwei konvexe Körper treffen unter Einhaltung des Impulsgesetztes zerstörungsfrei in einer zweidimensionalen Umgebung aufeinander} 
+}
+
+\newglossaryentry{impuls}
+{
+	name={Impuls},
+	description={Die Bewegungsenergie und die Bewegungsrichtung eines Körpers} 
+}
+
+\newglossaryentry{tangente}
+{
+	name={Tangente},
+	description={Eine Tangente ist eine Gerade, die eine andere geometrische Form (Kurve, Kreis etc.) in nur einem Punkt berührt, aber nicht schneidet}
+}
+
+\newglossaryentry{orthogonale}
+{
+	name={Orthogonale},
+	description={Eine Orthogonale ist eine Gerade, die senkrecht zu einer Linie oder Ebene steht}
+}
+
+\newglossaryentry{normale}
+{
+	name={Normalenvektor},
+	description={Im Prinzip eine \gls{orthogonale}. Auch \emph{Normale} oder \emph{Normvektor} genannt. Eine Normale mit einer Länge von~1 heißt \emph{Einheitsvektor}}
+}
+
+
+
+
+\newdualentry{sdl} % label
+{SDL}            % abbreviation
+{Simple Direct Media Layer}  % long form
+{Eine plattformunabhängige API für die Programmierung von Grafiken, Sounds und Eingabegräte} % description
+
+
+

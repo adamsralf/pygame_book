@@ -1,0 +1,477 @@
+% !TeX spellcheck = en_US
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Handling Keyboard Input}\index{Tastatur}\label{secTastatur}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Introduction}\label{KeyboardByEvent}
+
+%begin{wrapfigure}[10]{r}{3.1cm}%
+%	\begin{center}%
+%		\vspace{-1cm}%
+%		\myfigure{invader07.png}{0.8}{Keyboard}{picInvader07}%
+%	\end{center}%
+%\end{wrapfigure}%
+I do not intend to cover the keyboard exhaustively here, but merely to illustrate the basic principle. The movement of the spaceship is controlled by keyboard events. Every time I press a arrow key -- left, right, up, down -- the spaceship moves in the corresponding direction. If I release the arrow key, the spaceship stops. The game can now also be exited using the Escape key (\Gls{boss}).
+
+As a first step, a dictionary\index{Dictionary} of possible directions is created in \texttt{config.py}. These directions are managed as \texttt{Vector2} objects \myindex{pyg}{\texttt{math}!\texttt{Vector2D}}, since they are easier to use for mathematical operations.
+
+\lstsource{SRC/00 Introduction/06 Keyboard/keyboard/v01/config.py}{1}{99}{python}{Control Direction by Keys (1), \texttt{config.py}}{srcTastatur00aa} 
+
+
+Next, we prepare the \texttt{Defender} class or modify it slightly (\srcref[vref]{srcTastatur00a}). The sprite is no longer placed at the bottom but centered (\zeiref{srcTastatur0001}), and the spaceship should now also be able to move vertically. For this, we either need two separate variables or a \texttt{Vector2} object. I choose a \texttt{Vector2} object, where the first component represents the horizontal direction vector and the second the vertical direction. Each direction vector is set according to the semantics introduced earlier. 
+
+
+I would like to draw special attention to \zeiref{srcTastatur0008}. The methods \texttt{clamp\_ip()}\randnotiz{clamp\_ip()\newline clamp()}\myindex{pyg}{\texttt{rect}!\texttt{Rect}!\texttt{clamp\_ip()}|underline}\myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{clamp\_ip()}|underline} as well as \texttt{clamp()}\myindex{pyg}{\texttt{rect}!\texttt{Rect}!\texttt{clamp()}|underline}\myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{clamp()}|underline} provide a very convenient shortcut in programming. Both methods check whether the inner rectangle has crossed the boundary of the outer rectangle on any side and, if necessary, move it back to the edge of the outer rectangle.
+
+Here is an equivalent check without using \texttt{clamp()}, shown only for the left edge of the outer rectangle:
+\lstset{firstnumber=1}
+\begin{lstlisting}
+	if inner_rect.right < outer_rect.left:
+		inner_rect.right = outer_rect.left + 1
+\end{lstlisting}
+
+The method \texttt{clamp()} performs this kind of check for all sides of the inner rectangle. Using \texttt{clamp()} or \texttt{clamp\_ip()}, you can therefore ensure that a sprite never leaves a defined play area.
+
+The difference between the two methods is that \texttt{clamp()} does not modify the values of the inner rectangle but instead returns a new, adjusted rectangle, whereas \texttt{clamp\_ip()} modifies the values of the inner rectangle directly.
+
+\lstsource{SRC/00 Introduction/06 Keyboard/keyboard/v01/keyboard.py}{9}{26}{python}{Control Direction by Keys (2), Class \texttt{Defender}}{srcTastatur00a} 
+
+Let us now turn to the actual handling of keyboard input: Pressing a key can trigger the event types\index{event}\myindex{pyg}{\texttt{Event}}\texttt{pygame.KEYDOWN}\myindex{pyg}{\texttt{KEYDOWN}|underline} or \texttt{pygame.KEYUP}\myindex{pyg}{\texttt{KEYUP}|underline}\randnotiz{KEYDOWN\\KEYUP}. In our example (\zeiref{srcTastatur0003}), we are interested in which key is \emph{pressed}, so we use \texttt{KEYDOWN}. After that, we can determine which key was pressed via \texttt{pygame.event.key}\myindex{pyg}{\texttt{event}!\texttt{key}}\randnotiz{key}. For this purpose, Pygame provides a set of predefined constants in \texttt{pygame.key}\myindex{pyg}{\texttt{key}} (see \tabref[vref]{tabKey} and \tabref[vref]{tabKeyMod}).
+
+
+\lstsource{SRC/00 Introduction/06 Keyboard/keyboard/v01/keyboard.py}{54}{72}{python}{Control Direction by Keys (3)), \texttt{Game}.\texttt{watch\_for\_events()}}{srcTastatur00d}
+
+Let us start with the boss key. In \zeiref{srcTastatur0004}, the constant \texttt{K\_ESCAPE}\myindex{pyg}{\texttt{K\_ESCAPE}}\randnotiz{K\_ESCAPE} is used to check whether the pressed key is the \keys{\esc}. As with clicking the window’s close button, the flag of the main program loop is then simply set to \false. Try it out!
+
+After that, the four arrow keys are handled starting at \zeiref{srcTastatur0005}ff. Using \randnotiz{K\_LEFT K\_RIGHT K\_UP K\_DOWN}\texttt{K\_LEFT}, \texttt{K\_RIGHT}, \texttt{K\_UP}, and \texttt{K\_DOWN}\myindex{pyg}{\texttt{K\_LEFT}}\myindex{pyg}{\texttt{K\_RIGHT}}\myindex{pyg}{\texttt{K\_UP}}\myindex{pyg}{\texttt{K\_DOWN}}, the corresponding arrow key is checked and the appropriate message is sent to the defender.
+
+If one of the arrow keys is released (\texttt{pygame.KEYUP}\myindex{pyg}{\texttt{KEYUP}} in \zeiref{srcTastatur0006}), the spaceship is stopped.
+
+This should be sufficient for now. The keyboard is only one possible way to control a game. Mouse input, game controllers, and joysticks are also supported in Pygame.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{More Input}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Example: Shift and Related Keys}
+
+With the help of \keys{\shift}, \keys{\ctrl}, or other modifier keys, additional meanings can be assigned to regular keys. But how can we detect that such keys are being pressed? In the source code of the previous example, only a reaction to \emph{one} key press per condition is implemented.
+
+I will now extend the example so that pressing a movement key together with the left Shift key makes the spaceship move faster, while pressing it together with the right Shift key makes it move slower.
+
+To do this, we first adapt the \texttt{update()} method of the \texttt{Defender}. As you can see, the signals to speed up or slow down can now be handled as well. It is also possible to reset the speed to its normal value. The concrete values are more or less arbitrary, but they are chosen so that the difference in speed is easy to perceive.
+
+
+\lstsource{SRC/00 Introduction/06 Keyboard/keyboard/v02/keyboard.py}{20}{33}{python}{Control Direction by Keys (4)), \texttt{Defender}.\texttt{update()}}{srcTastatur01a}
+
+Now we adapt \texttt{watch\_for\_events()}. To be able to detect simultaneous key presses, a slightly different mechanism must be used. Internally, a \texttt{modifier} bit
+\randnotiz{event.mod}\index{event.mod} is set. This bitmask must be checked using the \gls{binaryand} operation.
+
+In our example, this is done in \zeiref{srcTastatur0102} using \texttt{KMOD\_LSHIFT}\randnotiz{KMOD\_LSHIFT KMOD\_RSHIFT}\myindex{pyg}{\texttt{KMOD\_LSHIFT}} and in \zeiref{srcTastatur0103} using \texttt{KMOD\_RSHIFT}\myindex{pyg}{\texttt{KMOD\_RSHIFT}}.
+
+\lstsource{SRC/00 Introduction/06 Keyboard/keyboard/v02/keyboard.py}{61}{87}{python}{Control Direction by Keys (5)), \texttt{Game}.\texttt{watch\_for\_events()}}{srcTastatur01b}
+
+In this way, the state of multiple modifier keys can be encoded and queried within a single integer. For example, if you want to check whether the keys \keys{\shift} and \keys{\Alt} are pressed at the same time, you can do so as follows:
+
+\lstset{firstnumber=69}
+\begin{lstlisting}
+	if (event.mod & pygame.KMOD_SHIFT) and (event.mod & pygame.KMOD_ALT):
+		...
+\end{lstlisting}
+
+As a complement, it should also be noted that \texttt{KMOD\_NONE}\randnotiz{KMOD\_NONE}\myindex{pyg}{\texttt{KMOD\_NONE}} can be used to check whether no modifier key is pressed at all (see \zeiref{srcTastatur0101}).
+ 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{In Which Window was the Key Pressed?}\label{secMultipleWindowKeyboard}
+
+When working with multiple windows, it is certainly important to determine in which window a keyboard input was made. There are many ways to achieve this, but the two approaches presented here are probably the most straightforward.
+
+As a basis, we use the example from \secref[vref]{secMultipleWindows}. Two windows are displayed next to each other.
+
+The variables \texttt{window\_first} and \texttt{window\_second} are handle to the two windows. Internally, these handles are essentially memory addresses (\gls{ram}) through which the windows can be accessed via their properties and methods. Naturally, this address is unique for each window.
+
+When a keyboard event is triggered, the event also carries a handle to the window in which it occurred. This handle can be accessed via \texttt{event.window}\randnotiz{event.window}\myindex{pyg}{\texttt{Window}},  which is exactly what happens in \zeiref{srcKeyboard03a} and \zeiref{srcKeyboard03b}. By comparing these handles, it is therefore possible to determine unambiguously in which window the event was triggered.
+
+Alternatively, one can use the \texttt{id}\randnotiz{Window.id}\myindex{pyg}{\texttt{Window}!\texttt{id}} attribute. This value is also unique for each window and reflects the order in which the windows were created.
+
+\lstsource{SRC/00 Introduction/06 Keyboard/keyboard/v03/keyboard.py}{4}{43}{python}{In which window was the key pressed?}{srcKeyboard03}
+
+Running the program produces the following console output when the corresponding keys are pressed:
+
+\lstset{firstnumber=1}
+\begin{lstlisting}
+ID 1: Main Window (Key Pressed: 'a')
+ID 1: Main Window (Key Pressed: 's')
+ID 1: Main Window (Key Pressed: '5')
+ID 1: Main Window (Key Pressed: 'j')
+ID 2: Side Window (Key Pressed: 'm')
+ID 2: Side Window (Key Pressed: 'space')
+ID 2: Side Window (Key Pressed: '3')
+ID 2: Side Window (Key Pressed: '4')	
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Example: Visualizing the Keyboard}
+
+Just as a small exercise, let us write a simple program that visualizes a key press (see \abbref[vref]{picKeyboard00}). For this purpose, I want to define the keyboard layout in \texttt{config.py} so that it can be easily adapted to different variants. Here is a simple U.S. keyboard layout.
+ 
+\myebild{keyboard00}{0.55}{Typewriter}{picKeyboard00}
+
+\lstsource{SRC/00 Introduction/06 Keyboard/typewriter/config.py}{0}{99}{python}{Typewriter, \texttt{config.py}}{srcTypewriter00Config}
+
+The constructor of \texttt{KeySprite} receives its label (i.e., its meaning), its value according to \tabref[vref]{tabKey}, and its position. Based on this data, the sprite, the text label, its position, and its size are computed and processed.
+
+A \emph{normal} key has exactly the width and height defined in \texttt{config.py} by the dictionary \texttt{KEY}. Therefore, in \zeiref{keyboard0201} the width is multiplied by the factor~1, and no additional spacing is needed.
+
+Other keys have different widths; for example, the \keys{Space} key has a width of 10~keys. This is determined using a case distinction and stored in
+\texttt{factor\_width}.
+
+From this factor, we can also determine how many gaps between keys must be included in the width calculation. For a normal key, no additional gap is consumed. For two keys, there is exactly one gap between them; for three keys, there are two gaps, and so on. So the number of gaps is the number of normal key widths minus~1. However, since we also use factor values such as~$1.5$, we must always compute the next higher integer. The result is the calculation in \zeiref{keyboard0202}.
+
+In the next line, the total width of the key can then be computed based on the two factors.
+
+The attribute \texttt{pressed} is a flag that stores whether the key is currently pressed or not. After that, the rectangle is created using the given position, and the label is rendered. Text output using fonts will be explained in more detail in a later section.
+
+In \texttt{update()}, the key is filled either gray or red. From a performance point of view, this is not ideal; strictly speaking, we would only need to redraw the key when the state of \texttt{pressed} changes, but let us keep it simple here for now.
+
+\lstsource{SRC/00 Introduction/06 Keyboard/typewriter/typewriter.py}{8}{42}{python}{Typewriter, Class \texttt{KeySprite}}{srckeyboard02a}
+
+The constructor and the \texttt{run()} method of \texttt{Game} should be self-explanatory. In the dictionary \texttt{keyboard}, all keys are stored using the identifiers defined in \tabref[vref]{tabKey} as dictionary keys.
+
+\lstsource{SRC/00 Introduction/06 Keyboard/typewriter/typewriter.py}{45}{64}{python}{Typewriter, \texttt{Game.init()} and \texttt{Game.run()}}{srckeyboard02b}
+
+The creation of this dictionary takes place in the method \texttt{generate\_sprites()}. First, I define the starting position of the first key. It is placed in the upper-left corner and starts with twice the vertical key spacing -- a purely arbitrary choice, but one that results in a visually pleasing layout.
+
+Next, the keyboard layout defined in \texttt{config.py} is traversed using a nested loop. In \zeiref{keyboard0203}, the corresponding \texttt{Pygame} key value is determined from the key label. This value is used as the dictionary key in \zeiref{keyboard0204}, allowing it to be easily compared with and processed from the parameters of keyboard events later on.
+
+For each key, a corresponding sprite is created. The new horizontal position \texttt{left} is calculated by adding the key spacing to the actual width of the key. Once all keys in a row have been processed, \texttt{left} is reset to its initial value and the vertical position \texttt{top} is shifted downward accordingly.
+
+Finally, the generated dictionary is returned. Alternatively, it could have been stored directly as a class attribute; however, the approach chosen here keeps the method self-contained.
+
+\lstsource{SRC/00 Introduction/06 Keyboard/typewriter/typewriter.py}{120}{133}{python}{Typewriter, \texttt{Game.generate\_sprites()}}{srckeyboard02c}
+
+The tricky part is the method \texttt{label2key()}. Its task is to determine the corresponding \texttt{Pygame} key code, as listed in \tabref[vref]{tabKey}, based on a given key label. For many keys, such as \keys{T}, we can directly use \texttt{pygame.key.key\_code()} in \zeiref{keyboard0205}\randnotiz{key\_code()}\myindex{pyg}{\texttt{key}!\texttt{key\_code()}}.
+
+For all other keys, we construct our own mapping tables. The underlying logic is more about Python than about Pygame itself and is therefore left to the interested reader to explore. 
+ 
+\lstsource{SRC/00 Introduction/06 Keyboard/typewriter/typewriter.py}{85}{118}{python}{Typewriter, \texttt{Game.label2key()}}{srckeyboard02d}
+
+The implementations of the methods \texttt{update()} and \texttt{draw()} are straightforward and require no further explanation.
+
+
+\lstsource{SRC/00 Introduction/06 Keyboard/typewriter/typewriter.py}{77}{83}{python}{Typewriter, \texttt{Game.update()} and \texttt{Game.draw()}}{srckeyboard02e}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Not by Event, but by Function}\label{secKeyPressed}
+Another way to find out which key was pressed or released is to use the following functions:
+
+\begin{itemize}
+	\item \texttt{pygame.key.get\_pressed()}\myindex{pyg}{\texttt{key}!\texttt{get\_pressed()}}
+	\item \texttt{pygame.key.get\_just\_pressed()}\myindex{pyg}{\texttt{key}!\texttt{get\_just\_pressed()}}
+	\item \texttt{pygame.key.get\_just\_released()}\myindex{pyg}{\texttt{key}!\texttt{get\_just\_released()}}
+\end{itemize}
+
+These functions each return a dictionary containing all available keys, where every entry is associated with a Boolean flag:
+
+\begin{itemize}
+	\item the value is \true{} if the key is currently pressed (or was released, depending on the function),
+	
+	\item otherwise it is \false.
+\end{itemize}
+
+The infix \gls{infix} \emph{just} therefore refers to the time span within two frames.
+
+So, if you want to check whether the key \keys{K} is currently pressed, you can simply write something like:
+
+\lstset{firstnumber=1}
+\begin{lstlisting}
+	if pygame.key.get_pressed()[pygame.K_k]:
+	   ...
+\end{lstlisting}
+
+Often you will see constructions like this:
+
+\lstset{firstnumber=1}
+\begin{lstlisting}
+	while pygame.key.get_pressed()[pygame.K_LEFT]:
+	   ...
+\end{lstlisting}
+
+With this approach, actions inside the loop can react immediately to a key being held down -- for example, \emph{walking to the right}. However, you then get ``trapped'' inside the loop. If the game is supposed to react to something else as well, or if other game objects need to be updated, this does not work. In that case, it is better to query the keyboard once per frame:
+
+\lstset{firstnumber=1}
+\begin{lstlisting}
+	keys = pygame.key.get_pressed()
+	if keys[pygame.K_LEFT]:
+	   ...
+\end{lstlisting}
+
+This can be quite useful, but I have never really grown comfortable with this style of logic. Handling events as described above (see \secref[vref]{KeyboardByEvent}) does not trap me in loops and also feels ``cleaner'' to me, even though I cannot fully justify that feeling.
+
+One important note from the documentation: with this function, you cannot determine the order in which keys were used. This is only possible via event handling.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{What was new?}
+The keyboard sends event messages that can be intercepted and evaluated. First, a distinction is made as to what kind of keyboard action occurred (\texttt{event.type}), and then which key was involved (\texttt{event.key}). Using \texttt{event.mod}, it is possible to query bitwise which modifier keys on the keyboard were used.
+
+The following Pygame elements were introduced:
+
+
+\begin{itemize}
+  \item \texttt{pygame.rect.FRect.clamp()}:
+  \myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{clamp()}}\\
+   \url{https://pyga.me/docs/ref/rect.html#pygame.FRect.clamp}
+
+  \item \texttt{pygame.rect.FRect.clamp\_ip()}:
+  \myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{clamp\_ip()}}\\
+  \url{https://pyga.me/docs/ref/rect.html#pygame.FRect.clamp_ip}
+
+  \item \texttt{pygame.rect.Rect.clamp()}:
+  \myindex{pyg}{\texttt{rect}!\texttt{Rect}!\texttt{clamp()}}\\
+  \url{https://pyga.me/docs/ref/rect.html#pygame.Rect.clamp}
+
+	\item \texttt{pygame.rect.Rect.clamp\_ip()}:
+	\myindex{pyg}{\texttt{rect}!\texttt{Rect}!\texttt{clamp\_ip()}}\\
+	\url{https://pyga.me/docs/ref/rect.html#pygame.Rect.clamp_ip}
+
+	\item \texttt{pygame.key}:
+	\myindex{pyg}{\texttt{KEY}|underline}\\ 
+	\url{https://pyga.me/docs/ref/key.html}
+
+	\item \texttt{pygame.key.get\_pressed()}:
+	\myindex{pyg}{\texttt{KEY}!\texttt{get\_pressed()}}\\ 
+	\url{https://pyga.me/docs/ref/key.html#pygame.key.get_pressed}
+
+	\item \texttt{pygame.key.get\_just\_pressed()}:
+	\myindex{pyg}{\texttt{KEY}!\texttt{get\_just\_pressed()}}\\ 
+	\url{https://pyga.me/docs/ref/key.html#pygame.key.get_just_pressed}
+
+	\item \texttt{pygame.key.get\_just\_released()}:
+	\myindex{pyg}{\texttt{KEY}!\texttt{get\_just\_released()}}\\ 
+	\url{https://pyga.me/docs/ref/key.html#pygame.key.get_just_released}
+
+	\item \texttt{pygame.key.key\_code()}:
+	\myindex{pyg}{\texttt{KEY}!\texttt{key\_code()}}\\ 
+	\url{https://pyga.me/docs/ref/key.html#pygame.key.key_code}
+
+	\item \texttt{pygame.KEYDOWN}, \texttt{pygame.KEYUP}:
+	\myindex{pyg}{\texttt{KEYDOWN}}\myindex{pyg}{\texttt{KEYUP}}\\ \url{https://pyga.me/docs/ref/event.html}
+	
+\end{itemize}
+
+
+\begin{longtable}{lll}
+	\caption{Predefined Keyboard Constants}\label{tabKey}\index{Keyboard!Constants} \\
+	% Definition des Tabellenkopfes auf der ersten Seite
+	\toprule
+     Constant & Meaning & Description \\
+	\midrule
+	\endfirsthead % Erster Kopf zu Ende
+	
+	% Definition des Tabellenkopfes auf den folgenden Seiten
+	\caption{Predefined Keyboard Constants (continued)}\\
+    \toprule
+     Constant & Meaning & Description \\
+	\midrule
+	\endhead % Zweiter Kopf ist zu Ende
+	
+	\midrule
+	\multicolumn{3}{r}{\emph{continued on next page}} \\
+	\endfoot
+
+	\bottomrule
+	\endlastfoot
+	
+	% Ab hier kommt der Inhalt der Tabelle
+\myindex{pyg}{\texttt{K\_BACKSPACE}}    \texttt{K\_BACKSPACE}    &  \verb+\b+    &  backspace \\ 
+\myindex{pyg}{\texttt{K\_TAB}}          \texttt{K\_TAB}          &  \verb+\t+    &  tabulator\\ 
+\myindex{pyg}{\texttt{K\_CLEAR}}        \texttt{K\_CLEAR}        &  \verb++      &  clear\\ 
+\myindex{pyg}{\texttt{K\_RETURN}}       \texttt{K\_RETURN}       &  \verb+\r+    &  return, enter\\ 
+\myindex{pyg}{\texttt{K\_PAUSE}}        \texttt{K\_PAUSE}        &  \verb++      &  pause\\ 
+\myindex{pyg}{\texttt{K\_ESCAPE}}       \texttt{K\_ESCAPE}       &  \verb+^[+    &  escape\\ 
+\myindex{pyg}{\texttt{K\_SPACE}}        \texttt{K\_SPACE}        &  \verb+ +     &  space\\ 
+\myindex{pyg}{\texttt{K\_EXCLAIM}}      \texttt{K\_EXCLAIM}      &  \verb+!+     &  exclaim\\ 
+\myindex{pyg}{\texttt{K\_QUOTEDBL}}     \texttt{K\_QUOTEDBL}     &  \verb+"+     &  double quote\\ 
+\myindex{pyg}{\texttt{K\_HASH}}         \texttt{K\_HASH}         &  \verb+#+     &  hash\\ 
+\myindex{pyg}{\texttt{K\_DOLLAR}}       \texttt{K\_DOLLAR}       &  \verb+$+     &  dollar\\ 
+\myindex{pyg}{\texttt{K\_AMPERSAND}}    \texttt{K\_AMPERSAND}    &  \verb+&+     &  ampersand\\ 
+\myindex{pyg}{\texttt{K\_QUOTE}}        \texttt{K\_QUOTE}        &  \verb+'+     &  quote\\ 
+\myindex{pyg}{\texttt{K\_LEFTPAREN}}    \texttt{K\_LEFTPAREN}    &  \verb+(+     &  left parenthesis\\ 
+\myindex{pyg}{\texttt{K\_RIGHTPAREN}}   \texttt{K\_RIGHTPAREN}   &  \verb+)+     &  right parenthesis\\ 
+\myindex{pyg}{\texttt{K\_ASTERISK}}     \texttt{K\_ASTERISK}     &  \verb+*+     &  asterisk\\ 
+\myindex{pyg}{\texttt{K\_PLUS}}         \texttt{K\_PLUS}         &  \verb-+-     &  plus\\ 
+\myindex{pyg}{\texttt{K\_COMMA}}        \texttt{K\_COMMA}        &  \verb+,+     &  comma\\ 
+\myindex{pyg}{\texttt{K\_MINUS}}        \texttt{K\_MINUS}        &  \verb+-+     &  minus\\ 
+\myindex{pyg}{\texttt{K\_PERIOD}}       \texttt{K\_PERIOD}       &  \verb+.+     &  period\\ 
+\myindex{pyg}{\texttt{K\_SLASH}}        \texttt{K\_SLASH}        &  \verb+/+     &  slash\\ 
+\myindex{pyg}{\texttt{K\_0}}            \texttt{K\_0}            &  \verb+0+     &  0\\ 
+\myindex{pyg}{\texttt{K\_1}}            \texttt{K\_1}            &  \verb+1+     &  1\\ 
+\myindex{pyg}{\texttt{K\_2}}            \texttt{K\_2}            &  \verb+2+     &  2\\ 
+\myindex{pyg}{\texttt{K\_3}}            \texttt{K\_3}            &  \verb+3+     &  3\\ 
+\myindex{pyg}{\texttt{K\_4}}            \texttt{K\_4}            &  \verb+4+     &  4\\ 
+\myindex{pyg}{\texttt{K\_5}}            \texttt{K\_5}            &  \verb+5+     &  5\\ 
+\myindex{pyg}{\texttt{K\_6}}            \texttt{K\_6}            &  \verb+6+     &  6\\ 
+\myindex{pyg}{\texttt{K\_7}}            \texttt{K\_7}            &  \verb+7+     &  7\\ 
+\myindex{pyg}{\texttt{K\_8}}            \texttt{K\_8}            &  \verb+8+     &  8\\ 
+\myindex{pyg}{\texttt{K\_9}}            \texttt{K\_9}            &  \verb+9+     &  9\\ 
+\myindex{pyg}{\texttt{K\_COLON}}        \texttt{K\_COLON}        &  \verb+:+     &  colon\\ 
+\myindex{pyg}{\texttt{K\_SEMICOLON}}    \texttt{K\_SEMICOLON}    &  \verb+;+     &  semicolon\\ 
+\myindex{pyg}{\texttt{K\_LESS}}         \texttt{K\_LESS}         &  \verb+<+     &  less-than\\ 
+\myindex{pyg}{\texttt{K\_EQUALS}}       \texttt{K\_EQUALS}       &  \verb+=+     &  equals\\ 
+\myindex{pyg}{\texttt{K\_GREATER}}      \texttt{K\_GREATER}      &  \verb+>+     &  greater-than\\ 
+\myindex{pyg}{\texttt{K\_QUESTION}}     \texttt{K\_QUESTION}     &  \verb+?+     &  question mark\\ 
+\myindex{pyg}{\texttt{K\_AT}}           \texttt{K\_AT}           &  \makeatletter \verb+@+ \makeatother &  at\\ 
+\myindex{pyg}{\texttt{K\_LEFTBRACKET}}  \texttt{K\_LEFTBRACKET}  &  \verb+[+     &  left bracket\\ 
+\myindex{pyg}{\texttt{K\_BACKSLASH}}    \texttt{K\_BACKSLASH}    &  \verb+\+     &  backslash\\ 
+\myindex{pyg}{\texttt{K\_RIGHTBRACKET}} \texttt{K\_RIGHTBRACKET} &  \verb+]+     &  right bracket\\ 
+\myindex{pyg}{\texttt{K\_CARET}}        \texttt{K\_CARET}        &  \verb+^+     &  caret\\ 
+\myindex{pyg}{\texttt{K\_UNDERSCORE}}   \texttt{K\_UNDERSCORE}   &  \verb+_+     &  underscore\\ 
+\myindex{pyg}{\texttt{K\_BACKQUOTE}}    \texttt{K\_BACKQUOTE}    &  \verb+`+     &  grave\\ 
+\myindex{pyg}{\texttt{K\_a}}            \texttt{K\_a}            &  \verb+a+     &  a\\ 
+\myindex{pyg}{\texttt{K\_b}}            \texttt{K\_b}            &  \verb+b+     &  b\\ 
+\myindex{pyg}{\texttt{K\_c}}            \texttt{K\_c}            &  \verb+c+     &  c\\ 
+\myindex{pyg}{\texttt{K\_d}}            \texttt{K\_d}            &  \verb+d+     &  d\\ 
+\myindex{pyg}{\texttt{K\_e}}            \texttt{K\_e}            &  \verb+e+     &  e\\ 
+\myindex{pyg}{\texttt{K\_f}}            \texttt{K\_f}            &  \verb+f+     &  f\\ 
+\myindex{pyg}{\texttt{K\_g}}            \texttt{K\_g}            &  \verb+g+     &  g\\ 
+\myindex{pyg}{\texttt{K\_h}}            \texttt{K\_h}            &  \verb+h+     &  h\\ 
+\myindex{pyg}{\texttt{K\_i}}            \texttt{K\_i}            &  \verb+i+     &  i\\ 
+\myindex{pyg}{\texttt{K\_j}}            \texttt{K\_j}            &  \verb+j+     &  j\\ 
+\myindex{pyg}{\texttt{K\_k}}            \texttt{K\_k}            &  \verb+k+     &  k\\ 
+\myindex{pyg}{\texttt{K\_l}}            \texttt{K\_l}            &  \verb+l+     &  l\\ 
+\myindex{pyg}{\texttt{K\_m}}            \texttt{K\_m}            &  \verb+m+     &  m\\ 
+\myindex{pyg}{\texttt{K\_n}}            \texttt{K\_n}            &  \verb+n+     &  n\\ 
+\myindex{pyg}{\texttt{K\_o}}            \texttt{K\_o}            &  \verb+o+     &  o\\ 
+\myindex{pyg}{\texttt{K\_p}}            \texttt{K\_p}            &  \verb+p+     &  p\\ 
+\myindex{pyg}{\texttt{K\_q}}            \texttt{K\_q}            &  \verb+q+     &  q\\ 
+\myindex{pyg}{\texttt{K\_r}}            \texttt{K\_r}            &  \verb+r+     &  r\\ 
+\myindex{pyg}{\texttt{K\_s}}            \texttt{K\_s}            &  \verb+s+     &  s\\ 
+\myindex{pyg}{\texttt{K\_t}}            \texttt{K\_t}            &  \verb+t+     &  t\\ 
+\myindex{pyg}{\texttt{K\_u}}            \texttt{K\_u}            &  \verb+u+     &  u\\ 
+\myindex{pyg}{\texttt{K\_v}}            \texttt{K\_v}            &  \verb+v+     &  v\\ 
+\myindex{pyg}{\texttt{K\_w}}            \texttt{K\_w}            &  \verb+w+     &  w\\ 
+\myindex{pyg}{\texttt{K\_x}}            \texttt{K\_x}            &  \verb+x+     &  x\\ 
+\myindex{pyg}{\texttt{K\_y}}            \texttt{K\_y}            &  \verb+y+     &  y\\ 
+\myindex{pyg}{\texttt{K\_z}}            \texttt{K\_z}            &  \verb+z+     &  z\\ 
+\myindex{pyg}{\texttt{K\_DELETE}}       \texttt{K\_DELETE}       &  \verb+ +     &  delete\\ 
+\myindex{pyg}{\texttt{K\_KP0}}          \texttt{K\_KP0}          &  \verb+ +     &  keypad  0\\ 
+\myindex{pyg}{\texttt{K\_KP1}}          \texttt{K\_KP1}          &  \verb+ +     &  keypad  1\\ 
+\myindex{pyg}{\texttt{K\_KP2}}          \texttt{K\_KP2}          &  \verb+ +     &  keypad  2\\ 
+\myindex{pyg}{\texttt{K\_KP3}}          \texttt{K\_KP3}          &  \verb+ +     &  keypad  3\\ 
+\myindex{pyg}{\texttt{K\_KP4}}          \texttt{K\_KP4}          &  \verb+ +     &  keypad  4\\ 
+\myindex{pyg}{\texttt{K\_KP5}}          \texttt{K\_KP5}          &  \verb+ +     &  keypad  5\\ 
+\myindex{pyg}{\texttt{K\_KP6}}          \texttt{K\_KP6}          &  \verb+ +     &  keypad  6\\ 
+\myindex{pyg}{\texttt{K\_KP7}}          \texttt{K\_KP7}          &  \verb+ +     &  keypad  7\\ 
+\myindex{pyg}{\texttt{K\_KP8}}          \texttt{K\_KP8}          &  \verb+ +     &  keypad  8\\ 
+\myindex{pyg}{\texttt{K\_KP9}}          \texttt{K\_KP9}          &  \verb+ +     &  keypad  9\\ 
+\myindex{pyg}{\texttt{K\_KP\_PERIOD}}   \texttt{K\_KP\_PERIOD}   &  \verb+.+     &  keypad  period\\ 
+\myindex{pyg}{\texttt{K\_KP\_DIVIDE}}   \texttt{K\_KP\_DIVIDE}   &  \verb+/+     &  keypad  divide\\ 
+\myindex{pyg}{\texttt{K\_KP\_MULTIPLY}} \texttt{K\_KP\_MULTIPLY} &  \verb+*+     &  Nummernfeld multiply\\ 
+\myindex{pyg}{\texttt{K\_KP\_MINUS}}    \texttt{K\_KP\_MINUS}    &  \verb+-+     &  keypad  minus\\ 
+\myindex{pyg}{\texttt{K\_KP\_PLUS}}     \texttt{K\_KP\_PLUS}     &  \verb-+-     &  keypad  plus\\ 
+\myindex{pyg}{\texttt{K\_KP\_ENTER}}    \texttt{K\_KP\_ENTER}    &  \verb+\r+    &  keypad  return, enter\\ 
+\myindex{pyg}{\texttt{K\_KP\_EQUALS}}   \texttt{K\_KP\_EQUALS}   &  \verb+=+     &  keypad  equals\\ 
+\myindex{pyg}{\texttt{K\_UP}}           \texttt{K\_UP}           &  \verb+ +     &  up arrow\\ 
+\myindex{pyg}{\texttt{K\_DOWN}}         \texttt{K\_DOWN}         &  \verb+ +     &  down arrow\\ 
+\myindex{pyg}{\texttt{K\_RIGHT}}        \texttt{K\_RIGHT}        &  \verb+ +     &  right arrow\\ 
+\myindex{pyg}{\texttt{K\_LEFT}}         \texttt{K\_LEFT}         &  \verb+ +     &  left arrow\\ 
+\myindex{pyg}{\texttt{K\_INSERT}}       \texttt{K\_INSERT}       &  \verb+ +     &  insert\\ 
+\myindex{pyg}{\texttt{K\_HOME}}         \texttt{K\_HOME}         &  \verb+ +     &  home\\ 
+\myindex{pyg}{\texttt{K\_END}}          \texttt{K\_END}          &  \verb+ +     &  end\\ 
+\myindex{pyg}{\texttt{K\_PAGEUP}}       \texttt{K\_PAGEUP}       &  \verb+ +     &  page up\\ 
+\myindex{pyg}{\texttt{K\_PAGEDOWN}}     \texttt{K\_PAGEDOWN}     &  \verb+ +     &  page down\\ 
+\myindex{pyg}{\texttt{K\_F1}}           \texttt{K\_F1}           &  \verb+ +     &  F1\\ 
+\myindex{pyg}{\texttt{K\_F2}}           \texttt{K\_F2}           &  \verb+ +     &  F2\\ 
+\myindex{pyg}{\texttt{K\_F3}}           \texttt{K\_F3}           &  \verb+ +     &  F3\\ 
+\myindex{pyg}{\texttt{K\_F4}}           \texttt{K\_F4}           &  \verb+ +     &  F4\\ 
+\myindex{pyg}{\texttt{K\_F5}}           \texttt{K\_F5}           &  \verb+ +     &  F5\\ 
+\myindex{pyg}{\texttt{K\_F6}}           \texttt{K\_F6}           &  \verb+ +     &  F6\\ 
+\myindex{pyg}{\texttt{K\_F7}}           \texttt{K\_F7}           &  \verb+ +     &  F7\\ 
+\myindex{pyg}{\texttt{K\_F8}}           \texttt{K\_F8}           &  \verb+ +     &  F8\\ 
+\myindex{pyg}{\texttt{K\_F9}}           \texttt{K\_F9}           &  \verb+ +     &  F9\\ 
+\myindex{pyg}{\texttt{K\_F10}}          \texttt{K\_F10}          &  \verb+ +     &  F10\\ 
+\myindex{pyg}{\texttt{K\_F11}}          \texttt{K\_F11}          &  \verb+ +     &  F11\\ 
+\myindex{pyg}{\texttt{K\_F12}}          \texttt{K\_F12}          &  \verb+ +     &  F12\\ 
+\myindex{pyg}{\texttt{K\_F13}}          \texttt{K\_F13}          &  \verb+ +     &  F13\\ 
+\myindex{pyg}{\texttt{K\_F14}}          \texttt{K\_F14}          &  \verb+ +     &  F14\\ 
+\myindex{pyg}{\texttt{K\_F15}}          \texttt{K\_F15}          &  \verb+ +     &  F15\\ 
+\myindex{pyg}{\texttt{K\_NUMLOCK}}      \texttt{K\_NUMLOCK}      &  \verb+ +     &  numlock\\ 
+\myindex{pyg}{\texttt{K\_CAPSLOCK}}     \texttt{K\_CAPSLOCK}     &  \verb+ +     &  capslock\\ 
+\myindex{pyg}{\texttt{K\_SCROLLOCK}}    \texttt{K\_SCROLLOCK}    &  \verb+ +     &  scrollock\\ 
+\myindex{pyg}{\texttt{K\_RSHIFT}}       \texttt{K\_RSHIFT}       &  \verb+ +     &  right shift\\ 
+\myindex{pyg}{\texttt{K\_LSHIFT}}       \texttt{K\_LSHIFT}       &  \verb+ +     &  left shift\\ 
+\myindex{pyg}{\texttt{K\_RCTRL}}        \texttt{K\_RCTRL}        &  \verb+ +     &  right control\\ 
+\myindex{pyg}{\texttt{K\_LCTRL}}        \texttt{K\_LCTRL}        &  \verb+ +     &  left control\\ 
+\myindex{pyg}{\texttt{K\_RALT}}         \texttt{K\_RALT}         &  \verb+ +     &  right alt\\ 
+\myindex{pyg}{\texttt{K\_LALT}}         \texttt{K\_LALT}         &  \verb+ +     &  left alt\\ 
+\myindex{pyg}{\texttt{K\_RMETA}}        \texttt{K\_RMETA}        &  \verb+ +     &  right meta\\ 
+\myindex{pyg}{\texttt{K\_LMETA}}        \texttt{K\_LMETA}        &  \verb+ +     &  left meta\\ 
+\myindex{pyg}{\texttt{K\_LSUPER}}       \texttt{K\_LSUPER}       &  \verb+ +     &  left Windows key\\ 
+\myindex{pyg}{\texttt{K\_RSUPER}}       \texttt{K\_RSUPER}       &  \verb+ +     &  right windows key\\ 
+\myindex{pyg}{\texttt{K\_MODE}}         \texttt{K\_MODE}         &  \verb+ +     &  mode shift/AltGr\\ 
+\myindex{pyg}{\texttt{K\_HELP}}         \texttt{K\_HELP}         &  \verb+ +     &  help\\ 
+\myindex{pyg}{\texttt{K\_PRINT}}        \texttt{K\_PRINT}        &  \verb+ +     &  print screen\\ 
+\myindex{pyg}{\texttt{K\_SYSREQ}}       \texttt{K\_SYSREQ}       &  \verb+ +     &  sysreq\\ 
+\myindex{pyg}{\texttt{K\_BREAK}}        \texttt{K\_BREAK}        &  \verb+ +     &  break\\ 
+\myindex{pyg}{\texttt{K\_MENU}}         \texttt{K\_MENU}         &  \verb+ +     &  menu\\ 
+\myindex{pyg}{\texttt{K\_POWER}}        \texttt{K\_POWER}        &  \verb+ +     &  power\\ 
+\myindex{pyg}{\texttt{K\_EURO}}         \texttt{K\_EURO}         &  \verb+€+     &  Euro\\ 
+\myindex{pyg}{\texttt{K\_AC\_BACK}}     \texttt{K\_AC\_BACK}     &  \verb+ +     &  Android back button\\ 
+\end{longtable} 
+
+\begin{longtable}{ll}
+	\caption{Predefined Keyboard Modifier}\label{tabKeyMod}\index{Keyboard!Modifier} \\
+	% Definition des Tabellenkopfes auf der ersten Seite
+	\toprule
+	Constant  & Description\\
+	\midrule
+	\endfirsthead % Erster Kopf zu Ende
+	
+	% Definition des Tabellenkopfes auf den folgenden Seiten
+	\caption{Predefined Keyboard Modifier (continued)}\\
+	\toprule
+	Constant  & Description\\
+	\midrule
+	\endhead % Zweiter Kopf ist zu Ende
+	
+	\midrule
+	\multicolumn{2}{r}{\emph{continued on next page}} \\
+	\endfoot
+
+	\bottomrule
+	\endlastfoot
+	% Ab hier kommt der Inhalt der Tabelle
+    \myindex{pyg}{\texttt{KMOD\_NONE}}   \texttt{KMOD\_NONE}   &  no modifier keys pressed\\ 
+    \myindex{pyg}{\texttt{KMOD\_LSHIFT}} \texttt{KMOD\_LSHIFT} &  left shift\\ 
+    \myindex{pyg}{\texttt{KMOD\_RSHIFT}} \texttt{KMOD\_RSHIFT} &  right shift\\ 
+    \myindex{pyg}{\texttt{KMOD\_SHIFT}}  \texttt{KMOD\_SHIFT}  &  left or right shift or both\\ 
+    \myindex{pyg}{\texttt{KMOD\_LCTRL}}  \texttt{KMOD\_LCTRL}  &  left control\\ 
+    \myindex{pyg}{\texttt{KMOD\_RCTRL}}  \texttt{KMOD\_RCTRL}  &  right control\\ 
+    \myindex{pyg}{\texttt{KMOD\_CTRL}}   \texttt{KMOD\_CTRL}   &  left or right control or both\\ 
+    \myindex{pyg}{\texttt{KMOD\_LALT}}   \texttt{KMOD\_LALT}   &  left alt\\ 
+    \myindex{pyg}{\texttt{KMOD\_RALT}}   \texttt{KMOD\_RALT}   &  right alt\\ 
+    \myindex{pyg}{\texttt{KMOD\_ALT}}    \texttt{KMOD\_ALT}    &  left or right alt or both\\ 
+    \myindex{pyg}{\texttt{KMOD\_LMETA}}  \texttt{KMOD\_LMETA}  &  left meta\\ 
+    \myindex{pyg}{\texttt{KMOD\_RMETA}}  \texttt{KMOD\_RMETA}  &  right meta\\ 
+    \myindex{pyg}{\texttt{KMOD\_META}}   \texttt{KMOD\_META}   &  left or right meta or both\\ 
+    \myindex{pyg}{\texttt{KMOD\_CAPS}}   \texttt{KMOD\_CAPS}   &  caps lock\\ 
+    \myindex{pyg}{\texttt{KMOD\_NUM}}    \texttt{KMOD\_NUM}    &  num lock\\ 
+    \myindex{pyg}{\texttt{KMOD\_MODE}}   \texttt{KMOD\_MODE}   &  AltGr\\ 
+\end{longtable} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Homework}
+\begin{enumerate}
+	\item Place a ball bitmap with a non-uniform shape in the center of the window. The ball starts with a radius of \SI{100}{px}.	Pressing \keys{{+}}\randnotiz{scale()}\myindex{pyg}{\texttt{transform}!\texttt{scale()}} increases the size of the ball, and pressing \keys{-} decreases it. If the ball touches the border of the window, its size must not be	reduced any further. The minimum radius is \SI{10}{px}.
+	
+	\item Use the arrow keys to move the ball inside the window. The ball must not leave the window.
+	
+	\item Using\randnotiz{rotate()}\myindex{pyg}{\texttt{transform}!\texttt{rotate()}} \keys{\shift + \arrowkeyleft} rotates the ball by \ang{-90}, and \keys{\shift + \arrowkeyright} rotates it by \ang{90}.
+	The function you need is \texttt{pygame.transform.rotate()}.
+	
+	\item Change the rotation from \ang{-90} to \ang{-10} and from \ang{90} to \ang{10}. Do you notice anything strange? Find out how to avoid this behavior. It is indeed a little tricky.
+\end{enumerate}
+
+

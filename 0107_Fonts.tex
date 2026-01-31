@@ -1,0 +1,297 @@
+% !TeX spellcheck = en_US
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Text output using fonts}\index{Font}
+\subsection{Introduction}
+\myebild{font00}{0.8}{Simple text output using fonts}{picFont00}
+
+In many games, information is not shown only in a symbolic way on the playfield (for example, three little figures to represent three lives), but also as written text. One way to achieve this is by displaying text using installed fonts.
+
+The basic idea is simple: first, a \texttt{Font} object is created (see \zeiref{textoutput00a}). Then this font is used to generate a Surface object that contains the text -- the text is \glslink{render}{rendered}\randnotiz{render} onto a \texttt{Surface} object (see \zeiref{textoutput00b}). Once rendered, the text behaves like any other bitmap and can be blitted onto the screen.
+
+\lstsource{SRC/00 Introduction/07 Fonts/textoutput00.py}{7}{35}{python}{Simple text output using fonts}{srcFonts00aa} 
+
+But how does the contructor of \texttt{Font} know, which font I want? In \zeiref{textoutput00a} we use the predefined default font. The method \texttt{pygame.font.get\_default\_font()}\randnotiz{get\_default\_font()}\myindex{pyg}{\texttt{font}!\texttt{get\_default\_font()}} returns a unique string -- the internal name of the font. You can find in \secref[vref]{secFontInstalled} a program, which shows you all installed fonts and there internal names.
+
+If you want to use a specific font, you can get all required information with \texttt{pygame\-.font\-.match\_font()}\randnotiz{match\_font()}\myindex{pyg}{\texttt{font}!\texttt{match\_font()}}:
+\lstset{firstnumber=14}
+\begin{lstlisting}
+    font = pygame.font.Font(pygame.font.match_font("arial"), 24)
+\end{lstlisting}
+
+Hint: It is a waste of computing time to render the text every frame. Try to cache the rendered \texttt{Surface}-Object and use some kind of dirty-flag to indicate, if the text was updated.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{More Input}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{A More Sophisticated Approach}
+\myebild{font01}{0.8}{Text output using fonts}{picFont01}
+
+For a small example, I have wrapped this functionality into a class. You can easily extend it, modify it, or adapt it to your own needs.
+
+\lstsource{SRC/00 Introduction/07 Fonts/config.py}{1}{99}{python}{Text output using fonts (1), \texttt{config.py}}{srcFonts00a} 
+
+And now the class \texttt{TextSprite}: do not let the \glslink{oo}{OO} approach confuse you. In fact, everything is quite simple. We need a \texttt{pygame.font.\-Font} object \myindex{pyg}{\texttt{font}!\texttt{Font}}\randnotiz{Font}. This object, in turn, requires two pieces of information: which installed \gls{font} it should use, and the font size in \glslink{pt}{$pt$}.
+
+One way to obtain an installed font is the method \texttt{pygame.font.get\_default\_font()}\myindex{pyg}{\texttt{font}!\texttt{get\_default\_font()}}\randnotiz{get\_default\_font()}. Its call in \zeiref{srcTextoutputSimple01} returns the default font configured by the operating system. The font size (\texttt{fontsize}) can then be chosen freely according to our needs.
+
+
+\lstsource{SRC/00 Introduction/07 Fonts/textoutput01.py}{8}{44}{python}{Text output using fonts (2), \texttt{TextSprite}}{srcFonts00b} 
+
+Let us now take a closer look at the constructor. The attributes \texttt{image} and \texttt{rect} are initially created as dummy values; strictly speaking, this would not even be necessary. After storing the passed information about font size and font color\index{Font!size}\index{Font!color} in attributes, the \texttt{Font} object can be created. This is done by calling \texttt{fontsize\_update()} in \zeiref{srcTextoutputSimple02}. Passing the value~0 makes it clear that the size itself is not meant to be changed here, but that the object creation should take place.
+
+Next, the actual text that is to be rendered as a label is stored, as well as the position where the center of the text should be placed. At this point, all required information is available, and by calling \texttt{render()} in \zeiref{srcTextoutputSimple03}, the \texttt{Surface} object is created using \texttt{pygame\-.font\-.ren\-der()}\myindex{pyg}{\texttt{font}!\texttt{Font}!\texttt{render()}}\randnotiz{render()} (\zeiref{srcTextoutputSimple04}). Afterwards, the rectangle of the bitmap is determined and its center is moved to the desired position.
+
+Finally, there are the two methods \texttt{fontsize\_update()} and \texttt{fontcolor\_update()}. Both allow the font size and font color to be changed at runtime. Their semantics should be self-explanatory.
+
+How can such a class be used in practice? Here is a simple example. A greeting is displayed in the center using the object \texttt{hello} (\zeiref{srcTextoutputSimple07}). Below it, the object \texttt{info} displays which font size and font color were used to render the greeting (\zeiref{srcTextoutputSimple07}).
+
+\lstsource{SRC/00 Introduction/07 Fonts/textoutput01.py}{47}{91}{python}{Text output using fonts (3),  Main program}{srcFonts00c} 
+
+The greeting can be resized using the plus and minus keys (\zeiref{srcTextoutputSimple05}ff.). The keys \keys{r}, \keys{g}, and \keys{b} are used to manipulate the corresponding color channel. An uppercase letter increases the value (for example in \zeiref{srcTextoutputSimple09}), while the lowercase letter decreases it (for example in \zeiref{srcTextoutputSimple10}).
+
+In \abbref[vref]{picFont01} you can see one possible visual result.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{List of all Installed Fonts}\label{secFontInstalled}
+
+As another example, I would like to show you a small program that lists all installed fonts. This may be useful for getting ideas for visual design. The first part of the code should not cause any problems in terms of understanding.
+
+\myebild{font02}{0.65}{List of all installed fonts}{picFont02}
+
+\lstsource{SRC/00 Introduction/07 Fonts/fontslist/config.py}{1}{99}{python}{List of all installed fonts (1), \texttt{config.py}}{srcFonts01aa} 
+
+The class \texttt{TextSprite} was customized a little bit, but has still the same logic. 
+
+\lstsource{SRC/00 Introduction/07 Fonts/fontslist/textoutput02.py}{6}{33}{python}{List of all installed fonts (2), \texttt{TextSprite}}{srcFonts01a} 
+
+The class \texttt{BigImage} is responsible for managing all \texttt{FontSprite} images as one large bitmap. Later on, only a subsection of this bitmap is blitted onto the screen. This subsection depends on the current position within the list and is controlled by the attribute \texttt{offset}, which is updated in the method \texttt{update()} (\zeiref{srcTextoutputFontlist01}).
+
+First, it is checked whether the upper or lower end of the bitmap has been reached. If this is the case, \texttt{top} or \texttt{bottom} is set accordingly, so that the entire screen is always filled. Otherwise, the \texttt{offset} rectangle is shifted up or down, and the corresponding subsection is determined using \texttt{pygame.Surface.subsurface()}\myindex{pyg}{\texttt{Surface}!\texttt{subsurface()}}\randnotiz{subsurface()}.
+
+
+\lstsource{SRC/00 Introduction/07 Fonts/fontslist/textoutput02.py}{36}{55}{python}{List of all installed fonts (3), \texttt{BigImage}}{srcFonts01b} 
+
+And now the main program. In the first part, a list of all installed font names is obtained via \texttt{pygame.font.get\_fonts()}\myindex{pyg}{\texttt{font}!\texttt{get\_fonts()}}\randnotiz{get\_fonts()} (\zeiref{srcTextoutputFontlist02}). Each of these names is passed to the constructor of \texttt{TextSprite}.
+
+Using the method \texttt{pygame.font.match\_font()}\myindex{pyg}{\texttt{font}!\texttt{match\_font()}}\randnotiz{match\_font()} (\zeiref{srcTextoutputFontlist03}), the actual font file is then searched for on the system. This method takes advantage of the fact that the font file name can usually be derived from the font name and the file extension~\glslink{ttf}{\texttt{ttf}}.
+
+\lstsource{SRC/00 Introduction/07 Fonts/fontslist/textoutput02.py}{58}{102}{python}{List of all installed fonts (4), \texttt{main()}}{srcFonts01c} 
+
+In the \forSchleife{}, \texttt{TextSprite} objects are now created for all fonts, and their height and width are determined. All of these individual bitmaps are then blitted onto the large bitmap (\zeiref{srcTextoutputFontlist04}).
+
+The main loop is now only responsible for scrolling (each time by one third of the screen height) and for terminating the program.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Using Locally Installed Fonts}
+
+\myebild{font03}{1.0}{Example of using a locally installed font}{picFont02}
+
+In almost all respects, using local fonts is identical to using system fonts. So what does this distinction actually mean? System fonts are fonts that have been registered and installed in the operating system via an installation process. Local fonts, on the other hand, are font files—such as \texttt{ttf} files—that are stored in a subdirectory of the game itself. In our example, this is the file \texttt{rothenbg.ttf} located in the \texttt{fonts} subdirectory.
+
+There are a few practical reasons why local fonts are often preferred in games. By shipping a font file together with the game, you ensure that the visual appearance of the text is identical on all systems, independent of which fonts are installed on the player’s operating system.
+
+In the example above (\srcref[vref]{srcFonts00b}, \zeiref{srcTextoutputSimple01}), the constructor of \texttt{Font} was informed which system font to use via the function \texttt{get\_default\_font()} \myindex{pyg}{\texttt{font}!\texttt{get\_default\_font()}}. In \srcref[vref]{srcFonts01a}, this was done by specifying a name known to the system—that is, a string under which the font is registered in the operating system.
+
+In the example \srcref[vref]{srcFonts03a}, however, a file name including a relative path is passed directly to the constructor of \texttt{Font}. In this case, \texttt{Font} looks for the corresponding file and uses it to build its \texttt{Font} object (see \zeiref{textoutput03a}).
+
+From the programmer’s point of view, the difference between system fonts and local fonts is very small. In practice, it only affects how the constructor of \texttt{Font} is called. Once the \texttt{Font} object has been created, rendering and using text works in exactly the same way for both system and local fonts.
+
+
+When using local fonts, it is important to pay attention to licensing. Not every font may be freely redistributed. Before including a font file in your project, you should always check whether its license allows redistribution as part of a game or application. Our example was taken from \url{https://www.fontsquirrel.com/fonts/list/tag/historical} and was kindly made available as freeware by Alex Winterbottom.
+
+\lstsource{SRC/00 Introduction/07 Fonts/localfont/textoutput03.py}{7}{35}{python}{Using locally installed fonts}{srcFonts03a} 
+
+In \abbref[vref]{picFont02} you can admire the result ;-)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Text output}
+Text output is often not done via fonts, but via a \gls{spritelib}. Such a library contains character sprites, symbols, or digits, usually in a special design that matches the style of the game. In \abbref[vref]{picSpritelib01} you can see a spritelib that provides sprites for a World War~II dogfight game. Among other things, it contains the sprites for the digits $0$--$9$ and the letters of the Latin alphabet.
+
+One advantage of this approach is that you do not have to rely on a specific game font being available on the target system. If you render text using a font such as \emph{Calibri}, that font must be installed on the player’s computer. A disadvantage is that bitmaps usually scale poorly, so you often do not have many different font sizes available.
+
+The idea is to ``punch out'' the individual letters from the spritelib and store them in a suitable data structure. Whenever text needs to be displayed, the string is split into its characters, and the corresponding letter sprites are blitted from the data structure onto a target bitmap -- for example onto the screen. I will demonstrate this with a simple example. Our starting point is a spritelib that contains a character set in five different colors (see \abbref[vref]{picTextbitmaps01}).
+
+\myebild{1945}{0.53}{Example of a spritelib}{picSpritelib01}
+
+The first part of \srcref[vref]{srcTextbitmaps00a} should look familiar and is only extended by a few convenience features. The file paths are now determined via the functions \texttt{filepath()} and \texttt{imagepath()}.
+
+
+\lstsource{SRC/00 Introduction/07 Fonts/textbitmaps/config.py}{1}{99}{python}{Textbitmaps (1), \texttt{config.py}}{srcTextbitmaps00a} 
+
+The class \texttt{Spritelib} is mainly used as a container. It loads the spritelib containing the letters and symbols and stores several parameters that are needed to extract individual letters or symbols precisely from the bitmap:
+
+\begin{itemize}
+	\item \texttt{nof}: Stores the number of rows and columns. In our case, the symbol set is arranged in the bitmap in 4~rows and 10~columns.	Since we are only interested in one color at a time, this information is sufficient.
+	
+	\item \texttt{letter}: Each sprite has a fixed width and height. In our case, this is particularly convenient because all sprites have the same dimensions. Take a look at the three squares around the letters \texttt{N}, \texttt{W}, and \texttt{X} in \abbref[vref]{picSpritelib02}. All sprites have a width and a height of \SI{18}{px}.
+	
+	\item \texttt{offset}: The first sprite in the top-left corner has a distance from the left edge and from the top edge of the bitmap. This can be seen clearly for the sprite of the digit \texttt{0} in \abbref{picSpritelib02}. There is a square around the bitmap and a gap between this square and the upper and left edges (marked by the green line). In our example, both offsets have a value of \SI{6}{px}.
+	
+	\item \texttt{distance}: Each sprite has a fixed distance to the next sprite to the right and to the one below. Fortunately, the sprites in our spritelib are arranged equidistantly, which simplifies things a lot. Using the sprite for \texttt{X} in \abbref{picSpritelib02} as an example, you can see these distances. In our case, they are \SI{14}{px} each.
+\end{itemize}
+
+
+\begin{figure}[H]
+	\begin{center}
+		\begin{tikzpicture}
+			\node (myfirstpic) at (1cm,-1cm) {\includegraphics[scale=1.2]{symbol_red.png}};
+			
+			\draw
+			(-4.2cm, 1.5cm) node (a) {}
+			( 6.15cm,1.5cm) node (b) {}
+			(-4.2cm, 1.2cm) node (c) {}
+			(-4.2cm,-3.2cm) node (d) {}
+			;
+			\draw 
+			(-0.73, -2.65) node (X) {}
+			(-0.72, -2.44)[inner sep=0, outer sep=0] node (XL) {}
+			(-0.52, -2.22)[inner sep=0, outer sep=0] node (XT) {}
+			
+			(-0.73, -1.67) node (N) {}
+			
+			(-1.71, -2.65) node (W) {}
+			
+			(-3.66,  0.28) node (O) {}
+			(-3.45,  0.71) node (OT) {}
+			(-3.65,  0.5) node (OL) {}
+			;
+			
+			
+			
+			\draw[>-<, very thick, blue, densely dotted] 
+			(a) --  
+			node[above, blue, xshift=0cm] {nof['cols']}
+			(b)
+			;
+			\draw[>-<, very thick, blue, densely dotted] 
+			(c) --  
+			node[left, blue, xshift=0cm] {nof['rows']}
+			(d)
+			;
+			\draw (X) rectangle +(0.44cm, 0.44cm);
+			\draw (N) rectangle +(0.44cm, 0.44cm);
+			\draw (W) rectangle +(0.44cm, 0.44cm);
+			\draw (O) rectangle +(0.44cm, 0.44cm);
+			
+			\draw[very thick, black] 
+			(OL) -- 
+			node[below, black, yshift=-0.2cm, xshift=0.4cm] {\tiny offset['h']}
+			+(-0.24cm, 0.0cm);
+			
+			\draw[very thick, black]
+			(OT) -- 
+			node[right, black, yshift=0.0cm, xshift=0cm] {\tiny offset['v']}
+			+( 0.0cm, 0.24cm);
+			
+			\draw[very thick, black] 
+			(XL) -- 
+			node[below, black, yshift=-0.1cm] {\footnotesize distance['h']}
+			+(-0.54cm, 0.0cm);
+			
+			\draw[very thick, black] 
+			(XT) --  
+			node[right, black, xshift=0cm] {\footnotesize distance['v']} 
+			+( 0.0cm,  0.54cm);
+			
+		\end{tikzpicture}
+		\caption{Bedeutung der Angaben in \texttt{Spritelib}}\label{picSpritelib02}
+	\end{center}
+\end{figure}
+
+
+\lstsource{SRC/00 Introduction/07 Fonts/textbitmaps/textbitmaps.py}{7}{19}{python}{Textbitmaps (2), \texttt{Spritelib}}{srcTextbitmaps00b} 
+
+Let us now move on to the actually interesting class: \texttt{Letters}. This class cuts out all sprites of a single color from the spritelib and makes them available as \texttt{Surface} objects in a \gls{dictionary}\randnotiz{Dictionary}\index{Dictionary}. This involves quite a bit of calculation, but do not let that intimidate you; in the end, it is nothing more than basic arithmetic.
+
+Let us start with the constructor. The constructor has two parameters. The first parameter, \texttt{spritelib}, is a reference to the \texttt{Spritelib} object, which has loaded the original bitmap and provides several spacing and layout parameters. The second parameter, \texttt{colornumber}, allows us to extract the complete set of symbols for exactly one color later on: \texttt{0} stands for the white sprites, \texttt{1} for the yellow ones, and so on.
+
+
+\lstsource{SRC/00 Introduction/07 Fonts/textbitmaps/textbitmaps.py}{22}{28}{python}{Textbitmaps (3): Constructor of \texttt{Letters}}{srcTextbitmaps00c} 
+
+In the method \texttt{create\_letter\_bitmap()}, the individual sprites are now cut out and stored in a dictionary. The indices of this dictionary are defined in \zeiref{srcTextbitmaps0000}. Here, the order must of course match the order in which the sprites are cut out. The variable \texttt{index} ensures exactly this: with each loop iteration, the next \texttt{lettername} is used as the key for the dictionary.
+
+In \zeiref{srcTextbitmaps0001}, the position -- i.\,e.\ the pixel coordinates -- of the first sprite is calculated. Try to follow the arithmetic yourself using the information given in \abbref[vref]{picSpritelib02}! Don’t worry: it is not difficult, just a bit lengthy.
+
+Starting at \zeiref{srcTextbitmaps0002}, a nested \forSchleife{} begins. The outer loop iterates over all rows of the spritelib, and the inner loop over the columns. The goal of this construction is to create a \texttt{Rect} object for each sprite, in which the position and size of the sprite are stored. In \zeiref{srcTextbitmaps0003}, the top coordinate is calculated, and in \zeiref{srcTextbitmaps0005} the left coordinate. If you have understood \zeiref{srcTextbitmaps0001}, these two calculations should no longer pose any problems. Height and width in \zeiref{srcTextbitmaps0005} are straightforward, since all sprites always have the same dimensions. After that, the \texttt{Rect} object is created and used to cut out the bitmap with the help of \texttt{subsurface()} \myindex{pyg}{\texttt{Surface}!\texttt{subsurface()}}. This extracted bitmap is then stored in the dictionary under its symbol name.
+
+\newpage
+\lstinputlisting[caption={Textbitmaps (4): \texttt{create\_letter\_bitmap()} von \texttt{Letters}},label={srcTextbitmaps00d},firstline={30},lastline={86},linerange={30-33,66-86}, consecutivenumbers=false]{SRC/00 Introduction/07 Fonts/textbitmaps/textbitmaps.py}
+
+
+The method \texttt{get\_text()} finally returns the matching sequence of bitmap sprites for a given text. To do this, it uses the method \texttt{get\_letter()}, which is necessary so that the program does not crash when an undefined letter or symbol is used. For example, if you type an \texttt{ü}, a square placeholder will be displayed.
+
+
+\lstsource{SRC/00 Introduction/07 Fonts/textbitmaps/textbitmaps.py}{88}{101}{python}{Textbitmaps (5): \texttt{get\_letter()} and \texttt{get\_text()} von \texttt{Letters}}{srcTextbitmaps00e} 
+
+
+The actual main program is encapsulated in the class \texttt{TextBitmaps}. Since the source code does not introduce anything fundamentally new, it should be largely self-explanatory. However, I would like to take a closer look at two specific lines:
+
+\begin{itemize}
+	\item \zeiref{srcTextbitmaps0008}: Here, \gls{slicing} of \glspl{array} is used. The value~\texttt{-1} causes the end index of the slice to start at the last element and then move one step to the left. The result is a new string that is shortened by its last character.
+	
+	\item \zeiref{srcTextbitmaps0009}: The attribute \texttt{unicode}\myindex{pyg}{\texttt{event}!\texttt{Event}!\texttt{unicode}}\randnotiz{unicode} provides, where applicable, the value of the pressed key in \gls{unicode} format. This means that meaningful letters, digits, and similar characters are added
+	directly to the string.
+\end{itemize}
+
+\lstsource{SRC/00 Introduction/07 Fonts/textbitmaps/textbitmaps.py}{104}{140}{python}{Textbitmaps (6): \texttt{TextBitmaps}}{srcTextbitmaps00f}
+
+\myebild{textbitmaps00}{0.7}{Text output using bitmaps}{picTextbitmaps01}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{What was new?}
+To produce text output, you can use either system-installed fonts or local font files. In the first step, a suitable font object is created. In the second step, this object is used to render a given text into a bitmap --- a \texttt{Surface} object. This bitmap can then be blitted to the desired position just like any other \texttt{Surface} object.
+
+But Text output is not only created using fonts, but also by means of spritelibs that contain character bitmaps. These bitmaps are cut out and then assembled into new composite bitmaps.
+
+The following Pygame elements were introduced:
+
+\begin{itemize}
+	\item \texttt{pygame.event.Event.unicode}:
+	\myindex{pyg}{\texttt{event}!\texttt{Event}!\texttt{unicode}}\\ \url{https://pyga.me/docs/ref/event.html}
+
+	\item \texttt{pygame.font.Font}:
+	\myindex{pyg}{\texttt{font}!\texttt{Font}}\\ \url{https://pyga.me/docs/ref/font.html}
+	
+	\item \texttt{pygame.font.get\_default\_font()}:
+	\myindex{pyg}{\texttt{font}!\texttt{get\_default\_font()}}\\ \url{https://pyga.me/docs/ref/font.html#pygame.font.get_default_font}
+
+	\item \texttt{pygame.font.get\_fonts()}:
+	\myindex{pyg}{\texttt{font}!\texttt{get\_fonts()}}\\ \url{https://pyga.me/docs/ref/font.html#pygame.font.get_fonts}
+	
+    \item \texttt{pygame.font.match\_font()}:
+    \myindex{pyg}{\texttt{font}!\texttt{match\_font()}}\\
+    \url{https://pyga.me/docs/ref/font.html#pygame.font.match_font}
+
+	\item \texttt{pygame.font.Font.render()}:
+    \myindex{pyg}{\texttt{font}!\texttt{Font}!\texttt{render()}}\\ \url{https://pyga.me/docs/ref/font.html#pygame.font.Font.render}
+
+	\texttt{pygame.Surface.subsurface()}:
+    \myindex{pyg}{\texttt{Surface}!\texttt{subsurface()}}\\ \url{https://pyga.me/docs/ref/surface.html#pygame.Surface.subsurface}
+
+	\item \texttt{pygame.Surface.subsurface()}:
+	\myindex{pyg}{\texttt{Surface}!\texttt{subsurface()}}\\ \url{https://pyga.me/docs/ref/surface.html#pygame.Surface.subsurface}
+
+
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\subsection{Homework}
+
+\begin{wrapfigure}[13]{r}{6.5cm}%
+	%\vspace{-1em}%
+	\myfigure{clock.png}{0.4}{Clock}{picClock00}%
+\end{wrapfigure}Create a program that simulates a analog clock. The program contains the following status variables: number of lives, score, high score, the number of seconds since the program started, and a game title. Please position the information inside the window as follows:
+	
+	\begin{itemize}
+		\item Title line: on the left the current date, in the center the game title, and on the right the current time
+		\item Status line at the very bottom: on the left the number of lives, in the center score/high score, and on the right the number of seconds since the game started
+	\end{itemize}
+	
+The values should update dynamically. The score increases by~1 every second. This score is written to the file \texttt{highscore.txt} if it is greater than the current high score. Date, time, and elapsed time are obtained from suitable functions of the \texttt{time} module. Draw an analog clock in the center with second hand and dial like in \abbref{picClock00}.
+
+
+
