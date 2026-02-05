@@ -3,7 +3,7 @@ from os import path
 
 import pygame
 
-WINDOW: pygame.rect.Rect = pygame.rect.Rect(0, 0, 400, 200)   # Rect§\label{srcSound0001}§
+WINDOW: pygame.rect.Rect = pygame.rect.Rect(0, 0, 400, 200)   # Rect
 FPS = 60
 DELTATIME = 1.0 / FPS
 PATH: dict[str, str] = {}

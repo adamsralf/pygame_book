@@ -1,8 +1,13 @@
 % !TeX spellcheck = en_US
 \newpage
-\section{Moving Bitmaps}\index{Bitmap!moving}
-\subsection{Class \texttt{Rect}/\texttt{FRect}}
- In the summary of the previous chapter, we noted that when displaying bitmaps we need the \emph{upper-left corner} as the position value, and we need the \emph{height} and \emph{width}, for example for distance calculations. These values can be conveniently encoded in a rectangle. For this purpose, Pygame provides the classes \texttt{pygame.rect.Rect}\myindex{pyg}{\texttt{rect}!\texttt{Rect}|underline}\randnotiz{Rect} (integers only) and \texttt{pygame.rect.FRect}\myindex{pyg}{\texttt{rect}!\texttt{FRect}|underline}\randnotiz{FRect} (floating-point numbers). In \abbref[vref]{picRect01}, you can find what I consider to be the most important attributes of this class.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Moving Bitmaps}\index{Bitmap!moving}\label{secMoving}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/00%20Introduction/04%20Moving}
+\end{diskbox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Class \texttt{Rect}/\texttt{FRect}}\label{secRect}
+ In the summary of the previous chapter, we noted that when displaying bitmaps we need the \emph{upper-left corner} as the position value, and we need the \emph{height} and \emph{width}, for example for distance calculations. These values can be conveniently encoded in a rectangle. For this purpose, Pygame provides the classes \texttt{pygame.rect.Rect}\myindex{pyg}{\texttt{rect}!\texttt{Rect}|underline}\randnotiz{Rect} (integers only) and \texttt{pygame.rect.FRect}\myindex{pyg}{\texttt{rect}!\texttt{FRect}|underline}\randnotiz{FRect} (floating-point numbers). In \abbref[vref]{picRect01}, you can find what I~consider to be the most important attributes of this class.
 
 \begin{figure}[H]
 \begin{tikzpicture}
@@ -86,7 +91,7 @@
 \draw[<->, very thick, purple] (h1) -- (h2) node[above, black, yshift=2.4cm, rotate=90] {height};
 
 \end{tikzpicture}
-\caption{Elements of a \texttt{Rect}-Object}\label{picRect01}
+\caption{Elements of a \texttt{Rect}-/\texttt{FRect}-Object}\label{picRect01}
 \end{figure}
 
 \myindex{pyg}{\texttt{rect}!\texttt{Rect}!\texttt{centerx}}%
@@ -115,13 +120,13 @@
 \myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{height}|underline}%
 \myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{size}|underline}%
 
-In the figure, line segments are shown in normal font, while points are shown in \textit{italic font}. The segments are one-dimensional, and the points are two-dimensional $(x, y)$. The coordinate~$x$ represents the horizontal distance from the origin of the coordinate system, and~$y$ represents the vertical distance. The meaning of the individual labels should be self-explanatory.
+In the figure, line segments are shown in normal font, while points are shown in \textit{italic font}. The segments are one-dimensional, and the points are two-dimensional $(x, y)$. The coordinate~$x$ represents the horizontal distance from the origin of the coordinate system or the upper-left corner of the rectangle, and~$y$ represents the vertical distance. The meaning of the individual labels should be self-explanatory.
 
-The nice advantage is that all these values are computed from each other. For example, if I set \texttt{topleft = (10, 10)} and \texttt{width, height = 30, 40}, all other values are calculated automatically. I no longer need to compute the right edge manually using \texttt{left + width}; instead, I can directly use \texttt{right}.
+The nice advantage is that all these values are computed from each other. For example, if I~set \texttt{topleft = (10, 10)} and \texttt{width, height = 30, 40}, all other values are calculated automatically. I~no longer need to compute the right edge manually using \texttt{left + width}; instead, I~can directly use \texttt{right}.
 
-It is also often useful to work with the center position \texttt{center} or the corresponding coordinates \texttt{centerx} and \texttt{centery}. If I change the center to \texttt{center = (100, 10)}, all other values are updated accordingly and do not need to be recalculated by me -- very convenient.
+It is also often useful to work with the center position \texttt{center} or the corresponding coordinates \texttt{centerx} and \texttt{centery}. If I~change the center to \texttt{center = (100, 10)}, all other values are updated accordingly and do not need to be recalculated by me -- very convenient.
 
-Let us take a look at a reduced version of the last source code. In \srcref[vref]{srcInvader05}, the \texttt{Rect} class is already being used. For example, in \zeiref{srcInvader0504a} the window dimensions are stored in a \texttt{Rect} object. 
+Let us take a look at a reduced version of the last source code. In \srcref[vref]{srcInvader05}, the \texttt{Rect} class is already being used; i.e., in \zeiref{srcInvader0504a} the window dimensions are stored in a \texttt{Rect} object. 
 
 \lstsource{SRC/00 Introduction/04 Moving/config.py}{1}{999}{python}{Moving Bitmaps: \texttt{config.py}}{srcInvaderConfig00}
 
@@ -129,30 +134,31 @@ As a result, the screen information can be accessed conveniently and without per
 
 \lstsource{SRC/00 Introduction/04 Moving/invader05.py}{6}{36}{python}{Moving Bitmaps, Version 1.0}{srcInvader05}
 
-For \texttt{Surface} objects, we can conveniently create a \texttt{Rect} object using \texttt{pygame.Surface\-.get\-\_rect()}\myindex{pyg}{\texttt{Surface}!\texttt{get\_rect()}}\randnotiz{get\_rect()} (\zeiref{srcInvader0501}). Positioning can now be handled much more easily via the attributes. For example, the center no longer needs to be part of a calculation; instead, I can directly set the horizontal center to half the window width (\zeiref{srcInvader0502}). Likewise, the vertical coordinate no longer has to be considered from the top edge; instead, I can specify the distance of the bottom edge from the screen edge in a much more intuitive way (\zeiref{srcInvader0503}). And as a final bonus, the \texttt{Rect} object can even be passed directly as a parameter to the \texttt{blit()} function\randnotiz{blit()}\myindex{pyg}{\texttt{Surface}!\texttt{blit()}} (\zeiref{srcInvader0504}).
+For \texttt{Surface} objects, we can conveniently create a \texttt{Rect} object using \texttt{pygame.Surface\-.get\-\_rect()}\myindex{pyg}{\texttt{Surface}!\texttt{get\_rect()}}\randnotiz{get\_rect()} (\zeiref{srcInvader0501}). Positioning can now be handled much more easily via the attributes. For example, the center no longer needs to be part of a calculation; instead, I~can directly set the horizontal center to half the window width (\zeiref{srcInvader0502}). Likewise, the vertical coordinate no longer has to be considered from the top edge; instead, I~can specify the distance of the bottom edge from the screen edge in a much more intuitive way (\zeiref{srcInvader0503}). And as a final bonus, the \texttt{Rect} object can even be passed directly as a parameter to the \texttt{blit()} function\randnotiz{blit()}\myindex{pyg}{\texttt{Surface}!\texttt{blit()}} (\zeiref{srcInvader0504}).
 
 \myebild{invader05.png}{0.8}{Moving Bitmaps, Version 1.0}{picInvader05}
 
 The result is unspectacular (see \abbref[vref]{picInvader05}) and has
 nothing to do with movement yet.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Introduction}
 
- Movement in games is animated by changing positions. If the spaceship is supposed to move to the right, the horizontal coordinate of the ship therefore has to increase. Which horizontal coordinate you use for this -- \texttt{left}, \texttt{right}, or \texttt{centerx} -- can be chosen depending on your game logic. In our example, this does not matter, so I will use \texttt{left}.
+ Movement in games is animated by changing positions. If the spaceship is supposed to move to the right, the horizontal coordinate of the ship therefore has to increase. Which horizontal coordinate you use for this -- \texttt{left}, \texttt{right}, or \texttt{centerx} -- can be chosen depending on your game logic. In our example, this does not matter, so I~will use \texttt{left}.
 
 \lstset{firstnumber=26}
 \begin{lstlisting}
 defender_rect.left += 1
 \end{lstlisting}
 
-This small addition alone now causes our spaceship to move to the right. The \texttt{+1} encodes two pieces of information:
-
+This small addition alone now causes our spaceship to move to the right. 
+\begin{hintbox}[The \texttt{+1} encodes two pieces of information:]
 \begin{itemize}
-	\item \textbf{Direction:}\randnotiz{Direction}\index{Direction} Here, the sign is \texttt{+}. This increases the value of \texttt{left} in each loop iteration; as a result, the left edge of the graphic moves to the right. If you wanted to move to the left, the sign would have to be	\texttt{-}.	In that case, the horizontal coordinate would become smaller and approach~0. Completely analogously, the sign also controls the direction in the vertical axis.	A \texttt{+} moves the graphic downward, and a \texttt{-} moves it upward.	Try it out!
+	\item \textbf{Direction:}\index{Direction} Here, the sign is \texttt{+}. This increases the value of \texttt{left} in each loop iteration; as a result, the left edge of the graphic moves to the right. If you wanted to move to the left, the sign would have to be	\texttt{-}.	In that case, the horizontal coordinate would become smaller and approach~0. Completely analogously, the sign also controls the direction in the vertical axis. A \texttt{+} moves the graphic downward, and a \texttt{-} moves it upward.	Try it out!
 	
-	\item \textbf{Speed:}\randnotiz{Speed}\index{Speed}	The \texttt{1} specifies by how much the value of \texttt{left}	changes. The larger this value is, the larger the jumps between frames;	the movement appears faster.
+	\item \textbf{Speed:}\index{Speed}	The \texttt{1} specifies by how much the value of \texttt{left}	changes. The larger this value is, the larger the jumps between frames; the movement appears faster.
 \end{itemize}
-
+\end{hintbox}
 
 \lstsource{SRC/00 Introduction/04 Moving/invader05b.py}{17}{28}{python}{Moving Bitmaps, Version 1.2}{srcInvader05b}
 
@@ -162,11 +168,11 @@ The direction is also stored in a variable in \zeiref{srcInvader0506}: \texttt{d
 
 Both values can now be used in \zeiref{srcInvader0507} to calculate the new horizontal position.
 
-If you run the program, the defender will leave the screen after a while and disappear beyond the right edge, never to be seen again. Let us now use our rectangle for a first simple collision check. I want the spaceship to \emph{bounce} off the edges and reverse its direction.
+If you run the program, the defender will leave the screen after a while and disappear beyond the right edge, never to be seen again. Let us now use our rectangle for a first simple collision check. I~want the spaceship to \emph{bounce} off the edges and reverse its direction.
 
 \lstsource{SRC/00 Introduction/04 Moving/invader05c.py}{27}{32}{python}{Move Bitmaps, Version 1.3}{srcInvader05c}
 
-I hope you can recognize the idea behind the code. After calculating the new horizontal position, \zeiref{srcInvader0508} checks whether the new right edge of the bitmap has reached or exceeded the right edge of the screen. If this is the case, the sign of the direction variable is simply reversed\index{Direction change}\randnotiz{Direction change}! The same logic works analogously when the left edge of the screen is reached.
+I~hope you can recognize the idea behind the code. After calculating the new horizontal position, \zeiref{srcInvader0508} checks whether the new right edge of the bitmap has reached or exceeded the right edge of the screen. If this is the case, the sign of the direction variable is simply reversed\index{Direction change}\randnotiz{Direction change}! The same logic works analogously when the left edge of the screen is reached.
 
 Try combining this with vertical movement as well.
 
@@ -212,12 +218,18 @@ The subsequent collision checks are then performed using the \texttt{newpos} rec
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
 \subsection{More Input}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Normalizing Speeds (\emph{delta time})}\index{deltatime}\label{secDeltatime}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/00%20Introduction/04%20Moving/dt}
+\end{diskbox}
+
 At the moment, the movement does not depend only on
 \texttt{defender\_speed}, but also on the frame rate
 \texttt{cfg.FPS}.
-To illustrate this dependency, I modified the previous source code for a small experiment (see \srcref{srcInvaderConfig05e} and \srcref[vref]{srcInvader05e}).
+To illustrate this dependency, I~modified the previous source code for a small experiment (see \srcref{srcInvaderConfig05e} and \srcref[vref]{srcInvader05e}).
 
 \lstsource{SRC/00 Introduction/04 Moving/dt/e/config.py}{1}{99}{python}{Movement without normalization: \texttt{config.py}}{srcInvaderConfig05e}
 
@@ -226,15 +238,17 @@ In \zeiref{srcInvader05e01}, you can see the different frame rates with which th
 
 \Zeiref{srcInvader05e02} stores the time at which the spaceship’s ascent began. For this purpose, the function \texttt{pygame.time.get\_ticks()}\myindex{pyg}{\texttt{time}!\texttt{get\_ticks()}}\randnotiz{get\_ticks()} returns the number of milliseconds since the call to \texttt{pygame.init()}\myindex{pyg}{\texttt{init()}}; for example, \SI{5}{ms}.
 
-Inside the main program loop, the spaceship now moves upward by a certain number of pixels per frame. The new position is calculated by adding the product of direction and speed to the \texttt{top} coordinate of the old position (\zeiref{srcInvader05e03}) -- so there is nothing new at this point.
+Inside the main loop, the spaceship now moves upward by a certain number of pixels per frame. The new position is calculated by adding the product of direction and speed to the \texttt{top} coordinate of the old position (\zeiref{srcInvader05e03}) -- so there is nothing new at this point.
 
-After a fixed time interval (\texttt{cfg.LIMIT}, here \SI{500}{ms}), the direction stored in \texttt{defender\-\_direction} is set to~0, causing the movement to stop. To do this, \zeiref{srcInvader05e04} checks whether the current number of milliseconds since the start of the program is greater than \texttt{start\_time} plus \texttt{cfg.LIMIT}. In numerical terms: during the first loop iteration (frame~1), the condition would be, for example, 
+After a fixed time interval (\texttt{cfg.LIMIT}, here \SI{500}{ms}), the direction stored in \texttt{defender\-\_direction} is set to~0, causing the movement to stop. To do this, \zeiref{srcInvader05e04} checks whether the current number of milliseconds since the start of the program is greater than \texttt{start\_time} plus \texttt{cfg.LIMIT}. 
+
+In numerical terms: during the first loop iteration (frame~1), the condition would be, for example, 
  
-\emph{Is \SI{17}{ms} greater than \SI{5}{ms} + \SI{500}{ms}?}
+\hspace{1cm}\emph{Is \SI{17}{ms} greater than \SI{5}{ms} + \SI{500}{ms}?}
  
 The answer is \emph{No}, so the spaceship continues to move upward. At frame~61, the condition would be 
 
-\emph{Is \SI{508}{ms} greater than \SI{5}{ms} + \SI{500}{ms}?}
+\hspace{1cm}\emph{Is \SI{508}{ms} greater than \SI{5}{ms} + \SI{500}{ms}?}
 
 Now the answer is \emph{Yes}, and the direction variable is therefore set to~0, stopping the movement.
 
@@ -330,10 +344,10 @@ That is exactly what we tried to achieve.
 \end{longtable} 
 
 
-In this context, it becomes apparent that the distance is surprisingly short: only~\SI{1}{px} per second. Please note that the unit of the first column has changed as well. The speed no longer specifies the number of pixels per frame, but the number of pixels per second! We therefore need to choose a different speed value; based on our window size, I decided on~\SI{600}{px/s}. After one second, our spaceship will have reached the top.
+In this context, it becomes apparent that the distance is surprisingly short: only~\SI{1}{px} per second. Please note that the unit of the first column has changed as well. The speed no longer specifies the number of pixels per frame, but the number of pixels per second! We therefore need to choose a different speed value; based on our window size, I~decided on~\SI{600}{px/s}. After one second, our spaceship will have reached the top.
 
 
-In \tabref[vref]{tabFpsBewegung03}, I calculated the expected final position (\texttt{.top}) after half a second. In the left half of the table, the traveled distance is calculated. Surprisingly, it always amounts to \SI{300}{px}. From the window height (\texttt{WINDOW.height}), we have to subtract this distance. In addition, we subtract the height of our spaceship (\SI{30}{px}) and the small offset of \SI{5}{px}, since we did not want to start the spaceship directly at the bottom edge. We therefore expect our spaceship to reach the final position calculated in \tabref[vref]{tabFpsBewegung03} after half a second.
+In \tabref[vref]{tabFpsBewegung03}, I~calculated the expected final position (\texttt{.top}) after half a second. In the left half of the table, the traveled distance is calculated. Surprisingly, it always amounts to \SI{300}{px}. From the window height (\texttt{WINDOW.height}), we have to subtract this distance. In addition, we subtract the height of our spaceship (\SI{30}{px}) and the small offset of \SI{5}{px}, since we did not want to start the spaceship directly at the bottom edge. We therefore expect our spaceship to reach the final position calculated in \tabref[vref]{tabFpsBewegung03} after half a second.
 
 
 \begin{longtable}{r@{ * }r@{ * }r@{ * }r@{ = }r@{ $\rightarrow$ }c@{ - }r@{ - }r@{ = }r}%{r@{ * }r@{ * }r@{ * }r@{ + }r@{ + }r@{ = }r@{ $\rightarrow$ }r}
@@ -369,21 +383,24 @@ In \tabref[vref]{tabFpsBewegung03}, I calculated the expected final position (\t
 
 Although \tabref{tabFpsBewegung03} may look complicated, the implementation is surprisingly simple. First, the adjustment in \texttt{config.py}. In \zeiref{srcInvader05f01}, the correction factor is defined -- as discussed above -- as the inverse of the frame rate. 
 
+\newpage
 \lstsource{SRC/00 Introduction/04 Moving/dt/f/config.py}{1}{99}{python}{Movement with normalization and  $dt=1/fps$: \texttt{config.py}}{srcInvaderConfig05f}
 
 The speed is adjusted from~2 to~600 in \zeiref{srcInvader05f02}, and in \zeiref{srcInvader05f03} the correction factor \texttt{DELTATIME} is included as a factor in the calculation. That’s it; in \abbref[vref]{fpsbewegung01} we can admire the \emph{perfect} result on one of my slower computers.
 
 \lstsource{SRC/00 Introduction/04 Moving/dt/f/invader05f.py}{6}{44}{python}{Movement with normalization and  $dt=1/fps$}{srcInvader05f}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
 \subsubsection{Optimizing Normalized Speed}
 
-Two issues cause the error shown in \abbref[vref]{fpsbewegung01}:
-
+\begin{warningbox}[Two issues cause the error shown] in \abbref[vref]{fpsbewegung01}:
 \begin{itemize}
-	\item \textbf{\Glspl{roundingerror}:} In theory, multiplying the frame rate by the delta time should always yield~$1.0$. Unfortunately, this is not the case. When computing delta time, a value close to the exact value is stored due to the way a \gls{float} is represented\randnotiz{Rounding error};	for example, instead of the exact value $0.0\overline{3}$ for $\tfrac{1.0}{30.0}$, the stored value is $0.03333333333333330$. Over time, this rounding error accumulates to perceptible amounts.
+	\item \textbf{\Glspl{roundingerror}:} In theory, multiplying the frame rate by the delta time should always yield~$1.0$. Unfortunately, this is not the case. When computing delta time, a value close to the exact value is stored due to the way a \gls{float} is represented;	for example, instead of the exact value $0.0\overline{3}$ for $\tfrac{1.0}{30.0}$, the stored value is $0.03333333333333330$. Over time, this rounding error accumulates to perceptible amounts.
 	
-	\item \textbf{Incorrect understanding of $fps$:} The frame rate does not define that the main program loop is executed \emph{exactly} 60 times per second, for example, but that it is executed \emph{at most} 60 times per second.	If the game logic or rendering takes more time than $\tfrac{1}{60}\,\si{s}$, at least one frame will be skipped. This can also happen if the computer loses performance due to other operations (for example, cloud synchronization).
+	\item \textbf{Incorrect understanding of $fps$:} The frame rate does not define that the main program loop is executed \emph{exactly} 60 times per second, for example, but that it is executed \emph{at most} 60 times per second. If the game logic or rendering takes more time than $\tfrac{1}{60}\,\si{s}$, at least one frame will be skipped. This can also happen if the computer loses performance due to other operations (for example, cloud synchronization).
 \end{itemize}
+\end{warningbox}
 
 
 We cannot solve the first problem without a significant loss of performance, so we will not consider it any further. The second problem, however, can be addressed. Instead of a fixed delta time, we need a value that is based on the actual duration of a frame. The method \texttt{pygame.clock.tick()}\myindex{pyg}{\texttt{clock}!\texttt{tick()}}\randnotiz{tick()} in \zeiref{srcInvader05g01} provides a good estimate of the frame time. Luckily, this feature is already built in and can therefore be used directly (see \srcref[vref]{srcInvader05g}). The result in \abbref[vref]{fpsbewegung02} is better, but still not satisfying~{:-(}. In \abbref[vref]{picFehlerInvers}, you can see that the red line more or less dances around the green one, and no clear trend is visible.
@@ -436,7 +453,7 @@ However, there is yet another source of error: \texttt{pygame.clock.tick()}\myin
 
 In \zeiref{srcInvader05i02}, the current time is measured after one frame has elapsed, and in the following line the elapsed time is computed. This value represents the actual \emph{delta time}\index{deltatime} of the frame, now with higher precision. Afterwards, in \zeiref{srcInvader05i04}, the new start time of the next frame is stored so that the elapsed time can be computed again after the next frame.
 
-\abbref[vref]{fpsbewegung04} shows that the target positions are reached almost perfectly for all frame rates. However, comparing the position errors in \abbref[vref]{picFehlerFunktion} does not allow for a clear evaluation. I suspect that experiments with significantly longer runtimes would make a difference visible. We must -- and can -- live with the remaining error.
+\abbref[vref]{fpsbewegung04} shows that the target positions are reached almost perfectly for all frame rates. However, comparing the position errors in \abbref[vref]{picFehlerFunktion} does not allow for a clear evaluation. I~suspect that experiments with significantly longer runtimes would make a difference visible. We must -- and can -- live with the remaining error.
 
 \myebild{error_function.pdf}{1.0}{Position Error with Different Time Functions}{picFehlerFunktion}
 
@@ -509,14 +526,17 @@ In \zeiref{srcInvader05i02}, the current time is measured after one frame has el
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{What was new?}
-The position of an object is stored in a \texttt{Rect} or \texttt{FRect} object. In each frame, the position is checked and modified if necessary. When the screen is updated, this creates the impression of movement. The result of a movement is usually first stored temporarily in a variable and checked before it is applied as the new position.
+\begin{hintbox}
+	\begin{itemize}
+		\item The position of an object is stored in a \texttt{Rect} or \texttt{FRect} object. In each frame, the position is checked and modified if necessary. When the screen is updated, this creates the impression of movement. The result of a movement is usually first stored temporarily in a variable and checked before it is applied as the new position.
+		
+		\item The direction of movement is encoded by the sign, and the speed by the value of the speed variable. Horizontal and vertical movement are handled separately. 
+		
+		\item To become independent of the actual frame rate, a correction factor (delta time) must be used when calculating the new position. This value can either be computed manually or obtained from a call to \texttt{pygame.time.Clock.tick()}.
+	\end{itemize}
+\end{hintbox}
 
-The direction of movement is encoded by the sign, and the speed by the value of the speed variable. Horizontal and vertical movement are handled separately. 
-
-To become independent of the actual frame rate, a correction factor (delta time) must be used when calculating the new position. This value can either be computed manually or obtained from a call to \texttt{pygame.time.Clock.tick()}.
-
-The following Pygame elements were introduced:
-
+\begin{pygbox}
 \begin{itemize}
 
 	\item \texttt{pygame.rect.FRect}:
@@ -551,6 +571,7 @@ The following Pygame elements were introduced:
     \myindex{pyg}{\texttt{math}!\texttt{Vector3}}\\
     \url{https://pyga.me/docs/ref/math.html#pygame.math.Vector3}
 \end{itemize}
+\end{pygbox}
 
 
 

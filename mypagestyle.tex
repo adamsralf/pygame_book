@@ -1,39 +1,151 @@
-% =================================================
-% Custom page style definitions (KOMA-Script)
-% =================================================
-\KOMAoptions{
-	automark,
-	headsepline,
-	footsepline
-}
-
-% Clear default settings
 \clearpairofpagestyles
 \clearplainofpairofpagestyles
+\automark[section]{chapter}
+\setkomafont{pagehead}{\small\sffamily\bfseries}
+\setkomafont{pagefoot}{\small\sffamily}
+\renewcommand*{\chapterpagestyle}{scrheadings}
+
+
+\tcbset{
+	page/header/.style={
+		enhanced,
+		frame hidden,
+		colback=headblue,
+		coltext=white,
+		boxrule=0pt,
+		arc=0mm,
+		left=6mm,
+		right=6mm,
+		top=1.5mm,
+		bottom=1.5mm,
+%		width=\paperwidth,
+		enlarge left by=-\hoffset,
+		enlarge right by=\hoffset,
+	},
+	page/footer/.style={
+		enhanced,
+		frame hidden,
+		colback=headblue,
+		coltext=white,
+		boxrule=0pt,
+		arc=0mm,
+		left=6mm,
+		right=6mm,
+		top=1.2mm,
+		bottom=1.2mm,
+%		width=\paperwidth,
+		enlarge left by=-\hoffset,
+		enlarge right by=\hoffset,
+	},
+}
+
+
+
+% ---------------- HEADER ----------------
+\newcommand{\tcbheader}[1]{%
+	\begin{tcolorbox}[page/header]%
+		\hspace{0.1em}#1\hspace{0.1em}%
+	\end{tcolorbox}%
+}
+\ihead[\tcbheader{\rightmark}]{\tcbheader{\rightmark}}
+\ohead[\tcbheader{\leftmark}]{\tcbheader{\leftmark}}
+
+
+\newcommand{\tcbfooter}[2]{%
+	\begin{tcolorbox}[page/footer]%
+		\NoLinkColor
+		#1\hfill #2%
+	\end{tcolorbox}%
+}
+% ---------------- FOOTER ----------------
+\ifoot{\tcbfooter{2D Game Programming with Pygame-ce}{Page \pagemark\ of \pageref{LastPage}\hspace{0.1em}}}
+\ofoot{\tcbfooter{Page \pagemark\ of \pageref{LastPage}}{2D Game Programming with Pygame-ce\hspace{0.1em}}}
+
+\pagestyle{scrheadings}
 
 % -------------------------------------------------
 % Header
 % -------------------------------------------------
 % Chapter title on even pages (left pages)
-\ihead{\leftmark\hspace{0.1em}}
+%\ihead{\leftmark\hspace{0.1em}}
 % Section title on odd pages (right pages)
-\ohead{\rightmark\hspace{0.1em}}
+%\ohead{\rightmark\hspace{0.1em}}
 
 % -------------------------------------------------
 % Footer
 % -------------------------------------------------
-\ifoot[2D Game Programming with Pygame-ce\hspace{0.1em}]{2D Game Programming with Pygame-ce\hspace{0.1em}}
-\ofoot[Page \pagemark\ of \pageref{LastPage}\hspace{0.1em}]{Page \pagemark\ of \pageref{LastPage}\hspace{0.1em}}
-
-% -------------------------------------------------
-% Style activation
-% -------------------------------------------------
-\pagestyle{scrheadings}
-\KOMAoptions{headtopline=1.5pt}
-\KOMAoptions{headsepline=1pt}
-\KOMAoptions{footbotline=1.5pt}
-\KOMAoptions{footsepline=1pt}
+%\ifoot[2D Game Programming with Pygame-ce\hspace{0.1em}]{2D Game Programming with Pygame-ce\hspace{0.1em}}
+%\ofoot[Page \pagemark\ of \pageref{LastPage}\hspace{0.1em}]{Page \pagemark\ of \pageref{LastPage}\hspace{0.1em}}
 
 
-%\usepackage[paperwidth=6in,paperheight=9in,inner=25mm,outer=18mm,top=20mm,bottom=25mm]{geometry}
+\definecolor{headblue}{RGB}{90,135,200}
+\definecolor{chapblue}{RGB}{120,165,220}
+\definecolor{secblue}{RGB}{232,242,255}
+
+% Styles für Kapitel/Abschnitt
+\tcbset{
+	heading/chapter/.style={
+		enhanced,
+		colback=chapblue,
+		coltext=white,
+		boxrule=0.6pt,
+		arc=2mm,
+		left=2.5mm, right=2.5mm, top=2.3mm, bottom=2.0mm, % kleine Innenabstände
+		width=\textwidth,
+		boxsep=0pt,
+		halign title=center,
+		frame hidden,        % <-- Rahmen AUS
+	},
+	heading/section/.style={
+		enhanced,
+		colback=secblue,
+%		coltext=secorangetext,
+		boxrule=0.5pt,
+		arc=1.6mm,
+		left=2.2mm, right=2.2mm, top=1.8mm, bottom=1.5mm, % noch etwas kompakter
+		width=\textwidth,
+		boxsep=0pt,
+		frame hidden,        % <-- Rahmen AUS
+	},
+}
+% Kapitel/Section-Abstände (kompakter als Default)
+\renewcommand*{\chapterpagestyle}{scrheadings}
+\renewcommand*\chapterheadstartvskip{\vspace*{-\topskip}} % bündig oben
+\renewcommand*\chapterheadendvskip{\vspace*{0pt}}         % kein Extra-Abstand danach
+\RedeclareSectionCommand[
+beforeskip= 0ex,%-1.2ex plus -0.4ex minus -0.2ex,
+afterskip =  1.0ex plus  0.2ex
+]{chapter}
+
+\RedeclareSectionCommand[
+beforeskip=  0.9ex plus 0.2ex,
+afterskip =  0.6ex plus 0.1ex
+]{section}
+
+% Optional auch für subsections:
+% \RedeclareSectionCommand[beforeskip=0.7ex, afterskip=0.4ex]{subsection}
+
+\makeatletter
+
+% Kapitel: #1 = "Chapter", #2 = Nummer (kann leer sein), #3 = Titel
+\renewcommand*\chapterlinesformat[3]{%
+	\begin{tcolorbox}[heading/chapter]%
+		%\raggedright%
+		{\Large\bfseries%
+			\ifstrempty{#2}{#3}{#2\enspace #3}%
+		}%
+	\end{tcolorbox}%
+}
+
+% Section: #1 = Name, #3 = Nummer (kann leer), #2 = Einzug, #4 = Titel
+\renewcommand*\sectionlinesformat[4]{%
+	\begin{tcolorbox}[heading/section]%
+		\raggedright%
+		{\large\bfseries%
+			\ifstrempty{#3}{#4}{#3\enspace #4}%
+		}%
+	\end{tcolorbox}%
+}
+
+\makeatother
 

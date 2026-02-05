@@ -45,7 +45,7 @@ class BubbleContainer:
 class Bubble(pygame.sprite.Sprite):
     def __init__(self, bubble_container: BubbleContainer) -> None:
         super().__init__()
-        self.bubble_container = bubble_container    # Refernece to container§\label{srcBubble0406}§
+        self.bubble_container = bubble_container    # Reference to container§\label{srcBubble0406}§
         self.radius = cfg.RADIUS["min"]
         self.image = self.bubble_container.get(self.radius)  # Get bubble§\label{srcBubble0407}§
         self.rect: pygame.rect.Rect = self.image.get_rect()

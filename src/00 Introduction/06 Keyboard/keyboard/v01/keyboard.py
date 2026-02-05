@@ -1,9 +1,8 @@
 from time import time
 from typing import Any
 
-import pygame
-
 import config as cfg
+import pygame
 
 
 class Defender(pygame.sprite.Sprite):
@@ -13,7 +12,7 @@ class Defender(pygame.sprite.Sprite):
         self.image = pygame.image.load("images/defender01.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (30, 30))
         self.rect = pygame.rect.FRect(self.image.get_rect())
-        self.rect.center = cfg.WINDOW.center       
+        self.rect.center = cfg.WINDOW.center            #§\label{srcTastatur0001}§ 
         self.speed = 100
         self.direction = cfg.DIRECTIONS["stop"]    
 
@@ -21,7 +20,7 @@ class Defender(pygame.sprite.Sprite):
         if "action" in kwargs.keys():
             if kwargs["action"] == "move":
                     self.rect.move_ip(self.direction.elementwise() * self.speed * cfg.DELTATIME)
-                    self.rect.clamp_ip(cfg.WINDOW)     # Keep inside window§\label{srcTastatur0008}§
+                    self.rect.clamp_ip(cfg.WINDOW)      # Keep inside window§\label{srcTastatur0008}§
         elif "direction" in kwargs.keys():
             self.direction = cfg.DIRECTIONS[kwargs["direction"]]
 

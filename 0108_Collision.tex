@@ -358,11 +358,15 @@ Finally, there is pixel-perfect collision detection (\abbref[vref]{piccollision0
 \subsection{More Input}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Three Types of Collision Detection (of a Bullet)}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/00%20Introduction/08%20Collision/v01}
+\end{diskbox}
+
 Let us now take a closer look at the corresponding source code. However, I will skip another discussion of the \texttt{config.py}.
 
 \lstsource{SRC/00 Introduction/08 Collision/v01/config.py}{1}{99}{python}{Collision types (1), \texttt{config.py}}{srcCollision00a} 
 
-Things become more interesting with the \texttt{Obstacle} class. This class is used for the wall, the spaceship, and the monster.  For rectangle-based collision detection, the surrounding rectangle is required. As usual, it is obtained in \zeiref{srcCollision01} using \texttt{pygame.Surface.get\_rect()}\myindex{pyg}{\texttt{Surface}!\texttt{get\_rect()}}\randnotiz{get\_rect()} and stored in the attribute \texttt{rect}\index{self.rect}\randnotiz{self.rect}.  
+Things become more interesting with the \texttt{Obstacle} class. This class is used for the wall, the spaceship, and the monster.  For rectangle-based collision detection, the surrounding rectangle is required. As usual, it is obtained in \zeiref{srcCollision01} using \texttt{pygame.Surface.get\-\_rect()}\myindex{pyg}{\texttt{Surface}!\texttt{get\_rect()}}\randnotiz{get\_rect()} and stored in the attribute \texttt{rect}\index{self.rect}\randnotiz{self.rect}.  
 
 For sprites with implicit transparency or explicit transparency set via \texttt{set\_colorkey()}\myindex{pyg}{\texttt{Surface}!\texttt{set\_colorkey()}}, the mask can be created very easily using \texttt{pygame.mask.from\_surface()}\myindex{pyg}{\texttt{mask}!\texttt{from\_surface()}}\randnotiz{from\_surface()} (\zeiref{srcCollision02}). In order for the predefined collision detection functions to work, this mask must be stored in the \texttt{Sprite} object using the attribute \texttt{mask}\index{self.mask}\randnotiz{self.mask}.  
 
@@ -377,26 +381,26 @@ As with the mask, the radius must also be stored in an attribute so that the pre
 
 The flag \texttt{hit} is only used to ensure that the correct image is displayed depending on the detected collision. As you have probably already noticed, two images are loaded for these sprites: one for the \emph{not hit} state and one for the \emph{hit} state.
 
-\lstsource{SRC/00 Introduction/08 Collision/v01/collision.py}{8}{24}{python}{Collision types (2): \texttt{Obstacle}}{srcCollision00b} 
+\lstsource{SRC/00 Introduction/08 Collision/v01/collision.py}{8}{24}{python}{Collision types (2), \texttt{Obstacle}}{srcCollision00b} 
 
 The \texttt{Bullet} class is similar in many ways to the \texttt{Obstacle} class. Since we also want to use this class for all three types of collision detection, we need the same three attributes here as well: \texttt{rect}, \texttt{radius}, and \texttt{mask}.  
 
 In addition, the class contains a few lines of code to allow the bullet to move; this should be self-explanatory. Note: for the sake of simplicity, no boundary check has been implemented. There is no real need for it here.
 
 
-\lstsource{SRC/00 Introduction/08 Collision/v01/collision.py}{27}{48}{python}{Collision types (3): \texttt{Bullet}}{srcCollision00c} 
+\lstsource{SRC/00 Introduction/08 Collision/v01/collision.py}{27}{48}{python}{Collision types (3), \texttt{Bullet}}{srcCollision00c} 
 
 And now the \texttt{Game} class. In the constructor, the usual things happen. There is nothing particularly noteworthy here.
 
-\lstsource{SRC/00 Introduction/08 Collision/v01/collision.py}{51}{65}{python}{Collision types (4): Construktor of \texttt{Game}}{srcCollision00d} 
+\lstsource{SRC/00 Introduction/08 Collision/v01/collision.py}{51}{65}{python}{Collision types (4), Constructor of \texttt{Game}}{srcCollision00d} 
 
 The methods \texttt{run()} and \texttt{watch\_for\_events()} also follow well-established patterns.
 
-\lstsource{SRC/00 Introduction/08 Collision/v01/collision.py}{67}{99}{python}{Collision types (5): \texttt{run()} and \texttt{watch\_for\_events()} of \texttt{Game}}{srcCollision00e} 
+\lstsource{SRC/00 Introduction/08 Collision/v01/collision.py}{67}{99}{python}{Collision types (5), \texttt{run()} and \texttt{watch\_for\_events()} of \texttt{Game}}{srcCollision00e} 
 
 The same applies to the methods \texttt{update()} and \texttt{draw()}.
 
-\lstsource{SRC/00 Introduction/08 Collision/v01/collision.py}{101}{112}{python}{Collision types (6): \texttt{update()} and \texttt{draw()} of \texttt{Game}}{srcCollision00f} 
+\lstsource{SRC/00 Introduction/08 Collision/v01/collision.py}{101}{112}{python}{Collision types (6), \texttt{update()} and \texttt{draw()} of \texttt{Game}}{srcCollision00f} 
 
 The method \texttt{resize()} is not related to collision detection itself. Its only purpose is to ensure that the \texttt{Obstacle} objects are distributed evenly across the width of the window.  
 
@@ -407,24 +411,32 @@ And how many gaps do we have? There are two gaps between the three \texttt{Obsta
 In the second \forSchleife, the left position of each \texttt{Obstacle} object can then be calculated and set accordingly.
 
 
-\lstsource{SRC/00 Introduction/08 Collision/v01/collision.py}{114}{123}{python}{Collision types (7): \texttt{resize()} of \texttt{Game}}{srcCollision00g} 
+\lstsource{SRC/00 Introduction/08 Collision/v01/collision.py}{114}{123}{python}{Collision types (7), \texttt{resize()} of \texttt{Game}}{srcCollision00g} 
 
- And now -- drum roll -- the actual collision detection. Depending on which collision method we have selected, the corresponding collision function is called inside the \forSchleife: \texttt{pygame.sprite.collide\_circle()}\myindex{pyg}{\texttt{sprite}!\texttt{collide\_circle()}|underline},  
-\texttt{pygame.sprite.collide\_mask()}\myindex{pyg}{\texttt{sprite}!\texttt{collide\_mask()}}, or  
-\texttt{pygame.sprite.collide\_rect()}\myindex{pyg}{\texttt{sprite}!\texttt{collide\_rect()}}.  
-
+\begin{hintbox} [Drum roll]
+And now the actual collision detection. Depending on which collision method we have selected, the corresponding collision function is called inside the \forSchleife: \texttt{pygame.sprite.col\-lide\-\_circle()}\myindex{pyg}{\texttt{sprite}!\texttt{collide\_circle()}|underline},  
+\texttt{pygame.sprite.col\-lide\-\_mask()}\myindex{pyg}{\texttt{sprite}!\texttt{collide\_mask()}}, or  
+\texttt{pygame.sprite.col\-lide\-\_rect()}\myindex{pyg}{\texttt{sprite}!\texttt{collide\_rect()}}.  
+\end{hintbox}
+ 
 The semantics are actually quite simple. Each of these methods is given two \texttt{Sprite} objects and returns \true\ if a collision is detected; otherwise it returns \false. As already mentioned above, it is important to ensure that the method being used can find the information it requires in the sprite:
 
-\begin{itemize}
-    \item \texttt{pygame.sprite.collide\_circle()}: \texttt{self.radius}
-    \item \texttt{pygame.sprite.collide\_mask()}: \texttt{self.mask}
-    \item \texttt{pygame.sprite.collide\_rect()}: \texttt{self.rect}
-\end{itemize}
+\begin{hintbox}[Required information]
+	\begin{itemize}
+	    \item \texttt{pygame.sprite.collide\_circle()} needs \texttt{self.radius}
+	    \item \texttt{pygame.sprite.collide\_mask()} needs \texttt{self.mask}
+	    \item \texttt{pygame.sprite.collide\_rect()} needs \texttt{self.rect}
+	\end{itemize}
+\end{hintbox}
 
-\lstsource{SRC/00 Introduction/08 Collision/v01/collision.py}{125}{134}{python}{Collision types (8): \texttt{check\_for\_collision()} of \texttt{Game}}{srcCollision00h} 
+\newpage
+\lstsource{SRC/00 Introduction/08 Collision/v01/collision.py}{125}{134}{python}{Collision types (8), \texttt{check\_for\_collision()} of \texttt{Game}}{srcCollision00h} 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Checking all Sprites in a List}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/00%20Introduction/08%20Collision/v03}
+\end{diskbox}
 
 Rectangle-based collision detection between a single sprite and a list of sprites -- that is, checking whether one sprite collides with any sprite in a \texttt{SpriteGroup} -- is used so often that a dedicated method exists for this purpose: \texttt{pygame.sprite.spritecollide()}\myindex{pyg}{\texttt{sprite}!\texttt{spritecollide()}}\randnotiz{spritecollide()}.  
 
@@ -437,23 +449,31 @@ Below a minimal example (printed only partially). In \zeiref{srcCollision05a} th
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Using Function Pointer/Collision Callback}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/00%20Introduction/08%20Collision/v02}
+\end{diskbox}
 
 The method \texttt{pygame.sprite.spritecollide()} has a fourth parameter as well. This parameter can be used to pass a \gls{functionpointer}\index{function pointer}\randnotiz{function pointer} or \emph{collision callback}\index{collision callback}\randnotiz{collision callback} to a different collision detection method. This function must accept two \texttt{Sprite} objects as parameters.  
 
 This means you can either use your own custom collision function or one of the three predefined methods: \texttt{collide\_circle()}, \texttt{collide\_mask()}, or \texttt{collide\_rect()}. If nothing is specified here -- as in our source code -- \texttt{collide\_rect()} is used automatically.
 
-
 \lstsource{SRC/00 Introduction/08 Collision/v02/collision.py}{125}{135}{python}{Dynamic collision callback}{srcCollision01a} 
 
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
 \subsection{What was new?}
 
-There are three standard ways to test the collision of two sprites: checking whether their rectangles intersect, whether their bounding circles intersect, or whether the pixels of the objects overlap.
+\begin{hintbox}
+There are three standard ways to test the collision of two sprites: 
+\begin{itemize}
+	\item checking whether their rectangles intersect, 
+	\item whether their bounding circles intersect, or 
+	\item whether the pixels of the objects overlap.
+\end{itemize}
 
 In order to perform these collision tests, a sprite must provide the required information: \texttt{rect}, \texttt{radius}, or \texttt{mask}.
-
+\end{hintbox}
 
 \begin{figure}[H]
 	\begin{center}
@@ -497,8 +517,7 @@ In order to perform these collision tests, a sprite must provide the required in
 	\end{center}
 \end{figure}
 
-The following Pygame elements were introduced:
-
+\begin{pygbox}
 \begin{itemize}
 	\item \texttt{pygame.mask.from\_surface()}:
 	\myindex{pyg}{\texttt{mask}!\texttt{from\_surface()}}\\ 
@@ -521,6 +540,7 @@ The following Pygame elements were introduced:
     \url{https://pyga.me/docs/ref/sprite.html#pygame.sprite.spritecollide}
 	
 \end{itemize}
+\end{pygbox}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Homework}

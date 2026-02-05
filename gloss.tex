@@ -402,24 +402,28 @@
 \newglossaryentry{unicode}
 {
 	name={Unicode},
+	text={unicode},
 	description={A way of coding characters and symbols. Most popular implementations are UTF-8, UTF-16, and UTF-32} 
 }
 
 \newglossaryentry{dictionary}
 {
 	name={Dictionary},
+	text={dictionary},
 	description={A data structure that stores values under a unique key. Other common names are: \index{lookup table}lookup table, \index{associative array}associative array, \index{hash table}hash table}
 }
 
 \newglossaryentry{array}
 {
 	name={Array},
+	text={array},
 	description={A data structure that stores values under a unique index (usually a non-negative integer). In the strict sense, arrays contain only elements of the same data type. This restriction does not apply to languages such as PHP or Python}
 }
 
 \newglossaryentry{slicing}
 {
 	name={Slicing},
+	text={slicing},
 	description={A technique that allows convenient extraction of subsets from strings or arrays}
 }
 
@@ -498,10 +502,12 @@
 	description={An audio technique that places a sound in space by changing its volume on the left and right speakers. With stereo panning, the sound of a source is placed more strongly on the left or right channel depending on its horizontal position in space. In game development, for example with Pygame, stereo panning is used to make the position of an object audible, typically by controlling the left and right audio channels of a sound separately}
 }
 
-\newdualentry{Stereo} % label
-	{Stereo}            % abbreviation
-	{Stereophony}       % long form
-	{Refers to a two-channel audio technique in which a sound signal is played back separately through a left and a right channel. Different volume levels or signals on the two channels create a spatial listening impression. In game development, stereo is often used to convey the position of a sound source in space, for example through stereo panning, where the volume of a sound is adjusted depending on the horizontal position of an object} % description
+\newglossaryentry{stereo}
+{
+	name={Stereo},
+	text={stereo},
+	description={Refers to a two-channel audio technique in which a sound signal is played back separately through a left and a right channel. Different volume levels or signals on the two channels create a spatial listening impression. In game development, stereo is often used to convey the position of a sound source in space, for example through stereo panning, where the volume of a sound is adjusted depending on the horizontal position of an object}
+}
 
 \newglossaryentry{singleton}
 {
@@ -630,6 +636,24 @@
 	plural={sockets},
 	description={In computer science, a socket is an endpoint for communication between two programs over a network. It provides a standardized interface for sending and receiving data using protocols such as TCP or UDP. A socket is typically identified by an IP address and a port number and is commonly used in client--server architectures}
 }
+
+
+% Requires in the preamble:
+% \usepackage{glossaries}
+% \usepackage{tikz}
+% \usepackage{pgfplots}
+% \pgfplotsset{compat=1.18}
+%
+% (Optional, but nice)
+% \usepackage{amsmath}
+
+\newglossaryentry{sinefunction}
+{
+	name={Sine function (\(\sin\))},
+	text={sine function},
+	description={A trigonometric function that produces a smooth, periodic wave. For an angle \(x\) (usually in radians), it is defined as \(y=\sin(x)\). The output is always between \(-1\) and \(1\), and the function repeats every \(2\pi\). In game programming, \(\sin\) is often used for natural-looking oscillations such as floating, bobbing, and smooth back-and-forth motion. \textbf{Pygame tip:} A common pattern is \texttt{y = base\_y + amplitude * math.sin(t * speed)} to animate smooth vertical bobbing}
+}
+
 
 \label{GRENZE}
 % ------------------------------------------------------------------------------------

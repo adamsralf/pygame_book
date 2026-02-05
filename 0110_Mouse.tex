@@ -4,6 +4,10 @@
 \section{Mouse}\index{Mouse}\label{secMaus}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Introduction}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/00%20Introduction/10%20Mouse/example01}
+\end{diskbox}
+
 While many games are controlled using the keyboard or a controller, the mouse is also frequently used. In this script, basic mouse actions such as \emph{clicking} and \emph{position queries} are covered. Our example implements the following functionalities:
 \begin{itemize}
 	\item A small transparent bubble appears in the center.
@@ -17,13 +21,13 @@ While many games are controlled using the keyboard or a controller, the mouse is
 
 \myebild{mouse00.png}{0.5}{Example of actions with a mouse}{picMaus00}
 
-The main action takes place in the \texttt{Game} class, since this is where the mouse actions are processed. Instead of using a separate \texttt{config.py} file, I implemented here static variables and methods in the \texttt{Game} class -- that works as well.  In the constructor, the usual suspects are initialized, and in \zeiref{srcMaus0001} the \texttt{Ball} object is created.
+The main action takes place in the \texttt{Game} class, since this is where the mouse actions are processed. Instead of using a separate \texttt{config.py} file, I~implemented here static variables and methods in the \texttt{Game} class -- that works as well.  In the constructor, the usual suspects are initialized, and in \zeiref{srcMaus0001} the \texttt{Ball} object is created.
 
 \lstsource{SRC/00 Introduction/10 Mouse/example01/mouse.py}{55}{68}{python}{Mouse actions: statics and constructor of \texttt{Game}}{srcMaus00a}
 
 The \texttt{run()} method also holds no surprises.
 
-\lstsource{SRC/00 Introduction/10 Mouse/example01/mouse.py}{70}{80}{python}{Mouse actions: \texttt{Game.run()}}{srcMaus00b} 
+\lstsource{SRC/00 Introduction/10 Mouse/example01/mouse.py}{70}{80}{python}{Mouse actions -- \texttt{Game.run()}}{srcMaus00b} 
 
 In \texttt{watch\_for\_events()}, we encounter the first interesting parts. Just as \texttt{KEYDOWN} and \texttt{KEYUP} mark the pressing and releasing of keys, there are corresponding events for the mouse as well: \randnotiz{MOUSEBUTTONDOWN} \randnotiz{MOUSEBUTTONUP}\texttt{MOUSEBUTTONDOWN}\myindex{pyg}{\texttt{MOUSEBUTTONDOWN}|underline} and \texttt{MOUSEBUTTONUP}\myindex{pyg}{\texttt{MOUSEBUTTONUP}|underline}.  
 
@@ -37,24 +41,30 @@ The mouse wheel\index{mouse wheel} is also handled like a mouse button. Dependin
 
 Using \texttt{event.pos}\myindex{pyg}{\texttt{event}!\texttt{pos}}, one could immediately query the mouse position of this very moment -- which we do not do here.\randnotiz{event.pos}
 
-\lstsource{SRC/00 Introduction/10 Mouse/example01/mouse.py}{82}{99}{python}{Mouse actions: \texttt{Game.watch\_for\_events()}}{srcMaus00c} 
+\lstsource{SRC/00 Introduction/10 Mouse/example01/mouse.py}{82}{99}{python}{Mouse actions -- \texttt{Game.watch\_for\_events()}}{srcMaus00c} 
 
-One requirement was that the system mouse cursor should only be visible outside the inner rectangle. Inside the rectangle, the ball is supposed to act as the mouse cursor. In \zeiref{srcMaus0003}, this is achieved using the method \texttt{pygame.mouse.set\_visible()}\randnotiz{set\_visible()}\myindex{pyg}{\texttt{mouse}!\texttt{set\_visible()}|underline}. This method controls whether the system mouse cursor — in whatever visual form — is shown or hidden.
+One requirement was that the system mouse cursor should only be visible outside the inner rectangle. Inside the rectangle, the ball is supposed to act as the mouse cursor. In \zeiref{srcMaus0003}, this is achieved using the method \texttt{pygame.mouse.set\_visible()}\randnotiz{set\_visible()}\myindex{pyg}{\texttt{mouse}!\texttt{set\_visible()}|underline}. This method controls whether the system mouse cursor -- in whatever visual form -- is shown or hidden.
 
 The decision is based on whether the current mouse position lies inside the inner rectangle. The method \texttt{pygame.mouse.get\_pos()}\randnotiz{get\_pos()}\myindex{pyg}{\texttt{mouse}!\texttt{get\_pos()}|underline} returns the current mouse position. This position is then simply passed into an already familiar collision test: \texttt{pygame\-.Rect\-.col\-lide\-point()}\randnotiz{collidepoint()}\myindex{pyg}{\texttt{Rect}!\texttt{collidepoint()}|underline}. If the mouse position is inside the rectangle, this method returns \true; otherwise, it returns \false.
 %; daher muss der Wahrheitswert noch mit \texttt{not} negiert werden.
 
-\lstsource{SRC/00 Introduction/10 Mouse/example01/mouse.py}{101}{114}{python}{Mouse actions: \texttt{Game.update()} und \texttt{Game.draw()}}{srcMaus00d} 
+\lstsource{SRC/00 Introduction/10 Mouse/example01/mouse.py}{101}{114}{python}{Mouse actions -- \texttt{Game.update()} and \texttt{Game.draw()}}{srcMaus00d} 
 
 The only class left is \texttt{Ball}. Although it no longer contains any direct mouse actions, the \texttt{update()} method now looks quite different from what we have seen in the previous examples.  
 
-In earlier examples, methods such as \texttt{rotate()} or \texttt{resize()} were called directly from \texttt{watch\_for\_events()} or comparable methods of the \texttt{Game} class. This is perfectly fine in principle. However, problems arise once such subclasses of \texttt{pygame.sprite.Sprite} are added to a \texttt{pygame.sprite.Group} or a \texttt{pygame.sprite.GroupSingle}. These classes expect only \texttt{Sprite} objects as elements. Therefore, in terms of object-oriented programming, one should only use methods and attributes that are known to the parent class \texttt{pygame.sprite.Sprite} — for example, \texttt{update()}.  Methods such as \texttt{rotate()} would be unknown to the sprite group.
+\begin{warningbox}[And again: LSP]
+	In earlier examples, methods such as \texttt{rotate()} or \texttt{resize()} were called directly from \texttt{watch\_for\_events()} or comparable methods of the \texttt{Game} class. This is perfectly fine in principle. However, problems arise once such subclasses of \texttt{pygame.sprite.Sprite} are added to a \texttt{pygame.sprite.Group} or a \texttt{pygame.sprite.GroupSingle}. These classes expect only \texttt{Sprite} objects as elements. Therefore, in terms of object-oriented programming, one should only use methods and attributes that are known to the parent class \texttt{pygame.sprite.Sprite} -- for example, \texttt{update()}.  Methods such as \texttt{rotate()} would be unknown to the sprite group.
+\end{warningbox}
 
 Consider, for example, \zeiref{srcInvader06d01} in \srcref[vref]{srcInvader06d}. The method \texttt{change\-\_di\-rec\-tion()} is completely unknown to the \texttt{GroupSingle} object \texttt{defender}, because it expects a \texttt{Sprite} and not a \texttt{Defender} object. Syntax checkers such as \gls{pylance} will report errors here.
 
-One way to work around this problem is to use \texttt{update()} as a dispatching hub. In the class \texttt{pygame.sprite.Sprite}, this method is defined with the following signature:
 
-\verb+update(self, *args: Any, **kwargs: Any) -> None+
+\begin{hintbox}[Dispatching hub]
+	One way to work around this problem is to use \texttt{update()} as a dispatching hub\index{dispatching hub}. In the class 		\texttt{pygame.sprite.Sprite}, this method is defined with the following signature:
+
+	\verb+update(self, *args: Any, **kwargs: Any) -> None+
+\end{hintbox}
+
 
 In other words, any number of freely definable parameters can be passed to this method. This is exactly what happens in our \texttt{update()} method. For rotation, the parameter \texttt{rotate} is passed with the corresponding angle; for scaling, the parameter \texttt{scale}; and in \texttt{update()} of \texttt{Game}, the parameter \texttt{go} is passed with the value \true. 
  
@@ -62,18 +72,23 @@ Each caller can therefore define its own parameters spontaneously and assign val
 
 In the first step, it is checked whether a parameter was provided, as shown in \zeiref{srcMaus0009}, \zeiref{srcMaus0010}, \zeiref{srcMaus0011}, and \zeiref{srcMaus0012}. Afterwards, the parameter value is forwarded to the corresponding method of the subclass. This way, the sprite group does not need to access methods of the subclass directly, but can rely on the method provided by the parent class.
 
-\lstsource{SRC/00 Introduction/10 Mouse/example01/mouse.py}{9}{52}{python}{Mouse actions: \texttt{Ball}}{srcMaus00e} 
+\newpage
+\lstsource{SRC/00 Introduction/10 Mouse/example01/mouse.py}{9}{52}{python}{Mouse actions -- \texttt{Ball}}{srcMaus00e} 
 
-Two final notes on \texttt{pygame.transform.rotate()}\randnotiz{rotate()}\myindex{pyg}{\texttt{transform}!\texttt{rotate()}|underline}:
-\begin{enumerate}
+\begin{warningbox}[Two final notes on \texttt{pygame.transform.rotate()}\myindex{pyg}{\texttt{transform}!\texttt{rotate()}|underline}]
+\begin{itemize}
 	\item Unlike many other systems that work with angles, the angle here is measured in \gls{degree} rather than in \gls{radian}.
 	\item The approach used here works only because the bitmap represents a ball. In general, you should not repeatedly rotate the already rotated image. Instead, keep the original image unchanged and update only an angle variable. If you rotate the image over and over again, the contents may be scaled up or down depending on the bitmap’s shape, resulting in visual artifacts and severe pixel degradation.
-\end{enumerate}
+\end{itemize}
+\end{warningbox}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{More Input}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{In Which Window Took the Mouse Action Place?}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/00%20Introduction/10%20Mouse/example02}
+\end{diskbox}
 
 Completely analogous to the example and explanation in \secref[vref]{secMultipleWindowKeyboard},\texttt{id}\randnotiz{Window.id}\myindex{pyg}{\texttt{Window}!\texttt{id}} it is also possible to determine in which window a mouse action occurred.\randnotiz{event.window}\myindex{pyg}{\texttt{Window}}
 
@@ -92,6 +107,50 @@ ID 2: Side Window (Mouse Pressed: '3' at (224, 25))
 \end{lstlisting}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Surprise: No Double Click}
+
+\begin{warningbox}
+	In Pygamee, there is no built-in event for a mouse double click. Unlike classic desktop GUI frameworks, pygame only reports individual mouse button presses.
+\end{warningbox}
+
+This means you cannot ask directly whether a double click happened. Instead, you have to detect it yourself.
+
+The usual approach is to measure the time between two mouse clicks. If the same mouse button is pressed twice within a short time window, it is treated as a double click. Optionally, the mouse position can also be checked to make sure the cursor has not moved too far between clicks.
+
+This may sound a bit low-level at first, but it is actually very common in game programming. Many higher-level interactions are built by combining simple events with a bit of timing logic.
+
+Once implemented, this technique works reliably and gives you full control over what \emph{double click} really means in your game or tool.
+
+\lstset{firstnumber=1}
+\begin{lstlisting}
+import pygame
+import time
+
+DOUBLE_CLICK_TIME = 400  # ms
+
+last_click_time = 0
+last_button = None
+
+for event in pygame.event.get():
+	if event.type == pygame.MOUSEBUTTONDOWN:
+		now = pygame.time.get_ticks()
+
+		if (event.button == last_button and now - last_click_time < DOUBLE_CLICK_TIME):
+			print("Double click detected!")
+
+		last_click_time = now
+		last_button = event.button
+\end{lstlisting}
+
+\begin{hintbox}[Options]
+\begin{itemize}
+	\item A \texttt{DOUBLE\_CLICK\_TIME} between 250 and \SI{300}{ms} feels very snappy.
+	\item A \texttt{DOUBLE\_CLICK\_TIME} between 400 and \SI{500}{ms} is easier for beginners.
+	\item In addition, you can check the distance between the \texttt{event.pos} values of both clicks.
+\end{itemize}
+\end{hintbox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Not by Event, but by Function}
 In contrast to mouse button events, mouse button states can also be queried directly. Using the function \texttt{pygame.mouse.get\_pressed()}\randnotiz{get\_pressed()}\myindex{pyg}{\texttt{mouse}!\texttt{get\_pressed()}}, it is possible to check at any time which mouse buttons are currently being held down.
 
@@ -103,36 +162,37 @@ A completely analogous discussion can be found in \secref[vref]{secKeyPressed}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{What was new?}
+\begin{hintbox}
+	Mouse actions are processed in a similar way to keyboard events. The mouse position can be queried easily. It is often simpler to hide the mouse cursor and let a bitmap follow the mouse position than to define a new mouse cursor.
+\end{hintbox}
 
-Mouse actions are processed in a similar way to keyboard events. The mouse position can be queried easily. It is often simpler to hide the mouse cursor and let a bitmap follow the mouse position than to define a new mouse cursor.
-
-The following Pygame elements were introduced:
-
+\begin{pygbox}
 \begin{itemize}
 	\item \texttt{pygame.constants}:
 	\myindex{pyg}{\texttt{constants}}\\ 
 	\url{https://pyga.me/docs/ref/locals.html}
-
+	
 	\item \texttt{pygame.mouse.get\_pressed()}
 	\myindex{pyg}{\texttt{mouse}!\texttt{get\_pressed()}}\\ \url{https://pyga.me/docs/ref/mouse.html#pygame.mouse.get_pressed}
-
+	
 	\item \texttt{pygame.MOUSEBUTTONDOWN}, \texttt{pygame.MOUSEBUTTONDOWN}:
 	\myindex{pyg}{\texttt{MOUSEBUTTONDOWN}}\myindex{pyg}{\texttt{MOUSEBUTTONUP}}\\ \url{https://pyga.me/docs/ref/event.html}
-
+	
 	\item List of mouse events: \tabref[vref]{tabMousebutton}
 	\item \texttt{pygame.mouse.get\_pos()}:
-    \myindex{pyg}{\texttt{mouse}!\texttt{get\_pos()}}\\ \url{https://pyga.me/docs/ref/mouse.html#pygame.mouse.get_pos}
-
+	\myindex{pyg}{\texttt{mouse}!\texttt{get\_pos()}}\\ \url{https://pyga.me/docs/ref/mouse.html#pygame.mouse.get_pos}
+	
 	\item \texttt{pygame.mouse.set\_visible()}:
-    \myindex{pyg}{\texttt{mouse}!\texttt{set\_visible()}}\\ \url{https://pyga.me/docs/ref/mouse.html#pygame.mouse.set_visible}
-
+	\myindex{pyg}{\texttt{mouse}!\texttt{set\_visible()}}\\ \url{https://pyga.me/docs/ref/mouse.html#pygame.mouse.set_visible}
+	
 	\item \texttt{pygame.Rect.collidepoint()}:
-    \myindex{pyg}{\texttt{Rect}!\texttt{collidepoint()}}\\ \url{https://pyga.me/docs/ref/rect.html#pygame.Rect.collidepoint}
-
+	\myindex{pyg}{\texttt{Rect}!\texttt{collidepoint()}}\\ \url{https://pyga.me/docs/ref/rect.html#pygame.Rect.collidepoint}
+	
 	\item \texttt{pygame.transform.rotate()}:
-    \myindex{pyg}{\texttt{transform}!\texttt{rotate()}}\\ \url{https://pyga.me/docs/ref/transform.html#pygame.transform.rotate}
-
+	\myindex{pyg}{\texttt{transform}!\texttt{rotate()}}\\ \url{https://pyga.me/docs/ref/transform.html#pygame.transform.rotate}
+	
 \end{itemize}
+\end{pygbox}
 
 \begin{longtable}{ll}
 	\caption{List of mouse events}\label{tabMousebutton}\myindex{pyg}{\texttt{event}!\texttt{button}} \\
@@ -159,11 +219,11 @@ The following Pygame elements were introduced:
 
 	% Ab hier kommt der Inhalt der Tabelle
 	\texttt{0} &  undefined \\ 
-	\texttt{1} &  left mouse button\\ 
-	\texttt{2} &  middle mouse button/mouse wheel\\ 
-	\texttt{3} &  right mouse button\\ 
-	\texttt{4} &  scroll the mouse wheel up\\ 
-	\texttt{5} &  Scroll the mouse wheel down\\ 
+	\texttt{1} &  left mouse button\index{mouse!left button}\\ 
+	\texttt{2} &  middle mouse button/mouse wheel\index{mouse!middle button}\index{mouse!wheel}\\ 
+	\texttt{3} &  right mouse button\index{mouse!right button}\\ 
+	\texttt{4} &  scroll the mouse wheel up\index{mouse!wheel up}\\ 
+	\texttt{5} &  Scroll the mouse wheel down\index{mouse!wheel down}\\ 
 \end{longtable} 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -177,10 +237,10 @@ Time for a small game:
 	\item Rocks (asteroids) of different sizes fly into the screen from all sides.
 	\item The goal is to avoid being hit by a rock for as long as possible.
 	\item Every 10~seconds, the score is increased.
-	\item If I collide with a rock, I lose one life.
+	\item If I~collide with a rock, I~lose one life.
 	\item At the bottom, the score and the remaining lives are displayed.
-	\item I start with three lives. Add new lives repeatedly when certain score values are reached.
-	\item When a certain score is reached, I can activate a shield for 15 seconds using the right mouse button. Whether the shield is available should be shown in the bottom line.
+	\item I~start with three lives. Add new lives repeatedly when certain score values are reached.
+	\item When a certain score is reached, I~can activate a shield for 15 seconds using the right mouse button. Whether the shield is available should be shown in the bottom line.
 	\item BONUS: The nose of the spaceship always points in the direction of movement.
 \end{enumerate}
 

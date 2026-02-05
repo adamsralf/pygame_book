@@ -1,6 +1,6 @@
 % !TeX spellcheck = en_US
 \documentclass[12pt, twoside, openright]{scrbook}
-\usepackage{showframe}
+%\usepackage{showframe}
 
 % -------------------------------------------------
 % Language & Localization
@@ -64,12 +64,14 @@
 \usepackage{longtable}
 \usepackage{booktabs}
 % -------------------------------------------------
-% Filebox
+% Boxen
 % -------------------------------------------------
 \usepackage[most]{tcolorbox}
-\usepackage{fontawesome5} % liefert \faSave (Diskette)
+\usepackage{fontawesome5}
+\usepackage{enumitem}
+\usepackage{etoolbox} % für \ifstrempty
 
-\usepackage[footsepline,plainfootsepline,footbotline,plainfootbotline,draft=false]{scrlayer-scrpage}
+\usepackage[automark,draft=false]{scrlayer-scrpage}
 \usepackage{manyind}
 \usepackage{colortbl}
 \usepackage[font={small}]{caption}
@@ -100,6 +102,7 @@
 \setcounter{tocdepth}{3}
 \deffootnote[1.0em]{1.1em}{1.1em}{\textsuperscript{\thefootnotemark\ }}
 
+\input{mytcolorboxes.tex}
 \input{mycommands.tex}
 %\lstloadlanguages{C}
 %\renewcommand{\lstlistingname}{Source Code}
@@ -172,7 +175,7 @@
 \listoffigures
 \listoftables
 %\lstlistoflistings
-
+%
 \printglossaries
 \printindex
 \printindex[pyg][Index of the \texttt{pygame} Namespace]

@@ -23,10 +23,10 @@ def main():
                 running = False
                 event.window.destroy()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.window == window_first:    # Check which window the event belongs to§\label{srcMouse01a}§
+                if event.window == window_first:    # Check which window the event belongs to§\label{srcMouse0201}§
                     window_id = window_first.id
                     event.window.title = f"Main Window (Mouse Pressed: '{event.button}' at {event.pos})"
-                elif event.window == window_second: #§\label{srcMouse01b}§
+                elif event.window == window_second: #§\label{srcMouse0202}§
                     window_id = window_second.id
                     event.window.title = f"Side Window (Mouse Pressed: '{event.button}' at {event.pos})"
                 else:

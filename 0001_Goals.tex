@@ -1,17 +1,9 @@
 % !TeX spellcheck = en_US
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% Goals
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 In this script, you will learn how to program simple 2D games using the programming language \Gls{python} and the game library \Gls{pygame}.
 
 The main goal is not to create a perfect or finished game. Instead, this script focuses on helping you understand the basic ideas and principles behind game programming.
 
-You will learn, step by step,
-
+\begin{hintbox}[You will learn, step by step,]
 \begin{itemize}
 	\item how a simple game is structured,
 	\item how graphics are drawn on the screen,
@@ -26,14 +18,15 @@ You will learn, step by step,
 	\item how to implement time based logic,
 	\item and many small details about pygame-ce.
 \end{itemize}
+\end{hintbox}
 
 I will also present some programming techniques in the chapter \emph{Techniques} that you may find useful. This chapter is still fairly thin, but it already contains an introduction to the topics: animation, tile-based graphics, and how to handle very large game worlds. Additional techniques -- such as a 3D-style visual effect for passing landscapes -- are currently being developed.
 
 In the final chapter, I introduce a few smaller games in order to demonstrate the concrete application of these techniques: the classic example \emph{Pong}, a bubble sticking one, and the \emph{Moonlander}.
 
-You can find all source code and resources on GitHub (\href{https://https://github.com//}{\nolinkurl{github.com}}) and will be updated regularly
+You can find all source code and resources on  \href{https://github.com/adamsralf/pygame_book}{\nolinkurl{github.com/adamsralf/pygame_book}} and will be updated regularly. Each section kicks off with a link to the relevant GitHub subdirectory.
 
-What is \emph{not} part of this script:
+\begin{warningbox}[What is \emph{not} part of this script:]
 \begin{itemize}
 	\item camera, controller, touch pad, joystick as input devices
 	\item clipboard support
@@ -45,6 +38,7 @@ What is \emph{not} part of this script:
 	\item midi sound
 	\item direct usage of SDL
 \end{itemize}
+\end{warningbox}
 
 One thing I’m really not good at is creating visually appealing game worlds. And if I’m being honest, I’ve always cared far more about programming than about game design. So if you’re looking for a deep dive into everything from sketchbooks and graphics tools to a polished final game, you’ll be better off turning to other authors. 
 
@@ -52,16 +46,18 @@ This script is especially designed for beginners. You do not need any previous e
 
 Many examples are kept short and simple. You are encouraged to \textbf{try things out, experiment, and change the code}. Making mistakes is part of learning — and often the best way to understand how things work. At the end of this script, you should be able to create your own small 2D games and continue learning on your own.
 
-%It is up to you which development environment you use; in this script, I use \Gls{vscode}.
+It is up to you which development environment you use; in this script, I use \Gls{vscode}.
 
 This script is based on the Pygame fork \emph{Pygame Community Edition} (\href{https://pyga.me/}{\nolinkurl{Pygame-ce}}). The source code examples are \textbf{not} checked for compatibility with the original Pygame. To keep things simple and easier to read, I will usually just say \emph{Pygame} and will not make a distinction between the two versions.
 
-
+\newpage
+\begin{hintbox}[Support my work]
 If you enjoyed this book and found it helpful, you’re welcome to support my work with a small voluntary contribution. Writing, testing, and explaining things takes time -- and occasionally coffee.
 
 \textbf{If you feel like buying me one (or helping fund the next version of this script), you can do so via PayPal: \emph{adamsralf@outlook.de}.}
 
 Of course, this is entirely optional -- but very much appreciated. Thank you for reading.
+\end{hintbox}
 
 \vspace{1em}
 

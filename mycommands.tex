@@ -22,18 +22,41 @@
 \newcommand{\false}{\texttt{False}}
 \newcommand{\forSchleife}{\texttt{for}-loop}
 \newcommand{\whileSchleife}{\texttt{while}-loop}
+\newcommand{\NoLinkColor}{\hypersetup{allcolors=.}}
 
 \newcommand{\myindex}[2]{\setindex{#1}\index{#2}\setindex{main}}
 
-\newcommand{\randnotiz}[1]{%
-  \marginline{%
-    \begin{tiny}%
-%    \fbox{%
-      \parbox{1.5cm}{\color{Red}#1}%
-%    }
-    \end{tiny}%
-  }%
+\definecolor{randyellowback}{RGB}{255,249,230}  % sehr helles Pastellgelb
+\definecolor{randyellowtext}{RGB}{110,90,40}    % warmes Dunkelgelb/Braun
+
+\tcbset{
+	randnote/.style={
+		enhanced,
+		frame hidden,
+		colback=randyellowback,
+		%coltext=randyellowtext,
+		boxrule=0pt,
+		arc=1.5mm,
+		left=1.0mm,
+		right=1.0mm,
+		top=1mm,
+		bottom=1mm,
+		boxsep=0pt,
+		width=1.5cm,      % passend zu deiner bisherigen Parbox
+		fontupper=\tiny,  % Randnotiz-Schrift
+	},
 }
+
+
+
+\newcommand{\randnotiz}[1]{%
+	\marginline{%
+		\begin{tcolorbox}[randnote]%
+			#1%
+		\end{tcolorbox}%
+	}%
+}
+
 
 %Requirement
 \floatstyle{ruled}
@@ -201,35 +224,5 @@
   \makeglossaries
   \newacronym[see={[Glossar:]{gls-#3}},#2]{#3}{#4}{#5\glsadd{gls-#3}}
 }
-
-
-% --- in die Präambel ---
-% zartblau definieren (ggf. anpassen)
-\definecolor{boxblue}{RGB}{232,242,255}
-\definecolor{boxblueborder}{RGB}{120,165,220}
-
-% Umgebung: breakable = Seitenumbrüche erlaubt
-\newtcolorbox{diskbox}[1][]{%
-	breakable,
-	enhanced,
-	colback=boxblue,
-	colframe=boxblueborder,
-	boxrule=0.6pt,
-	arc=2mm,
-	left=10mm, right=4mm, top=2mm, bottom=2mm,
-	before skip=10pt, after skip=10pt,
-	toptitle=2mm,
-	bottomtitle=1mm,
-	% kleines Icon links oben
-	overlay={%
-		\node[anchor=north west, inner sep=2mm]
-		at (frame.north west) {\large\faSave};
-	},
-	% optionaler Titel/Parameter
-	title={#1},
-	fonttitle=\bfseries,
-}
-
-% --- im Dokument ---
 
 

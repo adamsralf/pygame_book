@@ -11,7 +11,9 @@ Note: At the very beginning, I once asked \glslink{chatgpt}{ChatGPT} to generate
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\Reqref{req0201Standard}: Standards}
-
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/02%20Examples/01%20Pong/v01}
+\end{diskbox}
 \br{Standard functionality}{req0201Standard}
 \begin{enumerate}
 	\item The window has an appropriate size.\label{req0201StandardGröße}
@@ -45,17 +47,19 @@ The class \texttt{Game} consists of the basic building blocks that we have alrea
 \lstsource{SRC/02 Examples/01 Pong/v01/pong01.py}{26}{60}{python}{Pong (\Reqref{req0201Standard}) -- the class \texttt{Game}}
 {srcPong01c}
 
-For the sake of completeness:
-
-\lstsource{SRC/02 Examples/01 Pong/v01/pong01.py}{63}{999}{python}{Pong (\Reqref{req0201Standard}) -- the class \texttt{Game}}
-{srcPong01d}
+%For the sake of completeness:
+%
+%\lstsource{SRC/02 Examples/01 Pong/v01/pong01.py}{63}{999}{python}{Pong (\Reqref{req0201Standard}) -- the class \texttt{Game}}
+%{srcPong01d}
 
 At this point, the application is not functional yet, but it already displays the background as you can see in \abbref[vref]{picPong00}.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\Reqref{req0201Schläger}: The Paddles}
-
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/02%20Examples/01%20Pong/v02}
+\end{diskbox}
 \br{Paddles}{req0201Schläger}
 \begin{enumerate}
 	\item There is one rectangular paddle on the left side and one on the right side.\label{req0201SchlägerZwei}
@@ -107,7 +111,9 @@ In each case, the method \texttt{Paddle.update()} is called with an appropriate 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\Reqref{req0201Ball}: The Ball}
-
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/02%20Examples/01%20Pong/v03}
+\end{diskbox}
 \br{Ball}{req0201Ball}
 \begin{enumerate}
 	\item The ball is a circle with a radius of \SI{10}{px}.\label{req0201BallGröße}
@@ -126,6 +132,7 @@ Since we need to keep track of the players’ scores according to requirement~\r
 
 In accordance with requirements~\ref{req0201Ball}.\ref{req0201BallGröße} and~\ref{req0201Ball}.\ref{req0201BallGeschwindigkeit}, the size and speed of the ball are defined in \zeiref{srcPong0301} and \zeiref{srcPong0302}. Since the ball needs to be restarted frequently, the initialization of its starting position and direction is moved into the separate method \texttt{service()} (\zeiref{srcPong0303}).
 
+\newpage
 \lstsource{SRC/02 Examples/01 Pong/v03/pong03.py}{62}{71}{python}{Pong (\Reqref{req0201Ball}) -- Constructor of \texttt{Ball}}
 {srcPong03a}
 
@@ -152,7 +159,7 @@ The direction change is simply a sign flip. The method \texttt{flip\_hori\-zon\-
 \lstsource{SRC/02 Examples/01 Pong/v03/pong03.py}{101}{105}{python}{Pong (\Reqref{req0201Ball}) -- The flip methods of \texttt{Ball}}{srcPong03e}
 
 
-Typical reflection pitfalls when handling the ball:
+\begin{warningbox}[\hspace{1cm}Typical reflection pitfalls when handling the ball]
 
 \begin{itemize}
 	\item \textbf{Sticky edge / multiple flips per frame}\index{sticky edge}  
@@ -206,13 +213,16 @@ Typical reflection pitfalls when handling the ball:
 	\emph{Fix:}  
 	After a paddle collision, move the ball explicitly in front of the paddle edge (clamp), and only then invert \texttt{vx}.
 \end{itemize}
+\end{warningbox}
 
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\Reqref{req0201Punkte}: Scoring}
-
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/02%20Examples/01%20Pong/v04}
+\end{diskbox}
 \br{Scoring}{req0201Punkte}
 \begin{enumerate}
 	\item The score is displayed centered at the top of the screen.\label{req0201PunkteOben}
@@ -221,18 +231,18 @@ Typical reflection pitfalls when handling the ball:
 
 For displaying the score, the class \texttt{Score} is used. In the end, it is just another sprite—but one that needs to be recreated from time to time, namely whenever the score changes. Since the current score is now stored in \zeiref{srcPong0405}, it can be removed from \texttt{config.py}.
 
-\lstsource{SRC/02 Examples/01 Pong/v04/pong04.py}{118}{126}{python}{Pong (\Reqref{req0201Punkte}) -- Constructor of \texttt{Score}}
+\newpage
+\lstsource{SRC/02 Examples/01 Pong/v04/pong04.py}{114}{122}{python}{Pong (\Reqref{req0201Punkte}) -- Constructor of \texttt{Score}}
 {srcPong04a}
 
 In this method, the current score is rendered using a font object and then positioned accordingly.
 
-\lstsource{SRC/02 Examples/01 Pong/v04/pong04.py}{134}{136}{python}{Pong (\Reqref{req0201Punkte}) -- \texttt{Score.render()}}
+\lstsource{SRC/02 Examples/01 Pong/v04/pong04.py}{130}{132}{python}{Pong (\Reqref{req0201Punkte}) -- \texttt{Score.render()}}
 {srcPong04b}
 
 In \texttt{update()}, the appropriate score value is updated and \texttt{render()} is called.
 
-\newpage
-\lstsource{SRC/02 Examples/01 Pong/v04/pong04.py}{128}{132}{python}{Pong (\Reqref{req0201Punkte}) -- \texttt{Score.update()}}
+\lstsource{SRC/02 Examples/01 Pong/v04/pong04.py}{124}{128}{python}{Pong (\Reqref{req0201Punkte}) -- \texttt{Score.update()}}
 {srcPong04c}
 
 What is still missing is a trigger for updating the score display. This is a perfect opportunity to introduce a user-defined event. Starting at \zeiref{srcPong0400}, everything required for such a user event is implemented. First, an event ID is defined, followed by the corresponding \texttt{pygame.e\-vent\-.E\-vent} object\myindex{pyg}{\texttt{event}!\texttt{Event()}}.
@@ -241,22 +251,20 @@ What is still missing is a trigger for updating the score display. This is a per
 
 Now the \texttt{Ball} class only has to trigger the appropriate event, and \texttt{Game} needs to handle it. Here are the required changes in \texttt{Ball}. Inside the method \texttt{move()}, the relevant code sections are replaced. For example, in \zeiref{srcPong0402} the number of the player who scores the point is packed into the event, and in \zeiref{srcPong0403} the event is dispatched.
 
+\newpage
 \lstsource{SRC/02 Examples/01 Pong/v04/pong04.py}{86}{101}{python}{Pong (\Reqref{req0201Punkte}) -- \texttt{Ball.move()}}{srcPong04g}
 
 Now all that remains is to catch the user-defined event inside \texttt{watch\_for\_events()} (starting at \zeiref{srcPong0404}).
 
 \lstsource{SRC/02 Examples/01 Pong/v04/pong04.py}{190}{191}{python}{Pong (\Reqref{req0201Punkte}) -- \texttt{Ball.watch\_for\_events()}}{srcPong04h}
 
-\subsubsection*{Why is a user-defined event more elegant than direct access?}
-
-Using a user-defined event is elegant mainly because it decouples the involved classes.
-
+\begin{hintbox}[Why is a user-defined event more elegant than direct access?]
 \begin{itemize}
 	\item \textbf{No direct access from the ball to the score:} 
 	If the \texttt{Ball} were to call \texttt{Score.render()} or \texttt{Score.update()} directly, it would need to know about the \texttt{Score} object -- or even the \texttt{Game} class. This creates unnecessary dependencies and tightly couples classes that should remain independent.
 	
 	\item \textbf{Clear separation of responsibilities:}
-	The \texttt{Ball} only knows one thing:	\emph{A point was scored by player X.} The \texttt{Game}, on the other hand, decides what that means in practice. Update the score data, re-render the score display, maybe play a sound, reset the ball, or start the next serve.	Each class focuses on its own responsibility \index{SRP}(\randnotiz{SRP}).
+	The \texttt{Ball} only knows one thing:	\emph{A point was scored by player X.} The \texttt{Game}, on the other hand, decides what that means in practice. Update the score data, re-render the score display, maybe play a sound, reset the ball, or start the next serve.	Each class focuses on its own responsibility (SRP)\index{SRP}.
 	
 	\item \textbf{A clean extension point:}
 	Later on, additional reactions can easily be attached to the same event -- such as sound effects, particle effects, a short pause, a change in serve direction, or logging -- without touching the \texttt{Ball} code again.
@@ -266,12 +274,16 @@ Using a user-defined event is elegant mainly because it decouples the involved c
 	This makes the code easier to understand, test, and maintain.
 	
 \end{itemize}
+\end{hintbox}
 
-\textbf{Rule of thumb:} The ball reports what happened and the game decides what to do about it.
+The ball reports what happened and the game decides what to do about it.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
 \subsection{\Reqref{req0201Schlag}: Paddle hit}
-
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/02%20Examples/01%20Pong/v05}
+\end{diskbox}
 At first glance, the game already looks finished -- but it is still not really playable, because the paddles are not doing anything yet.
 
 \myebild{pong01.png}{0.3}{Pong: paddles, ball, and score}{picPong01}
@@ -299,7 +311,9 @@ Now the game finally becomes playable.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\Reqref{req0201Computer}: Computer-controlled player}
-
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/02%20Examples/01%20Pong/v06}
+\end{diskbox}
 Strictly speaking, we would be finished at this point -- but I would like to add a computer-controlled player. This allows the game to be played against the computer, or simply to let the computer play against itself for hours.
 
 \br{Computer player}{req0201Computer}
@@ -349,7 +363,9 @@ One remaining detail is requirement~\ref{req0201Computer}.\ref{req0201ComputerHa
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\Reqref{req0201Sound}: Sound}
-
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/02%20Examples/01%20Pong/v07}
+\end{diskbox}
 A bit of sound would make the game feel much more lively.
 
 \br{Sound}{req0201Sound}
@@ -385,8 +401,10 @@ All that remains is toggling sound output on and off inside \texttt{watch\_for\_
 \lstsource{SRC/02 Examples/01 Pong/v07/pong07.py}{213}{227}{python}{Pong (\Reqref{req0201Sound}) -- \texttt{Ball.watch\_for\_events()}}{srcPong07f}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{\reqref{req0201PauseHelp}: Pause and Help Screen}
-
+\subsection{\Reqref{req0201PauseHelp}: Pause and Help Screen}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/02%20Examples/01%20Pong/v08}
+\end{diskbox}
 \br{Pause and help}{req0201PauseHelp}
 \begin{enumerate}
 	\item Pressing \keys{p} pauses all activity and stops the game.  
@@ -433,12 +451,13 @@ Both the pause mode and the help screen are based on the same fundamental idea: 
 
 The crucial point is that in both modes the method \texttt{update()} does not modify any game objects. Rendering continues, which keeps the game visually \emph{alive} while it is logically paused.
 
-This approach has several advantages:
+\begin{hintbox}[This approach has several advantages]
 \begin{itemize}
 	\item No special-case logic inside individual sprite classes
 	\item A clear separation between \emph{game state} and \emph{presentation}
 	\item Easy to extend (e.\,g.\ for menus, dialogs, or settings)
 \end{itemize}
 
-Rule of thumb: \emph{Pausing does not mean drawing nothing -- it means changing nothing.}
+Rule of thumb: Pausing does not mean drawing nothing -- it means changing nothing.
+\end{hintbox}
 

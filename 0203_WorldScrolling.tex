@@ -7,13 +7,20 @@ In many games, the playable universe is too large to be displayed entirely withi
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{A Large Example World}
+\begin{diskbox}
+	\begin{itemize}
+		\item \url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/03%20WorldScrolling/V01}
+		\item \url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/03%20WorldScrolling/V02}
+	\end{itemize}
+\end{diskbox}
+
 Let us take a look at a simple example without any actual gameplay mechanics, so that it does not become too distracting. Our world consists of a large number of square tiles that differ only in their color. The closer a tile is to the center, the whiter its yellow color becomes.
 
 The complete source code is split across several files to maintain clarity. Let us start with the file \texttt{globals.py}. By now, \texttt{FPS} and \texttt{DELTATIME} should be self-explanatory. The constant \texttt{TILESIZE\_WORLD} defines the width and height of a tile in the large world; in our case \SI{24}{px}. \texttt{NOF\_COLS} and \texttt{NOF\_ROWS} specify the number of columns and rows—that is, how many tiles per row and per column exist in the large world. As a result, \texttt{WORLD} becomes a rectangle with a width of \SI{2160}{px} and a height of \SI{1680}{px} in \zeiref{globalsv0101}; this is larger than what can be displayed on most monitors.
 
 The setting \texttt{TILE\_WITH\_BORDER} controls whether the tiles should have an inner border. A value of~0 means \emph{no}, while a value $>0$ specifies the width of the inner border. This makes the individual tiles visible again; otherwise, the world would appear as a large color gradient.
 
-Finally, there is \texttt{NOF\_MOBS}. I let a few blue rectangles move aimlessly around the world so that something is happening visually and the scene appears a bit more representative of a real game; after all, real games usually contain more than just static elements and the player.
+Finally, there is \texttt{NOF\_MOBS}. I~let a few blue rectangles move aimlessly around the world so that something is happening visually and the scene appears a bit more representative of a real game; after all, real games usually contain more than just static elements and the player.
 
 
 \lstsource{SRC/01 Techniques/03 WorldScrolling/V01/config.py}{1}{99}{python}{Big World --  \texttt{config.py}}{srcSettings01}
@@ -28,15 +35,16 @@ Finally, there is the \texttt{Mob} class. A blue rectangle is placed at a random
 
 \lstsource{SRC/01 Techniques/03 WorldScrolling/V01/objects.py}{1}{99}{python}{Big World --  \texttt{Tile}, \texttt{Player}, and \texttt{Mob}}{srcObjects01}
 
-Our output window -- i.\,e.\ the first rather unworthy attempt -- is defined in the file \texttt{windows.py}. Not much happens here. A window with the size defined in \texttt{config.py} is created. Finally, the window title is adjusted so that it conveys a bit of information about its properties. In \texttt{draw()}, the window is filled with black, and then all world objects -- background tiles as well as moving objects, including the player -- are rendered. I added the method \texttt{save()} only for this script, so that I can capture images of the current states, for example to show them here.
+Our output window -- i.\,e.\ the first rather unworthy attempt -- is defined in the file \texttt{windows.py}. Not much happens here. A window with the size defined in \texttt{config.py} is created. Finally, the window title is adjusted so that it conveys a bit of information about its properties. In \texttt{draw()}, the window is filled with black, and then all world objects -- background tiles as well as moving objects, including the player -- are rendered. I~added the method \texttt{save()} only for this script, so that I~can capture images of the current states, for example to show them here.
 
 
 \lstsource{SRC/01 Techniques/03 WorldScrolling/V01/windows.py}{1}{999}{python}{Big World --  \texttt{WindowPlain}}{srcWindows01}
 
 In \texttt{camera\_demo.py}, the class \texttt{Game} is now defined and the call to \texttt{main()} is performed. In the constructor of \texttt{Game}, the functions \texttt{create\_tiles()} and \texttt{create\_mobs()} are called. These functions create the tiles and the moving objects and assign them the correct positions within the world; more on this later. In addition, the \texttt{WindowPlain} object is created as the output window, as well as the player -- i.\,e.\ a \texttt{Player} object.
 
-In \texttt{run()}, the basic structure of the main program loop that I typically use in my games is defined. There are plenty of explanations for this structure earlier and later in the script.
+In \texttt{run()}, the basic structure of the main program loop that I~typically use in my games is defined. There are plenty of explanations for this structure earlier and later in the script.
 
+\newpage
 \lstsource{SRC/01 Techniques/03 WorldScrolling/V01/camera_demo.py}{9}{33}{python}{Big World -- Constructor and \texttt{run()} of \texttt{Game}}{srcCamerademo01}
 
 The methods shown in \srcref{srcCamerademo02} also require no further explanation.
@@ -47,7 +55,7 @@ The methods \texttt{create\_tiles()} and \texttt{create\_mobs()} create the game
 
 \lstsource{SRC/01 Techniques/03 WorldScrolling/V01/camera_demo.py}{69}{84}{python}{Big World -- \texttt{create\_tiles()}, \texttt{create\_mobs()}, and \texttt{save()} of \texttt{Game}}{srcCamerademo03}
 
-If we take a look at the screen outputs of the current source code in \abbref{picPlainWindow02} and \abbref{picPlainWindow01}, the fundamental problem becomes immediately apparent. The window \texttt{Plain\-Wind\-ow} is far too small to display the entire world (see \abbref[vref]{picPlainWindow03}). We can only see the top-left corner of the large world—once without borders and once with borders. The visible section is so small that even the color gradient is hardly recognizable. Here, the borders help to make the many tiles visible. Later on, we will no longer need them.
+If we take a look at the screen outputs of the current source code in \abbref{picPlainWindow02} and \abbref{picPlainWindow01}, the fundamental problem becomes immediately apparent. The window \texttt{Plain\-Wind\-ow} is far too small to display the entire world (see \abbref[vref]{picPlainWindow03}). We can only see the top-left corner of the large world -- once without borders and once with borders. The visible section is so small that even the color gradient is hardly recognizable. Here, the borders help to make the many tiles visible. Later on, we will no longer need them.
 
 \myezweihbild{plainwindow02.png}{0.35}{Tiles without borders}{picPlainWindow02}{plainwindow01.png}{0.35}{Tiles with borders}{picPlainWindow01}
 
@@ -70,7 +78,7 @@ If we take a look at the screen outputs of the current source code in \abbref{pi
 	\caption{PlainWindow as a Viewport of the World}\label{picPlainWindow03}
 \end{figure}
 
-\index{Visibility culling}Before continuing with the different top-down views, I would like to address a \randnotiz{Visibility culling} performance issue. To do so, I extend the window title to display the actual \texttt{FPS} and increase \texttt{FPS} in \texttt{config.py} to \SI{600}{fps} -- not because this is a realistic value for a game, but because I want to determine how many frames are actually achieved. I then store this actually achieved number of frames in a text file.
+\index{Visibility culling}Before continuing with the different top-down views, I~would like to address a \randnotiz{Visibility culling} performance issue. To do so, I~extend the window title to display the actual \texttt{FPS} and increase \texttt{FPS} in \texttt{config.py} to \SI{600}{fps} -- not because this is a realistic value for a game, but because I~want to determine how many frames are actually achieved. I~then store this actually achieved number of frames in a text file.
 
 If we take a look at the method \texttt{draw()} in \srcref[vref]{srcWindows01}, we see that all tiles and all moving objects are rendered into the target window -- that is, drawn -- even though the vast majority of these objects are not visible within the window at all.
 
@@ -78,23 +86,30 @@ One possible approach is to first check all sprites, or rather their rectangles,
 
 \lstsource{SRC/01 Techniques/03 WorldScrolling/V02/windows.py}{18}{28}{python}{Big World --  \texttt{WindowPlain.draw()} with Visibility culling}{srcWindows02}
 
-Afterwards, I performed the same performance measurement as before, and the result can be seen in \abbref[vref]{picPerformancemitohneprüfung01}. When visibility checking is enabled, significantly more frames per second are achieved than without it. Conclusion: it is worth using.
+Afterwards, I~performed the same performance measurement as before, and the result can be seen in \abbref[vref]{picPerformancemitohneprüfung01}. When visibility checking is enabled, significantly more frames per second are achieved than without it. Conclusion: it is worth using.
 
 \myebild{PerformaceMitOhnePrüfung.pdf}{1.0}{Performance without and with visibility culling}{picPerformancemitohneprüfung01} 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Top-Down View / Bird's-Eye View}
-
+\begin{diskbox}
+	\begin{itemize}
+		\item \url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/03%20WorldScrolling/V03}
+		\item \url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/03%20WorldScrolling/V04}
+	\end{itemize}
+\end{diskbox}
 First of all, one might want to have a complete overview of the entire world. This is not strictly necessary. It is not uncommon for a game to never allow the player to see the whole world at once. However, many games offer a top-down view (Bird's-Eye View)\index{BirdEyeView}.
 
-A first naive approach would be to scale down the world using \texttt{transform.scale\_by()}\myindex{pyg}{\texttt{transform}!\texttt{scale\_by()}} (see \zeiref{windowsv0301}). This approach has the following advantages and disadvantages:
+A first naive approach would be to scale down the world using \texttt{transform.scale\_by()}\myindex{pyg}{\texttt{transform}!\texttt{scale\_by()}} (see \zeiref{windowsv0301}). 
 
+\begin{hintbox}[This approach has the following advantages and disadvantages]
 \begin{itemize}
 	\item Advantage: Very easy to implement.
 	\item Disadvantage: In every frame, the entire oversized bitmap has to be created.
 	\item Disadvantage: Scaling can produce undesirable artifacts, since we have no control over which pixels are lost during scaling.
 	\item Disadvantage: Scaling can create objects that are only one pixel in size or even smaller, and therefore hardly visible or not visible at all.
 \end{itemize}
+\end{hintbox}
 
 \lstsource{SRC/01 Techniques/03 WorldScrolling/V03/windows.py}{35}{55}{python}{Big World --  \texttt{WindowBirdEyeView}}{srcWindows03}
 
@@ -106,7 +121,7 @@ A first naive approach would be to scale down the world using \texttt{transform.
 %		\myfigure{birdeye_image_01.png}{0.45}{BirdEye (scaled)}{picBirdEyeImage01}%
 %	\end{center}%
 %\end{wrapfigure}%
-I therefore recommend that each sprite provides two or possibly even several variants of its image. This makes it easier to identify objects quickly in the Bird’s-Eye View as well. 
+I~therefore recommend that each sprite provides two or possibly even several variants of its image. This makes it easier to identify objects quickly in the Bird’s-Eye View as well. 
 
 Keep in mind that the purpose of the top-down view is not to allow the game to be played in a full overview after all, but rather to provide orientation, to locate important points of interest, and possibly to identify friends and enemies.
 
@@ -116,13 +131,13 @@ Keep in mind that the purpose of the top-down view is not to allow the game to b
 	\item The other moving objects are displayed as equally sized blue squares.
 \end{enumerate}
 
-One more thing I would like to have is the ability to recognize the visible section of the \texttt{PlainWindow} as a rectangle within the Bird’s-Eye View.
+One more thing I~would like to have is the ability to recognize the visible section of the \texttt{PlainWindow} as a rectangle within the Bird’s-Eye View.
 
 Let us implement this: First, the Bird’s-Eye View window is integrated into the main program (see \srcref{srcCamerademo04} and \srcref{srcCamerademo05}). Please note that at no point in the source code is a surface for the entire world created at its original size anymore.
 
 \lstsource{SRC/01 Techniques/03 WorldScrolling/V04/camera_demo.py}{16}{18}{python}{Big World -- \texttt{BirdEyeView} in the constructor of \texttt{Game}}{srcCamerademo04}
 
-In \texttt{draw()}, an additional option is prepared, namely the visualization of which part of the entire world is currently covered by \texttt{PlainWindow}. To do this, I pass the rectangle of \texttt{PlainWindow} and the border color to the \texttt{draw()} method of \texttt{BirdEyeView} in \zeiref{camerav0401} (see \abbref[vref]{picBirdEyeImage02}).
+In \texttt{draw()}, an additional option is prepared, namely the visualization of which part of the entire world is currently covered by \texttt{PlainWindow}. To do this, I~pass the rectangle of \texttt{PlainWindow} and the border color to the \texttt{draw()} method of \texttt{BirdEyeView} in \zeiref{camerav0401} (see \abbref[vref]{picBirdEyeImage02}).
 
 \lstsource{SRC/01 Techniques/03 WorldScrolling/V04/camera_demo.py}{64}{68}{python}{Big World -- \texttt{BirdEyeView} in \texttt{Game.draw()}}{srcCamerademo05}
 
@@ -132,7 +147,7 @@ This data is then used in \texttt{draw()} of \texttt{BirdEyeView}, and the recta
 
 %\myebild{birdeye_image_02.png}{0.35}{Bird’s-Eye View (simplified and with visibility indicator)}{picBirdEyeImage02}
 
-One more note on performance: Due to the preparations carried out -- namely the one-time creation of a smaller, symbolic representation of the game elements -- a significant performance improvement was achieved as well. Analogous to the measurements above, I performed a corresponding benchmark over \SI{660}{frames}. The result can be read from \abbref[vref]{picPerformaceMitOhneVorbereitung01}.
+One more note on performance: Due to the preparations carried out -- namely the one-time creation of a smaller, symbolic representation of the game elements -- a significant performance improvement was achieved as well. Analogous to the measurements above, I~performed a corresponding benchmark over \SI{660}{frames}. The result can be read from \abbref[vref]{picPerformaceMitOhneVorbereitung01}.
 
 %\myezweihbild{birdeye_image_01.png}{0.35}{BirdEye (scaled)\newline \newline}{picBirdEyeImage01}{birdeye_image_02.png}{0.35}{Bird’s-Eye View (simplified and with visibility indicator)}{picBirdEyeImage02}
 
@@ -156,9 +171,17 @@ One more note on performance: Due to the preparations carried out -- namely the 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
 \subsection{Player Centered Camera}
+\begin{diskbox}
+	\begin{itemize}
+		\item \url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/03%20WorldScrolling/V05}
+		\item \url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/03%20WorldScrolling/V06}
+		\item \url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/03%20WorldScrolling/V07}
+	\end{itemize}
+\end{diskbox}
 
-As the next type of view, I would like to introduce the \emph{Player-Centered Camera}.  
+As the next type of view, I~would like to introduce the \emph{Player-Centered Camera}.  
 In this view, the player appears to be fixed at the center, while the elements of the game move according to the player’s subjective direction of movement.
 
 The basic idea behind a solution is actually quite simple -- so do not be intimidated by the mathematics! Each player has a position in the world measured from the top-left corner, given by the vector $\vec{P}_W = (P_{Wx}, P_{Wy})$. The point $P_W$ has a distance to the center of the world—that is, the large game world. Why is this important? Because the player is later supposed to appear at the center of the window.
@@ -206,14 +229,14 @@ And \texttt{save()} also needs to be extended by \zeiref{camerav0504}:
 
 Now let us move on to the fun part: the \texttt{WindowCenteredCamera} class.  
 First, the self-explanatory \texttt{\_\_init\_\_()}. In addition, two attributes are defined here: \texttt{self.offset} and \texttt{self.player}.  
-Using the offset, I will later compute the new coordinates, and the player is used to compute the offset.
+Using the offset, I~will later compute the new coordinates, and the player is used to compute the offset.
 
  
 \lstsource{SRC/01 Techniques/03 WorldScrolling/V05/windows.py}{72}{82}{python}{Big World -- Constructor of \texttt{WindowCenteredCamera}}{srcWindows05}
 
 The offset is computed in the method \texttt{scroll()}. Keep \gleiref[vref]{off03} next to the source code.  The implementation should be self-explanatory, as it serves as an example of how easily mathematical expressions can be translated into source code.
 
-Why is the last line actually needed? It is not required for scrolling itself. However, by providing this value, I can inspect the rectangle of the visible world section in the Bird’s-Eye View.
+Why is the last line actually needed? It is not required for scrolling itself. However, by providing this value, I~can inspect the rectangle of the visible world section in the Bird’s-Eye View.
 
 \lstsource{SRC/01 Techniques/03 WorldScrolling/V05/windows.py}{97}{100}{python}{Big World -- \texttt{WindowCenteredCamera.scroll()}}{srcWindows06}
 
@@ -231,6 +254,7 @@ If we now run the source code and move the player to the top-left corner of the 
 
 We therefore need to adjust the method \texttt{scroll()} so that the borders are not exceeded. We now see that the offset is limited to~0 at the top and on the left, meaning it cannot become negative. This would otherwise indicate that we are extending beyond the world to the top or to the left. The same logic applies to the right and bottom edges. Here, it is checked whether the right edge of the object exceeds the right edge of the world, and analogously whether this also happens at the bottom. This procedure is known as \gls{clamp}\index{Clamp}\randnotiz{Clamp}.
 
+\newpage
 \lstsource{SRC/01 Techniques/03 WorldScrolling/V06/windows.py}{97}{106}{python}{Big World -- \texttt{WindowCenteredCamera.scroll()} with clamping}{srcWindows09}
 
 In \abbref[vref]{picCenteredImage02}, we no longer see any border artifacts.  
@@ -239,25 +263,29 @@ Note: In \abbref[vref]{picBirdEyeImage05}, the blue border of \texttt{PlainWindo
 
 \myezweihbild{birdeye_image_05.png}{0.35}{BirdEyeView: Grün=Centered}{picBirdEyeImage05}{centered_image_02.png}{0.35}{Centered Camera -- without border error}{picCenteredImage02}
 
-There is one more thing I would like to address: In the method \texttt{draw()} (see \srcref[vref]{srcWindows08}), the method \texttt{world2camera()} is called for every single game object; that is, thousands of coordinates are transformed. Would it not be more efficient to transform the world coordinates just once and then compare them with the coordinates of the game objects?
+\begin{warningbox}[There is one more thing I~would like to address]
+	In the method \texttt{draw()} (see \srcref[vref]{srcWindows08}), the method \texttt{world2camera()} is called for every single game object; that is, thousands of coordinates are transformed. Would it not be more efficient to transform the world coordinates just once and then compare them with the coordinates of the game objects?
+\end{warningbox}
 
 To this end, we introduce a new method, appropriately called \texttt{camera2world()}. It is, so to speak, the inverse of \texttt{world2camera()}.
 
 \lstsource{SRC/01 Techniques/03 WorldScrolling/V07/windows.py}{111}{112}{python}{Big World -- \texttt{WindowCenteredCamera.camera2world()} with clamping}{srcWindows10}
 
-I now integrate this into \texttt{draw()}. I have left the old computation commented out above, so that the difference can be seen more clearly. Once again, simple reasoning has led to a performance gain (see \abbref[vref]{picPerformaceTransformation01}).
+I~now integrate this into \texttt{draw()}. I~have left the old computation commented out above, so that the difference can be seen more clearly. Once again, simple reasoning has led to a performance gain (see \abbref[vref]{picPerformaceTransformation01}).
 
 \lstsource{SRC/01 Techniques/03 WorldScrolling/V07/windows.py}{84}{95}{python}{Big World -- \texttt{WindowCenteredCamera.draw()} with clamping}{srcWindows11}
 
 \myebild{PerformaceTransformation.pdf}{1.0}{Performance with element-based and world-based transformation}{picPerformaceTransformation01} 
 
-
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Page Scrolling/Edge Scrolling}
-
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/03%20WorldScrolling/V08}
+\end{diskbox}
 Keeping the player permanently centered can lead to a restless and confusing visual effect, depending on the game’s visual style. It is also associated with many transformations that are often unnecessary for the gameplay itself. Page-wise scrolling (edge scrolling\randnotiz{Edge}\index{Scrolling!Edge}\index{Edge Scrolling} or page scrolling\randnotiz{Page}\index{Scrolling!Page}\index{Page Scrolling}) represents a good compromise. The player initially moves normally within the visible game area. Only when a minimum distance (\gls{padding}) to one of the borders is undershot does the background shift in the corresponding direction -- that is, the view scrolls to the next page.
 
-Let us take a look at the constructor of \texttt{WindowPagewise}. Lost of the elements have already been explained above. What is new is the attribute \texttt{inner\_rect} and the parameter \texttt{padding}. This parameter controls the distance between the inner rectangle and the boundaries of the view—that is, the space between the inner brown rectangle and the outer green rectangle in \abbref[vref]{picBirdEyeImage06}. The parameter is -- purely arbitrarily -- an integer here and serves as a factor for calculating the distance. As a second factor, I chose the width and height of the player. Semantically, this means that a value of~2 results in a padding of two player widths or heights.
+Let us take a look at the constructor of \texttt{WindowPagewise}. Lost of the elements have already been explained above. What is new is the attribute \texttt{inner\_rect} and the parameter \texttt{padding}. This parameter controls the distance between the inner rectangle and the boundaries of the view—that is, the space between the inner brown rectangle and the outer green rectangle in \abbref[vref]{picBirdEyeImage06}. The parameter is -- purely arbitrarily -- an integer here and serves as a factor for calculating the distance. As a second factor, I~chose the width and height of the player. Semantically, this means that a value of~2 results in a padding of two player widths or heights.
 
 \lstsource{SRC/01 Techniques/03 WorldScrolling/V08/windows.py}{112}{130}{python}{Big World -- Constructor of \texttt{WindowPagewise}}{srcWindows12}
 
@@ -282,12 +310,14 @@ The actual work happens in the method \texttt{scroll()}. Here as well, the basic
 
 Integrating the new class is done in exactly the same way as integrating \texttt{Wind\-ow\-Cen\-tered\-Cam\-era}. Only the visualization of the rectangles in the Bird’s-Eye View requires some explanation here: In \zeiref{camerav0802}, the rectangle of the view is rendered in red. The second rectangle, shown in brown, is the inner rectangle whose boundary triggers scrolling when it is crossed. The coordinates for these rectangles are computed in advance in \zeiref{camerav0805}.
 
-\lstsource{SRC/01 Techniques/03 WorldScrolling/V08/camera_demo.py}{68}{84}{python}{Big World -- \texttt{Game.draw()}}{srcCamerademo09}
+\lstsource{SRC/01 Techniques/03 WorldScrolling/V08/camera_demo.py}{68}{84}{python}{Big World -- \texttt{Game.draw()}}{srcCamerademo10}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Auto Scrolling/Endless Scrolling}
-
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/03%20WorldScrolling/V09}
+\end{diskbox}
 Another variant is auto scrolling\index{Scrolling!Auto}\index{Auto Scrolling}\index{Scrolling!Endless}\index{Endless Scrolling}. In this approach, the background moves automatically and continuously in a fixed direction, while the player usually remains centered and can only evade vertically—for example by jumping. It is also quite common for the background to move downward, requiring the player to jump to higher platforms.
 
 Let us therefore take a look at the new class \texttt{WindowAuto}. What is new or special here is that the constructor receives a direction parameter. This consists of two numbers: one for horizontal movement and one for vertical movement. The values represent the speed in \unit{px/s}, while the sign determines the direction: positive values indicate movement to the right and downward, negative values movement to the left and upward.
@@ -303,8 +333,11 @@ For the sake of completeness: do not forget to adjust the name in \texttt{save()
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{As a Strategy Pattern}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/03%20WorldScrolling/Pattern}
+\end{diskbox}
 
-Although I hope that all the techniques presented so far have been explained clearly, it is worthwhile to further decouple the algorithms from the concrete game scenario of my \emph{large world}. After all, these techniques occur repeatedly, making it worthwhile to formulate a reusable solution.
+Although I~hope that all the techniques presented so far have been explained clearly, it is worthwhile to further decouple the algorithms from the concrete game scenario of my \emph{large world}. After all, these techniques occur repeatedly, making it worthwhile to formulate a reusable solution.
 
 If we compare the three scenarios closely, we find that they differ only in the method \texttt{scroll()}, with one or two additional attributes being required in each case. In other words, we can encapsulate the algorithms in separate classes and then formulate a solution using the \gls{strategypattern}. The resulting architecture is shown in \abbref[vref]{picStrategCamera01}.
 
@@ -371,20 +404,20 @@ If we compare the three scenarios closely, we find that they differ only in the 
 
 The class \texttt{Camera} is the class that we will later use in our game. It contains all attributes and methods required to render an oversized world. It also contains a \emph{placeholder} for the actual scrolling behavior: the attribute \texttt{scroller}. In the method \texttt{scroll()}, the scrolling behavior of the behavior class is then invoked.
 
-\newpage
-\lstsource{SRC/01 Techniques/03 WorldScrolling/Pattern/cameraview.py}{171}{999}{python}{Scroll Pattern -- \texttt{Camera}}{srcCameraview01}
+
+%\lstsource{SRC/01 Techniques/03 WorldScrolling/Pattern/cameraview.py}{171}{999}{python}{Scroll Pattern -- \texttt{Camera}}{srcCameraview01}
 
 \texttt{CamScroll(ABC)} is the abstract interface class for the behavior classes and essentially consists only of the abstract method \texttt{scroll()}. The four attributes are required for computing the scrolling behavior.
 
-\lstsource{SRC/01 Techniques/03 WorldScrolling/Pattern/cameraview.py}{24}{57}{python}{Scroll Pattern -- \texttt{CamScroll(ABC)}}{srcCameraview02}
+%\lstsource{SRC/01 Techniques/03 WorldScrolling/Pattern/cameraview.py}{24}{57}{python}{Scroll Pattern -- \texttt{CamScroll(ABC)}}{srcCameraview02}
 
 The three concrete behavior classes are \texttt{CenteredCamera}, \texttt{AutoCamera}, and \texttt{Page\-wise\-Camera}. Here, the method \texttt{scroll()} is implemented. The logic of these implementations corresponds exactly to the approaches shown above and should therefore be easy to understand.
 
-\lstsource{SRC/01 Techniques/03 WorldScrolling/Pattern/cameraview.py}{60}{167}{python}{Scroll Pattern -- \texttt{CenteredCamera}, \texttt{AutoCamera}, and \texttt{PagewiseCamera}}{srcCameraview03}
+%\lstsource{SRC/01 Techniques/03 WorldScrolling/Pattern/cameraview.py}{60}{167}{python}{Scroll Pattern -- \texttt{CenteredCamera}, \texttt{AutoCamera}, and \texttt{PagewiseCamera}}{srcCameraview03}
+%
+%An example implementation can be found in \srcref[vref]{srcCameraviewTest01}. It essentially corresponds to the examples implemented above.
 
-An example implementation can be found in \srcref[vref]{srcCameraviewTest01}. It essentially corresponds to the examples implemented above.
-
-\lstsource{SRC/01 Techniques/03 WorldScrolling/Pattern/cameraview_test.py}{1}{999}{python}{Scroll Pattern -- Example implementation}{srcCameraviewTest01}
+%\lstsource{SRC/01 Techniques/03 WorldScrolling/Pattern/cameraview_test.py}{1}{999}{python}{Scroll Pattern -- Example implementation}{srcCameraviewTest01}
 
 A video demonstration can be found here: \href{https://youtu.be/A2uXPimynnc}{https://youtu.be/A2uXPimynnc}.  
 

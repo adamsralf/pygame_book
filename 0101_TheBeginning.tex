@@ -1,57 +1,58 @@
 % !TeX spellcheck = en_US
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Kind of Hello World!}
-\begin{diskbox}[So $\ldots$ where are the files?]
- \url{https://github.com/adamsralf/pygame_skript/tree/main/src/00%20Einf%C3%BChrung/01%20Start}
+\section{Kind of \emph{Hello World!}}
+\begin{diskbox}
+	\begin{itemize}
+		\item  \url{https://github.com/adamsralf/pygame_book/blob/main/src/00%20Introduction/01%20TheBeginning/v01}
+		\item  \url{https://github.com/adamsralf/pygame_book/blob/main/src/00%20Introduction/01%20TheBeginning/v02}
+	\end{itemize}
 \end{diskbox}
 \subsection{The Very First Steps}
 \lstsource{src/00 Introduction/01 TheBeginning/v01/start.py}{1}{24}{python}{My first \emph{Game}, Version 1.0}{srcStart00}
 
+\begin{wrapfigure}[7]{r}{5.0cm}
+	\vspace{-2.0em}
+	\myfigure{greene_plane.png}{0.3}{Playground}{picGreenPlane}
+\end{wrapfigure}%
 When you start the application now, you will see a nicely designed window with a green background (\abbref[vref]{picGreenPlane}). At the moment, however, not much is happening. The only thing you can do is close the window by clicking on the \emph{X} button in the upper right corner of the window frame.
 
 In order to use Pygame, the module \texttt{pygame} must be imported into the program (\zeiref{srcStart0001}). This makes the \glspl{constant}, \glspl{function}, \glspl{event}, and \glspl{class} of the \gls{namespace} available.
 
-\begin{wrapfigure}[11]{r}{6.5cm}
-	%\vspace{-1em}
-	\myfigure{greene_plane.png}{0.4}{Playground}{picGreenPlane}
-\end{wrapfigure}
-Pygame is not just about calling functions or creating objects; a hole subsystems must be initialized explicitly. In this example, this is done using the function
-\texttt{pygame.init()}. Pygame is now connected to parts of the \Gls{os} system, to deliver an receive required information and actions. In \zeiref{srcStart0003} the Pygame engine is started by calling \texttt{init()} \myindex{pyg}{\texttt{init()}|underline}\randnotiz{init()}. It ist also possible to start only parts of the engine e.g. the sound subsystem by \texttt{pygame.mixer.init()}\myindex{pyg}{\texttt{mixer}!\texttt{init()}}.
+
+Pygame is not just about calling functions or creating objects; a hole subsystems must be initialized explicitly. In this example, this is done using the static function
+\texttt{pygame.init()}. Pygame is now connected to parts of the \Gls{os} system, to deliver and receive required information and actions. In \zeiref{srcStart0003} the Pygame engine is started by calling \texttt{init()}\myindex{pyg}{\texttt{init()}|underline}\randnotiz{init()}. It ist also possible to start only parts of the engine e.g. the sound subsystem by \texttt{pygame.mixer.init()}\myindex{pyg}{\texttt{mixer}!\texttt{init()}}.
 
 For our games, we need a \emph{playfield}/a window in which everything takes place. The class \texttt{pygame.Window}\myindex{pyg}{\texttt{Window}}\randnotiz{Window}
-represents such a playfield. In \zeiref{srcStart0005}, the constructor receives one argument — namely the width and the height of the window as the 2-tuple
+represents such a playfield. In \zeiref{srcStart0005}, the constructor receives one argument -- namely the width and the height of the window as the 2-tuple
 \texttt{size}. Our window is therefore \SI{600}{px} wide and \SI{400}{px} high
 (see \Gls{PX}). The method \texttt{get\_surface()}
 \myindex{pyg}{\texttt{Window}!\texttt{get\_surface()}}\randnotiz{get\_surface()}
 in \zeiref{srcStart0012} returns a \texttt{pygame.Surface} object \myindex{pyg}{\texttt{Surface}}, which is roughly something like a \gls{bitmap}.
 
-In \zeiref{srcStart0012}, I store this return value in the
-\gls{variable} named \texttt{screen}\index{screen}\randnotiz{screen}.
+In \zeiref{srcStart0012}, I~store this return value in the
+\gls{variable} named \texttt{screen}\index{screen}\randnotiz{screen}. I~can then assign a title to the window using the attribute \texttt{Window.title}\myindex{pyg}{\texttt{Window}!\texttt{title}}\randnotiz{title} (see \zeiref{srcStart0004}) and set the position of the window relative to the desktop using the attribute \texttt{Window.po\-si\-tion}\myindex{pyg}{\texttt{Window}!\texttt{position}} (see \zeiref{srcStart0002}).
 
-I can then assign a title to the window using the attribute \texttt{Window.title}\myindex{pyg}{\texttt{Window}!\texttt{title}}\randnotiz{title} (see \zeiref{srcStart0004}) and set the position of the window relative to the desktop using the attribute \texttt{Window.po\-si\-tion}\myindex{pyg}{\texttt{Window}!\texttt{position}}\randnotiz{position} (see \zeiref{srcStart0002}).
+The game itself -- just like all future games -- runs inside a \gls{mainloop}\index{main loop}\index{main loop}\randnotiz{main loop}. The loop starts in \zeiref{srcStart0006} and ends in \zeiref{srcStart0011}. 
 
-The game itself -- just like all future games -- runs inside a \gls{mainloop}\index{main loop}\index{main loop}. The loop starts in \zeiref{srcStart0006} and ends in \zeiref{srcStart0011}. Inside this loop, three things will always happen in the future:
-
-\begin{enumerate}
+\begin{hintbox}[Inside this loop, three things will always happen in the future:]
+\begin{itemize}
 	\item Reading and processing events: As shown in \zeiref{srcStart0007}f., mouse, keyboard, or game events are detected and passed on to the game elements. In our case, only clicking the X in the upper right corner of the window is registered.
 
-	\item Updating the state of the game elements: Based on the events detected above and the current states of the game elements, the new states are determined
-	(the player moves, a projectile bounces off, points increase, etc.). In our case, only the \gls{flag}\index{Flag} \texttt{running} of the	main program loop is set to \false.
+	\item Updating the state of the game elements: Based on the events detected above and the current states of the game elements, the new states are determined (the player moves, a projectile bounces off, points increase, etc.). In our case, only the \gls{flag}\index{Flag} \texttt{running} of the main program loop is set to \false.
 	
-	\item Drawing the bitmaps of the game elements:	The game elements have a new position or a new appearance and must therefore be redrawn.	In this minimal example, only the background of the playfield is colored in \zeiref{srcStart0009}, and afterwards the \gls{doublebuffer}\index{Doublebuffer}\randnotiz{Double buffer} is swapped using \texttt{Window.flip()} \myindex{pyg}{\texttt{Window}!\texttt{flip()}}\randnotiz{flip()} in \zeiref{srcStart0010}.
-\end{enumerate}
+	\item Drawing the bitmaps of the game elements:	The game elements have a new position or a new appearance and must therefore be redrawn. In this minimal example, only the background of the playfield is colored in \zeiref{srcStart0009}, and afterwards the \gls{doublebuffer}\index{Doublebuffer} is swapped using \texttt{Window.flip()}\myindex{pyg}{\texttt{Window}!\texttt{flip()}} in \zeiref{srcStart0010}.
+\end{itemize}
+\end{hintbox}
 
+By calling \texttt{py\-game.\-init()}, Pygame places a kind of listener inside the operating system. More precisely, Pygame listens to the \emph{\gls{messagequeue}}. This is where the operating system collects all messages that are triggered by events. These can include \glslink{usb}{USB} connection messages, \glslink{ssd}{SSD} error messages, mouse actions, program starts or crashes, and many others.
 
-By calling \texttt{py\-game.\-init()}, Pygame places a kind of listener inside the operating system. More precisely, Pygame listens to the \emph{\gls{messagequeue}}. This is where the operating system collects all messages that are triggered by events.
-These can include \glslink{usb}{USB} connection messages, \glslink{ssd}{SSD} error messages, mouse actions, program starts or crashes, and many others.
+Pygame now retrieves from the message queue, using \texttt{pygame.event.get()}\myindex{pyg}{\texttt{event}!\texttt{get()}}\randnotiz{event.get()}, all events that could be relevant to the game. Using a \forSchleife, I~then iterate over these events starting at \zeiref{srcStart0007} and pick out the ones that are relevant to me.
 
-Pygame now retrieves from the message queue, using \texttt{pygame.event.get()} \myindex{pyg}{\texttt{event}!\texttt{get()}}\randnotiz{event.get()}, all events that could be relevant to the game. Using a \forSchleife, I then iterate over these events starting at \zeiref{srcStart0007} and pick out the ones that are relevant to me.
+First, I~check which type of event (\texttt{pygame.event.type}) \myindex{pyg}{\texttt{event}!\texttt{type}}\randnotiz{event.type} is being offered.
+At the moment, only the type \texttt{pygame.QUIT} \randnotiz{QUIT}\myindex{pyg}{\texttt{QUIT}} is important to me. This type is triggered when the operating system sends a \emph{quit} message to the application. If I~receive such a message, I~set the flag \texttt{running} to \false{}, so that the main program loop is terminated.
 
-First, I check which type of event (\texttt{pygame.event.type}) \myindex{pyg}{\texttt{event}!\texttt{type}}\randnotiz{event.type} is being offered.
-At the moment, only the type \texttt{pygame.QUIT} \randnotiz{QUIT}\myindex{pyg}{\texttt{QUIT}} is important to me. This type is triggered when the operating system sends a \emph{quit} message to the application. If I receive such a message, I set the flag \texttt{running} to \false{}, so that the main program loop is terminated.
-
-If I do not receive this signal, the main program loop continues to run happily and fills the entire playfield with a color in \zeiref{srcStart0009} using \texttt{screen.fill()} \myindex{pyg}{\texttt{Surface}!\texttt{fill()}} -- in this case, green. Please note that, similar to \zeiref{srcStart0005}, the function expects
-one argument -- namely a 3-tuple. This 3-tuple encodes the color using \glslink{rgb}{RGB}\randnotiz{RGB} values between 0 and 255. Predefined color names \randnotiz{color names}such as \emph{green} can also be used here.
+If I~do not receive this signal, the main program loop continues to run happily and fills the entire playfield with a color in \zeiref{srcStart0009} using \texttt{screen.fill()}\myindex{pyg}{\texttt{Surface}!\texttt{fill()}} -- in this case, green. Please note that, similar to \zeiref{srcStart0005}, the function expects
+one argument -- namely a 3-tuple. This 3-tuple encodes the color using \glslink{rgb}{RGB}\randnotiz{RGB} values between~0 and~255. Predefined color names \randnotiz{color names}such as \emph{green} can also be used here.
 
 
 What remains is \zeiref{srcStart0010}: Here, the function \texttt{pygame.quit()}
@@ -67,21 +68,25 @@ The screen output itself should also not happen arbitrarily fast or too often; i
 
 \lstsource{src/00 Introduction/01 TheBeginning/v02/start.py}{1}{25}{python}{My first \emph{Game}, Version 1.1}{srcStart01}
 
-In \zeiref{srcStart0101}, a \texttt{pygame.time.Clock} \randnotiz{Clock}\myindex{pyg}{\texttt{time}!\texttt{Clock}|underline} object is created for timing control. With the help of this object, various time-related tasks can be handled; for the moment, however, we only need it for timing in \zeiref{srcStart0102}. There, \texttt{pygame.time.Clock.\-tick()} \randnotiz{tick()}\myindex{pyg}{\texttt{time}!\texttt{Clock}!\texttt{tick()}} is called with a frame rate measured in $fps$. This function ensures that the application now runs at a maximum of \SI{60}{fps}. This can be seen in the significantly reduced CPU usage shown in
+In \zeiref{srcStart0101}, a \texttt{pygame.time.Clock}\randnotiz{Clock}\myindex{pyg}{\texttt{time}!\texttt{Clock}|underline} object is created for timing control. With the help of this object, various time-related tasks can be handled; for the moment, however, we only need it for timing in \zeiref{srcStart0102}. There, \texttt{pygame.time.Clock.\-tick()}\randnotiz{tick()}\myindex{pyg}{\texttt{time}!\texttt{Clock}!\texttt{tick()}} is called with a frame rate measured in $fps$. This function ensures that the application now runs at a maximum of \SI{60}{fps}. This can be seen in the significantly reduced CPU usage shown in
 \abbref[vref]{picTaskManager01}.
 
-\textbf{Note:} The Pygame documentation points out that the function \texttt{tick()}
-is very resource-efficient, but somewhat imprecise. If accuracy is important for timing, the function \texttt{tick\_\_loop()}
-\randnotiz{tick\_busy\_loop()}\myindex{pyg}{\texttt{time}!\texttt{Clock}!\texttt{tick\_busy\_loop()}} is recommended instead. Its disadvantage, however, is that it consumes significantly more processing time than \texttt{tick()}.
+\begin{hintbox}[Hint]
+	The Pygame documentation points out that the function \texttt{tick()} is very resource-efficient, but somewhat imprecise. If accuracy is important for timing, the function \texttt{tick\_\_loop()}\myindex{pyg}{\texttt{time}!\texttt{Clock}!\texttt{tick\_busy\_loop()}} is recommended instead. Its disadvantage, however, is that it consumes significantly more processing time than \texttt{tick()}.
+\end{hintbox}
 
 \myebild{TaskManager01.png}{0.7}{Resource usage with timing control}{picTaskManager01}
 
+\newpage
 \subsection{More Input}
-
 \subsubsection{Multiple Windows}\label{secMultipleWindows}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/blob/main/src/00%20Introduction/01%20TheBeginning/v03/start.py}
+\end{diskbox}
+
 You can also create multiple windows for a game (see \url{https://pyga.me/docs/ref/window.html}).
 
-\lstsource{src/00 Introduction/01 TheBeginning/v03/start.py}{1}{99}{python}{Multiple Windows}{srcStart02}
+\lstsource{src/00 Introduction/01 TheBeginning/v03/start.py}{4}{32}{python}{Multiple Windows}{srcStart02}
 
 \begin{figure}[hbtp] 
 	\begin{center}
@@ -93,7 +98,11 @@ You can also create multiple windows for a game (see \url{https://pyga.me/docs/r
 	\end{center}
 \end{figure}
 
+\newpage
 \subsubsection{Information About the Graphics Environment}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/blob/main/src/00%20Introduction/01%20TheBeginning/v04/start.py}
+\end{diskbox}
 
 Sometimes it is necessary to know information about the graphics environment: perhaps to identify performance problems, or perhaps to find out which display features are available. Using the function \texttt{pygame.display.Info()}\myindex{pyg}{\texttt{display}!\texttt{Info()}}\randnotiz{Info()}, various parameters can be queried. On my system, calling this function produced the output shown in \abbref[vref]{picInfo00}.
 
@@ -182,7 +191,7 @@ Please refer to \tabref[vref]{tabDisplayInfo} for the meaning of the values (sou
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{What was new?}
 
-To start a minimal Pygame application, you need to do the following:
+\begin{hintbox}[To start a minimal Pygame application]
 
 \begin{itemize}
 	\item Import the Pygame library.
@@ -197,10 +206,9 @@ To start a minimal Pygame application, you need to do the following:
 	\end{enumerate}
 	\item Shut down the Pygame system when exiting.
 \end{itemize}
+\end{hintbox}
 
-The following Pygame elements were introduced:
-
-
+\begin{pygbox}[The following Pygame elements were introduced]
 \begin{itemize}
 	\item \texttt{import pygame}:\\ \url{https://pyga.me/docs/tutorials/en/import-init.html}
 	
@@ -215,7 +223,6 @@ The following Pygame elements were introduced:
 	\item \texttt{pygame.QUIT}:
 	\myindex{pyg}{\texttt{QUIT}}\\
     \url{https://pyga.me/docs/ref/event.html#pygame.event.EventType.type}
-	
 	\item \texttt{pygame.WINDOWCLOSE}:
 	\myindex{pyg}{\texttt{WINDOWCLOSE}}\\
 	\url{https://pyga.me/docs/ref/event.html#pygame.event.EventType.type}
@@ -267,13 +274,85 @@ The following Pygame elements were introduced:
 	\item \texttt{pygame.Window.position}:
 	\myindex{pyg}{\texttt{Window}!\texttt{position}}\\
 	\url{https://pyga.me/docs/ref/window.html#pygame.Window.position}
-\end{itemize}
+\end{itemize}	
+\end{pygbox}
+
+%\begin{pygbox}[The following Pygame elements were introduced]
+%\tcbsubtitle{import pygame}
+%\url{https://pyga.me/docs/tutorials/en/import-init.html}
+%
+%\tcbsubtitle{pygame.init()}
+%\myindex{pyg}{\texttt{init()}}
+%\url{https://pyga.me/docs/ref/pygame.html#pygame.init}
+%	
+%\tcbsubtitle{pygame.quit()}
+%\myindex{pyg}{\texttt{quit()}}
+%\url{https://pyga.me/docs/ref/pygame.html#pygame.quit}
+%
+%\tcbsubtitle{pygame.QUIT}
+%\myindex{pyg}{\texttt{QUIT}}
+%\url{https://pyga.me/docs/ref/event.html#pygame.event.EventType.type}
+%
+%\tcbsubtitle{pygame.WINDOWCLOSE}
+%\myindex{pyg}{\texttt{WINDOWCLOSE}}
+%\url{https://pyga.me/docs/ref/event.html#pygame.event.EventType.type}
+%
+%\tcbsubtitle{pygame.event.get()}
+%\myindex{pyg}{\texttt{event}!\texttt{get()}}
+%\url{https://pyga.me/docs/ref/event.html#pygame.event.get}
+%
+%\tcbsubtitle{pygame.event.type}
+%\myindex{pyg}{\texttt{event}!\texttt{type}}
+%\url{https://pyga.me/docs/ref/event.html#pygame.event.EventType.type}
+%
+%\tcbsubtitle{pygame.time.Clock}
+%\myindex{pyg}{\texttt{time}!\texttt{Clock}}
+%\url{https://pyga.me/docs/ref/time.html#pygame.time.Clock}
+%
+%\tcbsubtitle{pygame.time.Clock.tick()}
+%\myindex{pyg}{\texttt{time}!\texttt{Clock}!\texttt{tick()}}
+%\url{https://pyga.me/docs/ref/time.html#pygame.time.Clock.tick}
+%
+%\tcbsubtitle{pygame.time.Clock.tick\_busy\_loop()}
+%\myindex{pyg}{\texttt{time}!\texttt{Clock}!\texttt{tick\_busy\_loop()}}
+%\url{https://pyga.me/docs/ref/time.html#pygame.time.Clock.tick_busy_loop}
+%
+%\tcbsubtitle{pygame.Surface.fill()}
+%\myindex{pyg}{\texttt{Surface}!\texttt{fill()}}
+%\url{https://pyga.me/docs/ref/surface.html#pygame.Surface.fill}
+%
+%\tcbsubtitle{pygame.Window}
+%\myindex{pyg}{\texttt{Window}}
+%\url{https://pyga.me/docs/ref/window.html}
+%
+%\tcbsubtitle{pygame.Window.destroy()}
+%\myindex{pyg}{\texttt{Window}!\texttt{destroy()}}
+%\url{https://pyga.me/docs/ref/window.html#pygame.Window.destroy}
+%
+%\tcbsubtitle{pygame.Window.flip()}
+%\myindex{pyg}{\texttt{Window}!\texttt{flip()}}
+%\url{https://pyga.me/docs/ref/window.html#pygame.Window.flip}
+%
+%\tcbsubtitle{pygame.Window.get\_surface()}
+%\myindex{pyg}{\texttt{Window}!\texttt{get\_surface()}}
+%\url{https://pyga.me/docs/ref/window.html#pygame.Window.get_surface}
+%
+%\tcbsubtitle{pygame.Window.title}
+%\myindex{pyg}{\texttt{Window}!\texttt{title}}
+%\url{https://pyga.me/docs/ref/window.html#pygame.Window.title}
+%
+%\tcbsubtitle{pygame.Window.position}
+%\myindex{pyg}{\texttt{Window}!\texttt{position}}
+%\url{https://pyga.me/docs/ref/window.html#pygame.Window.position}
+%	
+%\end{pygbox}
+
 
 \subsection{Homework}
 Please have a look at \url{https://pyga.me/docs/ref/window.html} and then try to solve the following small exercises: 
 
 \begin{enumerate}
-	\item Set up a working environment for your game programming. Install Python, your preferred editor, and the latest pygame-ce version. Open the directory containing your Pygame source code and try to run \texttt{start01.py}.
+	\item Set up a working environment for your game programming. Install Python, your preferred editor, and the latest Pygame-ce version. Open the directory containing your Pygame source code and try to run \texttt{start01.py}.
 	
 	\item Change the background color of the window. Use RGB values as well as named colors.
 	

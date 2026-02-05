@@ -65,11 +65,11 @@ class Game:
         self.clock = pygame.time.Clock()
 
         self.ball = Ball()                          # Create ball object§\label{srcMaus0001}§
-        self._running = True
+        self.running = True
 
     def run(self) -> None:
         time_previous = time()
-        while self._running:
+        while self.running:
             self.watch_for_events()
             self.update()
             self.draw()
@@ -82,15 +82,15 @@ class Game:
     def watch_for_events(self) -> None:
         for event in pygame.event.get():
             if event.type == QUIT:
-                self._running = False
+                self.running = False
             elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                    self._running = False
+                    self.running = False
             elif event.type == MOUSEBUTTONDOWN:     # Mouse button pressed§\label{srcMaus0002}§
                 if event.button == 1:               # Left§\label{srcMaus0004}§
                     self.ball.update(rotate=90)
                 elif event.button == 2:             # Middle§\label{srcMaus0005}§
-                    self._running = False
+                    self.running = False
                 elif event.button == 3:             # Right§\label{srcMaus0006}§
                     self.ball.update(rotate=-90)
                 elif event.button == 4:             # Scroll up§\label{srcMaus0007}§

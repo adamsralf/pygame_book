@@ -4,15 +4,11 @@ import pygame.gfxdraw  # ! §\label{srcPrimitives15}§
 
 def main():
     pygame.init()
-    window = pygame.Window( size=(530, 530), 
-                            title = "Grafic Primitives", 
-                            position = (10, 50))         
+    window = pygame.Window(size=(530, 530), title = "Grafic Primitives", position = (10, 50))         
     screen = window.get_surface()                   
-
     clock = pygame.time.Clock()
 
     mygrey = pygame.Color(200, 200, 200)                     # Custom color§\label{srcPrimitives01}§
-
     myrectangle1 = pygame.rect.Rect(10, 10, 20, 30)          # Rectangle object§\label{srcPrimitives02}§
     myrectangle2 = pygame.rect.Rect(60, 10, 20, 30)
     points1 = ((120, 10), (160, 10), (140, 90))              # List of points§\label{srcPrimitives05}§

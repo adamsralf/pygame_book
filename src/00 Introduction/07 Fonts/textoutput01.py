@@ -85,7 +85,7 @@ def main():
 
         info.text_update(f"size={hello.fontsize}, r={hello.fontcolor[0]}, g={hello.fontcolor[1]}, b={hello.fontcolor[2]}")
         all_sprites.update()
-        screen.fill((200, 200, 200))
+        screen.fill("cornsilk1")
         all_sprites.draw(screen)
         window.flip()
         clock.tick(cfg.FPS)

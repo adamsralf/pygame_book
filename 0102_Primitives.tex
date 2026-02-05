@@ -2,16 +2,20 @@
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Graphic Primitives}\index{Graphic primitives}\label{secGrafikprimitive}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Introduction}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/blob/main/src/00%20Introduction/02%20Primitives/primitives00.py}
+\end{diskbox}
 Graphic primitives are simple graphical shapes that are drawn, such as lines\index{Line}\index{Graphic primitives!Line}, points\index{Point}\index{Graphic primitives!Point}, circles\index{Circle}\index{Graphic primitives!Circle}, and so on.
-They do not play a very important role in game programming, but they can be quite useful. For this reason, I will only introduce a few of them here.
+They do not play a very important role in game programming, because most graphics are predefined bitmaps, but they can be quite useful. For this reason, I~will only introduce a few of them here.
 
-\lstsource{src/00 Introduction/02 Primitives/primitives00.py}{1}{44}{python}{Graphic Primitives}{srcPrimitives00}
+\lstsource{src/00 Introduction/02 Primitives/primitives00.py}{1}{40}{python}{Graphic Primitives}{srcPrimitives00}
 
 The basic structure is the same as in \srcref[vref]{srcStart01}. The differences begin in \zeiref{srcPrimitives01}. The class \texttt{pygame.Color}\randnotiz{Color}\myindex{pyg}{\texttt{Color}|underline} can encode color information\index{Color!Information} in various formats, including an \glslink{alpha}{alpha channel}\index{Color!Alpha channel}\index{Alpha channel} (\glslink{alphablending}{alpha blending}\index{Color!Alpha blending}\index{Alpha blending}, transparency)\index{Transparency}; more about this will follow later in
-\abschnittref[vref]{secBitmapLaden}. Here, I use RGB encoding with color channel values between~0 and~255.
+\abschnittref[vref]{secBitmapLaden}. Here, I~use RGB encoding with color channel values between~0 and~255.
 
-In most cases, however, I do not need to define my own colors. Pygame provides a really extensive list of 664 predefined color names \randnotiz{Color names}\index{Color!Names}. Wherever color values are expected, I can pass either a
+In most cases, however, I~do not need to define my own colors. Pygame provides a really extensive list of 664 predefined color names \randnotiz{Color names}\index{Color!Names}. Wherever color values are expected, I~can pass either a
 \texttt{Color} object, a numeric color code, or a color name as a string.
 
 
@@ -22,17 +26,21 @@ In most cases, however, I do not need to define my own colors. Pygame provides a
 	\end{center}%
 \end{wrapfigure}%
 Let us go through the individual shapes one by one and start with the
-rectangle. There are several ways to define a rectangle in Pygame. Since we will need it very often later on, I would like to introduce the class \texttt{pygame.rect.Rect}
-\myindex{pyg}{\texttt{rect}!\texttt{Rect}}\randnotiz{Rect} here. It is defined by four parameters: the upper-left corner, its width, and its height. In \zeiref{srcPrimitives02}, a rectangle is therefore defined at the position $(10,10)$ with a width of \SI{20}{px} and a height of \SI{30}{px}.
+rectangle. There are several ways to define a rectangle in Pygame. Since we will need it very often later on, I~would like to introduce the class \texttt{pygame.rect.Rect}\myindex{pyg}{\texttt{rect}!\texttt{Rect}}\randnotiz{Rect} here. It is defined by four parameters: the upper-left corner, its width, and its height. In \zeiref{srcPrimitives02}, a rectangle is therefore defined at the position $(10,10)$ with a width of \SI{20}{px} and a height of \SI{30}{px}.
 
-\textbf{Note:}
-The class \texttt{Rect} is not a drawn rectangle, but merely a container
-for information that is relevant for a rectangle.
 
 In \zeiref{srcPrimitives03}, \texttt{pygame.draw.rect()}\myindex{pyg}{\texttt{draw}!\texttt{rect()}}\randnotiz{rect()}\index{Rectangle|underline}\index{Graphic primitives!Rectangle|underline} draws a filled rectangle. The \Gls{semantik} of the parameters should be self-explanatory.
 The call in \zeiref{srcPrimitives04}, however, is different. The first parameter after the rectangle -- here~\texttt{3} -- specifies the thickness of the line. If this parameter is given and greater than~0, the rectangle is no longer filled. The value~\texttt{10} specifies the rounding of the corners. Here, a value between~0 and $min(width, height)/2$ can be used, as this value corresponds to the radius of the corner rounding.
 
-More general than a rectangle is a \Gls{polygon}. A polygon\index{Graphic primitives!Polygon|underline}\index{Polygon|underline} is a closed chain of lines that is defined in Pygame by its points (vertices). Similar to rectangles, there are filled (\zeiref{srcPrimitives06}) and unfilled (\zeiref{srcPrimitives07}) variants. Both are drawn using \texttt{pygame.draw.polygon()}\randnotiz{polygon()}\myindex{pyg}{\texttt{draw}!\texttt{polygon()}}. Be careful with the line thickness: the lines grow outward, which can quickly lead to ugly offsets at the corners. Try it out by changing the value~\texttt{2} to~\texttt{5}.
+\begin{hintbox}[Hint]
+	The class \texttt{Rect} is not a drawn rectangle, but merely a container for information that is relevant for a rectangle. More in \kapref[vref]{secRect}.
+\end{hintbox}
+
+More general than a rectangle is a \Gls{polygon}. A polygon\index{Graphic primitives!Polygon|underline}\index{Polygon|underline} is a closed chain of lines that is defined in Pygame by its points. Similar to rectangles, there are filled (\zeiref{srcPrimitives06}) and unfilled (\zeiref{srcPrimitives07}) variants. Both are drawn using \texttt{pygame.draw.polygon()}\randnotiz{polygon()}\myindex{pyg}{\texttt{draw}!\texttt{polygon()}}. 
+
+\begin{warningbox}[Warning]
+	Be careful with the line thickness: the lines grow outward, which can quickly lead to ugly offsets at the corners. Try it out by changing the value~\texttt{2} to~\texttt{5}.
+\end{warningbox}
 
 For individual lines\index{Line|underline}\index{Graphic primitives!Line|underline},
 there is \texttt{pygame.draw.line()}\myindex{pyg}{\texttt{draw}!\texttt{line()}}\randnotiz{line()}, and for a \gls{linienzug} -- without an example here -- there is \texttt{pygame.draw.lines()}\myindex{pyg}{\texttt{draw}!\texttt{lines()}}\randnotiz{lines()}. An example can be found in \zeiref{srcPrimitives08}.
@@ -40,61 +48,65 @@ there is \texttt{pygame.draw.line()}\myindex{pyg}{\texttt{draw}!\texttt{line()}}
 A circle\index{Graphic primitives!Circle|underline}\index{Circle|underline} is defined by two values: its center point and its radius. In \zeiref{srcPrimitives09}, a filled circle with the center at $(40, 150)$ and a radius of \SI{30}{px} is drawn using \texttt{pygame.draw.circle()}\myindex{pyg}{\texttt{draw}!\texttt{circle()}}\randnotiz{circle()}. As with rectangles and polygons, there are also unfilled variants (\zeiref{srcPrimitives10}). Of particular interest is the circular arc segment in
 \zeiref{srcPrimitives11}. Here, Boolean variables are used to control which section of the circular arc is drawn (for more details, see the Pygame reference).
 
-Finally, one small color experiment. Strangely enough, Pygame does not provide a dedicated function for drawing a single point or pixel\index{Graphic primitives!Point|underline}\index{Point|underline}. Here, I have implemented three workarounds that I found. One could think of additional ones as well: a line with $start = end$, a circle with a radius of \SI{1}{px}, and so on.
+Finally, one small color experiment. Strangely enough, Pygame does not provide a dedicated function for drawing a single point or pixel\index{Graphic primitives!Point|underline}\index{Point|underline}. Here, I~have implemented three workarounds that I~found. One could think of additional ones as well: a line with $start = end$, a circle with a radius of \SI{1}{px}, and so on.
 
 In \zeiref{srcPrimitives12}, a point is drawn by setting a single color value at a specific position using \texttt{pygame.Surface.set\_at()}\myindex{pyg}{\texttt{Surface}!\texttt{set\_at()}}\randnotiz{set\_at()}. Alternatively, the \texttt{fill()} surface function used earlier can be applied with an area of only one pixel in width and height (\zeiref{srcPrimitives13}). Another way to set a pixel using a graphics library is the experimental \texttt{gfxdraw} module. In \zeiref{srcPrimitives14}, a single pixel is set using \texttt{pygame.gfxdraw.pixel()}\myindex{pyg}{\texttt{gfxdraw}!\texttt{pixel()}}\randnotiz{pixel()}. The \texttt{gfxdraw} module is not imported automatically by
 \texttt{import pygame} (see \zeiref{srcPrimitives15}).
 
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{More Input}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Example: Particle Swarm}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/00%20Introduction/02%20Primitives/circles}
+\end{diskbox}
 
-\begin{wrapfigure}[20]{r}{5.8cm}%
+\begin{wrapfigure}[12]{r}{5.8cm}%
 	\begin{center}%
 		\vspace{-1cm}%
-		\myfigure{circles01.png}{0.6}{Not a particle swarm}{picCircles01}%
+		\myfigure{circles01.png}{0.35}{Not a particle swarm}{picCircles01}%
 	\end{center}%
 \end{wrapfigure}%
-Using graphic primitives, it is possible to create dynamic effects, such as particle swarms. Here, I would like to present a very simple example of a mouse-controlled fountain made of circles.
+Using graphic primitives, it is possible to create dynamic effects, such as particle swarms. Here, I~would like to present a very simple example of a mouse-controlled fountain made of circles.
 
-Let us first build a small program that draws a circle at the mouse position. The class \texttt{Circle} (see \zeiref{srcCircles0101}) contains all the information I need to draw circles: position, radius, and color. The position is defined via a constructor argument. In the method \texttt{draw()}, the screen output is encapsulated.
+Let us first build a small program that draws a circle at the mouse position. The class \texttt{Circle} (see \zeiref{srcCircles0101}) contains all the information I~need to draw circles: position, radius, and color. The position is defined via a constructor argument. In the method \texttt{draw()}, the screen output is encapsulated.
 
 The function \texttt{main()} now contains a lot of familiar elements, but also a few new ones. In \zeiref{srcCircles0101}, the screen size is stored in a list, because we still need this information at another place, namely in \zeiref{srcCircles0103}. Below that, in \zeiref{srcCircles0104}, a list for storing the circles is defined.
 
-Inside the main program loop, \zeiref{srcCircles0105} checks whether the left mouse button\randnotiz{\texttt{get\_pressed()}}\myindex{pyg}{\texttt{mouse}!\texttt{get\_pressed()}|underline} has been pressed. If so, a circle is drawn at the mouse position \randnotiz{\texttt{get\_pos()}}\myindex{pyg}{\texttt{mouse}!\texttt{get\_pos()}}. After that, the screen is filled with white color and the circles stored in the container are drawn.
+Inside the main loop, \zeiref{srcCircles0105} checks whether the left mouse button\randnotiz{\texttt{get\_pressed()}}\myindex{pyg}{\texttt{mouse}!\texttt{get\_pressed()}|underline} has been pressed. If so, a circle is drawn at the mouse position\randnotiz{\texttt{get\_pos()}}\myindex{pyg}{\texttt{mouse}!\texttt{get\_pos()}}. After that, the screen is filled with white color and the circles stored in the container are drawn.
 
 The result is not very impressive yet (see \abbref[vref]{picCircles01}) and is more reminiscent of a drawing program like Paint.
 
-\lstsource{src/00 Introduction/02 Primitives/circles/v01/circles.py}{1}{999}{python}{Particle swarm, Version 1.0}{srcCircles01}
+\lstsource{src/00 Introduction/02 Primitives/circles/v01/circles.py}{1}{99}{python}{Particle swarm, Version 1.0}{srcCircles01}
 
-\begin{wrapfigure}[10]{r}{6.0cm}%
+\begin{wrapfigure}[11]{r}{6.0cm}%
 	\begin{center}%
-		\vspace{-1cm}%
-		\myfigure{circles02a.png}{0.6}{Particle swarm\\Version 2}{picCircles02}%
+		\vspace{-1.5cm}%
+		\myfigure{circles02a.png}{0.8}{Particle swarm\\Version 2}{picCircles02}%
 	\end{center}%
 \end{wrapfigure}%
 In the next step, we want to turn the bulky circles into colorful particles. These particles should also no longer appear exactly at the mouse position, but be scattered around it. To achieve this, only minimal changes need to be made to the
 \texttt{Circle} class. 
 
 The two position values are now extended by a random value between~$-2$ and~$+2$.
-The radius is also reduced to \SI{2}{px}. The color is likewise varied using random values. I tried out several combinations here, and I quite like this color variation.
+The radius is also reduced to \SI{2}{px}. The color is likewise varied using random values. I~tried out several combinations here, and I~quite like this color variation.
 Feel free to experiment with the color channels and the random values yourself. The result shown in \abbref[vref]{picCircles02} already looks much better.
 
 
 \lstsource{src/00 Introduction/02 Primitives/circles/v02/circles.py}{7}{12}{python}{Particle swarm, Version 2.0}{srcCircles02}
 
-Now we want to add a bit of dynamics to the game. The particles should first rise upward and then fall down again. To achieve this, I added the vertical velocity \texttt{speedy} to the \texttt{Circle} class and assigned it a random initial value
+Now we want to add a bit of dynamics to the game. The particles should first rise upward and then fall down again. To achieve this, I~added the vertical velocity \texttt{speedy} to the \texttt{Circle} class and assigned it a random initial value
 (\zeiref{srcCircles0301}). The division by~$10.1$ ensures that no smooth, rounded values are created. Here as well, feel free to experiment with the values to see the
 different effects.
 
-The class also needs to be extended by the method \texttt{update()}. In this method, the new vertical position \texttt{posy} is calculated based on the vertical velocity \texttt{speedy}, and the velocity is in turn modified with respect to \gls{gravity}\randnotiz{Gravity}\index{Gravity}. In order for all particles to be subject to the same gravitational force, I defined \texttt{GRAVITY} as a static attribute (\zeiref{srcCircles0302}).
+The class also needs to be extended by the method \texttt{update()}. In this method, the new vertical position \texttt{posy} is calculated based on the vertical velocity \texttt{speedy}, and the velocity is in turn modified with respect to \gls{gravity}\randnotiz{Gravity}\index{Gravity}. In order for all particles to be subject to the same gravitational force, I~defined \texttt{GRAVITY} as a static attribute (\zeiref{srcCircles0302}).
 
 \lstsource{src/00 Introduction/02 Primitives/circles/v03/circles.py}{6}{18}{python}{Particle swarm, Version 3.0, Class \texttt{Circle}}{srcCircles03a}
 
 All that remains is the call of \texttt{update()} inside the main program loop.
 
+\newpage
 \lstsource{src/00 Introduction/02 Primitives/circles/v03/circles.py}{38}{42}{python}{Particle swarm, Version 3.0, Call of \texttt{update()}}{srcCircles03b}
 
 The fountain is still not really lively yet. So let us also scatter the particles horizontally. For this purpose, the attribute \texttt{speedx} is added in the
@@ -123,7 +135,7 @@ The zeroth value represents the width, and the first value represents the height
 
 \lstsource{src/00 Introduction/02 Primitives/circles/v05/circles.py}{6}{30}{python}{Particle swarm, Version 5.0, Class \texttt{Circle}}{srcCircles05a}
 
-In the main program, I now need to implement suitable deletion logic. But first, I want my fountain to have a bit more \emph{oomph}: In \zeiref{srcCircles0504}, not just one particle is created, but always five at once.
+In the main program, I~now need to implement suitable deletion logic. But first, I~want my fountain to have a bit more \emph{oomph}: In \zeiref{srcCircles0504}, not just one particle is created, but always five at once.
 
 In \zeiref{srcCircles0505}, an empty list is created that will contain the particles to be deleted. Inside the update loop, it is now additionally checked whether a particle should be deleted (\zeiref{srcCircles0506}). If so, this particle is added to the list \texttt{todelete}. After the update loop has finished, the particles to be deleted are removed from the list \texttt{circles} starting at \zeiref{srcCircles0507}.
 
@@ -131,8 +143,11 @@ In \abbref[vref]{picCircles05}, you can see a fountain. It really starts to look
 
 \lstsource{src/00 Introduction/02 Primitives/circles/v05/circles.py}{41}{64}{python}{Particle swarm, Version 5.0, Main loop}{srcCircles05b}
 
-Why do I not call \texttt{remove()} already inside the update loop? Because: \emph{Never increase or decrease the length of a list while you are iterating over it.} Very strange effects can occur. Try to guess the number of loop iterations of the following program:
+\begin{warningbox}[Why do I~not call \texttt{remove()} already inside the update loop?]
+	Because: \emph{Never increase or decrease the length of a list while you are iterating over it.} Very strange effects can occur. 
+\end{warningbox}
 
+Try to guess the number of loop iterations of the following program:	
 \begin{lstlisting}[firstnumber=1]
 	values = [1, 2, 3]
 	for a in values:
@@ -149,23 +164,26 @@ Why do I not call \texttt{remove()} already inside the update loop? Because: \em
 Even small changes to the parameters can already produce interesting visual effects.
 Unfortunately, these cannot be shown very well using images here, so: program it yourself and try it out.
 
-\lstsource{src/00 Introduction/02 Primitives/circles/v06/circles.py}{1}{999}{python}{Particle swarm, Version 6.0}{srcCircles06}
+\lstsource{src/00 Introduction/02 Primitives/circles/v06/circles.py}{6}{70}{python}{Particle swarm, Version 6.0}{srcCircles06}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Example: Landscape}\label{secLandscape}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/00%20Introduction/02%20Primitives/landscape}
+\end{diskbox}
 
 In this example, we combine graphic primitives, object-oriented design, and simple mathematics to create a small animated scene.
 
 \myebild{landscape_sun.png}{0.5}{Example: Drawing a Landscape}{picLandscape00}
 
-I would like to create a small animated landscape that should look like in \abbref[vref]{picLandscape00}. The sun should rise on the left, move across the sky, and set on the right. The blue color of the sky should also change depending on the time of
-day.
+I~would like to create a small animated landscape that should look like in \abbref[vref]{picLandscape00}. The sun should rise on the left, move across the sky, and set on the right. The blue color of the sky should also change depending on the time of day.
 
-Let us start with a basic framework that I want to expand step by step. The elements of the \srcref[vref]{srcLandscape01} should be self-explanatory. The variable \texttt{horizon} is meant to control the boundary between the sky and the meadow -- in other words, it forms the horizon. The sky, sun, tree, house, and meadow should all align with this
+Let us start with a basic framework that I~want to expand step by step. The elements of the \srcref[vref]{srcLandscape01} should be self-explanatory. The variable \texttt{horizon} is meant to control the boundary between the sky and the meadow -- in other words, it forms the horizon. The sky, sun, tree, house, and meadow should all align with this
 boundary.
 
 \lstsource{src/00 Introduction/02 Primitives/landscape/v01/landscape.py}{1}{999}{python}{Landscape, Version 1.0}{srcLandscape01}
 
-I extend the program with the very simple class \texttt{Meadow}. In the constructor, a reference to the window and the horizon are stored, and the color is defined — in this case, a custom shade of green. After that, the upper-left corner and the size of the meadow are calculated. Both values take the horizon into account. The method \texttt{draw()} then draws the meadow as a green rectangle into the window.
+I~extend the program with the very simple class \texttt{Meadow}. In the constructor, a reference to the window and the horizon are stored, and the color is defined — in this case, a custom shade of green. After that, the upper-left corner and the size of the meadow are calculated. Both values take the horizon into account. The method \texttt{draw()} then draws the meadow as a green rectangle into the window.
 
 \lstsource{src/00 Introduction/02 Primitives/landscape/v02/landscape.py}{4}{14}{python}{Landscape, Version 2.0, Class \texttt{Meadow}}{srcLandscape02a}
 
@@ -186,13 +204,17 @@ All that remains is to integrate it into \texttt{main()} in the same way as \tex
 \myezweihbild{landscape_sun02.png}{0.45}{Drawing a Landscape (2)}{picLandscape02}%
 {landscape_sun03.png}{0.45}{Drawing a Landscape (3)}{picLandscape03}
 
-The class \texttt{Tree} consists of two parts: a tree trunk and a leafy crown. The tree trunk is created in \texttt{draw()} using a rectangle, and the leafy crown is created using a circle. I will not show the integration into \texttt{main()} here, since it is completely analogous to the integration of \texttt{Meadow} and \texttt{Sky}. Only the order needs to be considered, because the tree is supposed to
-appear in the foreground. The tree should look like the one shown in \abbref[vref]{picLandscape04}.
+The class \texttt{Tree} consists of two parts: a tree trunk and a leafy crown. The tree trunk is created in \texttt{draw()} using a rectangle, and the leafy crown is created using a circle. I~will not show the integration into \texttt{main()} here, since it is completely analogous to the integration of \texttt{Meadow} and \texttt{Sky}. Only the order needs to be considered, because the tree is supposed to appear in the foreground. The tree should look like the one shown in \abbref[vref]{picLandscape04}.
 
+\begin{hintbox}[Order matters]
+	One of the most common beginner mistakes is drawing graphic objects in the wrong order. When that happens, objects often end up being partly or completely covered, and you start looking for the bug in the wrong place.
+\end{hintbox}
 
+\newpage
 \lstsource{src/00 Introduction/02 Primitives/landscape/v04/landscape.py}{28}{37}{python}{Landscape, Version 4.0, Class \texttt{Tree}}{srcLandscape04a}
 
 The basic principle of the class \texttt{House} is the same as for the other classes. It is just a bit more complex, since it consists of two rectangles and a triangle. Here as well, the integration into \texttt{main()} is trivial and is left to you. In \abbref[vref]{picLandscape05}, only the sun is missing now.
+
 
 \lstsource{src/00 Introduction/02 Primitives/landscape/v05/landscape.py}{40}{54}{python}{Landscape, Version 5.0, Class \texttt{House}}{srcLandscape05a}
 
@@ -200,16 +222,15 @@ The basic principle of the class \texttt{House} is the same as for the other cla
 
 In its basic shape, the sun is a simple yellow filled circle. However, we want it to move across the sky. Therefore, we need a start position below the horizon (see \zeiref{srcLandscape0601}) and a method \texttt{update()} that calculates the new position of the sun in each frame.
 
-In \texttt{update()}, the new horizontal position is first calculated based on \texttt{speed}. After that, I calculate how far the sun has already progressed along its path. This value is relative and has a range of~$[0, 1]$. If the sun has covered a quarter of the distance, the value of \texttt{progress} is~$0.25$, at halfway it is~$0.5$, and so on.
+In \texttt{update()}, the new horizontal position is first calculated based on \texttt{speed}. After that, I~calculate how far the sun has already progressed along its path. This value is relative and has a range of~$[0, 1]$. If the sun has covered a quarter of the distance, the value of \texttt{progress} is~$0.25$, at halfway it is~$0.5$, and so on.
 
-How do I calculate the height now? For the sake of simplicity, I let the sun follow the first half of the sine function. For this, the domain must be~$[0, \pi]$; this is the hump of the sine function that lies above the x-axis. The range of the sine function from~$0$ to~$\pi$ is $[0, 1]$. If I multiply this value by the horizon, I obtain values from~$0$ to \texttt{horizon}. Finally, I add the radius so that the sun just touches the upper edge at its highest point.
+How do I~calculate the height now? For the sake of simplicity, I~let the sun follow the first half of the sine function. For this, the domain must be~$[0, \pi]$; this is the hump of the \gls{sinefunction} that lies above the x-axis. The range of the sine function from~$0$ to~$\pi$ is $[0, 1]$. If I~multiply this value by the horizon, I~obtain values from~$0$ to \texttt{horizon}. Finally, I~add the radius so that the sun just touches the upper edge at its highest point.
 
-The function \texttt{update()} returns the value of \texttt{progress} so that I can reuse this value to calculate the color of the sky, which still needs to be implemented. Everything clear? By the way, do not forget to add \texttt{import math} at the beginning because of the sine function!
+The function \texttt{update()} returns the value of \texttt{progress} so that I~can reuse this value to calculate the color of the sky, which still needs to be implemented. Everything clear? By the way, do not forget to add \texttt{import math} at the beginning because of the sine function!
 
 \lstsource{src/00 Introduction/02 Primitives/landscape/v06/landscape.py}{59}{76}{python}{Landscape, Version 6.0, Class \texttt{Sun}}{srcLandscape06a}
 
-Like the other classes, the sun is integrated into \texttt{main()}: the object is created in \zeiref{srcLandscape0602} and drawn using \texttt{draw()} in \zeiref{srcLandscape0604}. Only the call to \texttt{update()} in \zeiref{srcLandscape0603} is new. Important: The order of the \texttt{draw()} calls must be observed! The sun should be drawn after the sky, but before the meadow and the
-tree.
+Like the other classes, the sun is integrated into \texttt{main()}: the object is created in \zeiref{srcLandscape0602} and drawn using \texttt{draw()} in \zeiref{srcLandscape0604}. Only the call to \texttt{update()} in \zeiref{srcLandscape0603} is new. Important: The order of the \texttt{draw()} calls must be observed! The sun should be drawn after the sky, but before the meadow and the tree.
 
 \lstsource{src/00 Introduction/02 Primitives/landscape/v06/landscape.py}{85}{108}{python}{Landscape, Version 6.0, \texttt{main()}}{srcLandscape06b}
 
@@ -222,14 +243,15 @@ In \texttt{main()}, only the relative progress of the sun is now taken and passe
 \lstsource{src/00 Introduction/02 Primitives/landscape/v07/landscape.py}{104}{106}{python}{Landscape, Version 7.0, \texttt{main()}}{srcLandscape07b}
 
 \newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{What was new?}
+\begin{hintbox}
+	Using graphic primitives, you can create and use your own drawings. They are usually available in both filled and unfilled variants. Colors can either be defined manually or selected from a list of predefined colors.
+	
+	Objects drawn later appear in front of earlier ones.
+\end{hintbox}
 
-Using graphic primitives, you can create and use your own drawings. They are usually available in both filled and unfilled variants. Colors can either be defined manually or selected from a list of predefined colors.
-
-\textbf{Rule of thumb}: Objects drawn later appear in front of earlier ones.
-
-The following Pygame elements were introduced:
-
+\begin{pygbox}
 \begin{itemize}
 	\item Named colors:\index{Colors named|underline}\\ 
 	\url{https://pyga.me/docs/ref/color_list.html}
@@ -282,9 +304,10 @@ The following Pygame elements were introduced:
 	\item \texttt{pygame.Window.size}:
 	\myindex{pyg}{\texttt{Window}!\texttt{size}}\\
 	\url{https://pyga.me/docs/ref/window.html#pygame.Window.size}
-	
 \end{itemize}
+\end{pygbox}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Homework}
 
 Please have a look at \url{https://pyga.me/docs/ref/draw.html} and then try to solve the following small exercises: 
@@ -299,4 +322,4 @@ Please have a look at \url{https://pyga.me/docs/ref/draw.html} and then try to s
 	\item Try to draw the Moonlander like in \abbref[vref]{picMoonlander00} using only the functions in \texttt{pygame.\-draw}. Of course, you may also choose any other non-trivial object instead.
 \end{enumerate}
 
-\myebild{moonlander00.png}{1.0}{Example: Drawing a Moonlander}{picMoonlander00}
+\myebild{moonlander00.png}{1.0}{Drawing a Moonlander}{picMoonlander00}

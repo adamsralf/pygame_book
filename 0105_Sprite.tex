@@ -2,9 +2,17 @@
 \newpage
 \section{Class \texttt{Sprite}}\myindex{pyg}{\texttt{sprite}!\texttt{Sprite}|underline}
 \subsection{Introduction}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/00%20Introduction/05%20Sprite/invader}
+\end{diskbox}
+
 In \secref[vref]{secDeltatime}, it became apparent that many variables start with \texttt{defender\_}. In other words, they are attributes of a single entity and almost demand to be expressed as a class.
 
-This class should contain all information related to updating and rendering the bitmap. Some elements, such as \texttt{defender\_image} and \texttt{defender\_rect}, seem to play a role in virtually every bitmap processing task. Furthermore, every bitmap will require some form of state update and screen output. In fact, Pygame already provides a class that offers exactly such a \Gls{framework}: \texttt{pygame.sprite.Sprite}\myindex{pyg}{\texttt{sprite}!\texttt{Sprite}|underline}\randnotiz{Sprite}.
+This class should contain all information related to updating and rendering the bitmap. Some elements, such as \texttt{defender\_image} and \texttt{defender\_rect}, seem to play a role in virtually every bitmap processing task. Furthermore, every bitmap will require some form of state update and screen output. In fact, 
+
+\begin{hintbox}[Pygame already provides a class that offers exactly such a \gls{framework}]
+	\texttt{pygame.sprite.Sprite}\myindex{pyg}{\texttt{sprite}!\texttt{Sprite}|underline}.
+\end{hintbox}
 
 Let us therefore define the \texttt{Defender} class as a subclass of \texttt{Sprite} (\zeiref{srcInvader06a01}).
 
@@ -16,7 +24,7 @@ Every subclass of \texttt{Sprite} must provide two attributes: \texttt{rect}\ind
 
 In \zeiref{srcInvader06a03}ff., the boundary collisions and state changes are implemented. One detail that stands out is the computation of the new position using \texttt{move()}\myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{move()}}.
 
-New is the call to the method \texttt{change\_direction()}. This method (\zeiref{srcInvader06a08}) is more \emph{object-oriented} than the previous version. In object-oriented programming, algorithms are not implemented directly; instead, messages are sent to objects, which then handle the details internally—in a way that is not visible from the outside. In this case, this means that instead of performing the direction change directly at the relevant point, I send a message to the object telling it that the direction needs to be changed.
+New is the call to the method \texttt{change\_direction()}. This method (\zeiref{srcInvader06a08}) is more \emph{object-oriented} than the previous version. In object-oriented programming, algorithms are not implemented directly; instead, messages are sent to objects, which then handle the details internally -- in a way that is not visible from the outside. In this case, this means that instead of performing the direction change directly at the relevant point, I~send a message to the object telling it that the direction needs to be changed.
 
 With the method \texttt{draw()} in \zeiref{srcInvader06a04}, the screen output is encapsulated.
 
@@ -27,9 +35,9 @@ Using the \texttt{Defender} class has now become straightforward. In \zeiref{src
 
 One advantage of the new architecture is the improved clarity and readability of the main program. By following naming conventions (descriptive class and method names), the overall control flow becomes clearer and is no longer obscured by implementation details.
 
-I now want to make use of the capabilities of the \texttt{Sprite} class so that boundary collision checks no longer have to be implemented manually.
+I~now want to make use of the capabilities of the \texttt{Sprite} class so that boundary collision checks no longer have to be implemented manually.
 
-Let us get started: Since we want to organize collision detection differently, we first simplify \texttt{update()} again. We now only compute the new position. In doing so, the method\texttt{pygame.rect.FRect.move\_ip()}\myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{move\_ip()}|underline}\randnotiz{move\_ip()}is introduced in \zeiref{srcInvader06b01}. It works like \texttt{move()}, but in this case the modification is applied directly to the rectangle; \texttt{ip} stands for \emph{in place}. With \texttt{move()}, the original rectangle remains unchanged.
+Let us get started: Since we want to organize collision detection differently, we first simplify \texttt{update()} again. We now only compute the new position. In doing so, the method \texttt{pygame.rect.FRect.move\_ip()}\myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{move\_ip()}|underline}\randnotiz{move\_ip()} is introduced in \zeiref{srcInvader06b01}. It works like \texttt{move()}, but in this case the modification is applied directly to the rectangle; \texttt{ip} stands for \emph{in place}. With \texttt{move()}, the original rectangle remains unchanged.
 
 \lstsource{SRC/00 Introduction/05 Sprite/invader/v02/invader.py}{19}{20}{python}{Sprites (1), Version 1.1}{srcInvader06b1}
 
@@ -37,7 +45,7 @@ To make the boundaries visible and to better recognize collisions, the edges are
 
 \lstsource{SRC/00 Introduction/05 Sprite/invader/v02/invader.py}{29}{40}{python}{Sprites (2), Version 1.1}{srcInvader06b2}
 
-I now create the two boundaries:
+I~now create the two boundaries:
 
 \lstsource{SRC/00 Introduction/05 Sprite/invader/v02/invader.py}{49}{51}{python}{Sprites (3), Version 1.1}{srcInvader06b3}
 
@@ -45,36 +53,56 @@ So far, everything has been easy.
 
 \lstsource{SRC/00 Introduction/05 Sprite/invader/v02/invader.py}{61}{66}{python}{Sprites (4), Version 1.1}{srcInvader06b4}
 
-What is happening here? The method \texttt{pygame.sprite.collide\_rect()}\myindex{pyg}{\texttt{sprite}!\texttt{collide\_rect()}}\randnotiz{collide\-\_rect()} checks whether the rectangles of two \texttt{Sprite} objects collide. This means that I no longer have to manually check the left and right boundaries myself.
+What is happening here? The method \texttt{pygame.sprite.collide\_rect()}\myindex{pyg}{\texttt{sprite}!\texttt{collide\_rect()}}\randnotiz{collide\-\_rect()} checks whether the rectangles of two \texttt{Sprite} objects collide. This means that I~no longer have to manually check the left and right boundaries myself.
 
-Here, the collision of a single object with both boundaries -- or more generally, with many \texttt{Sprite} objects -- is tested. In practice, sprites rarely exist on their own; they are usually organized into groups. This concept is also built into Pygame and leads to further simplifications.
+Here, the collision of a single object with both boundaries -- or more generally, with many \texttt{Sprite} objects -- is tested. 
 
-\newpage
+\begin{hintbox}[Spritegroups]
+	In practice, sprites rarely exist on their own; they are usually organized into groups. This concept is also built into Pygame and leads to further simplifications.
+\end{hintbox}
+
 \lstsource{SRC/00 Introduction/05 Sprite/invader/v03/invader.py}{37}{71}{python}{Sprites (1), Version 1.2}{srcInvader06c1}
 
-The defender is no longer addressed directly, but is instead packed into a luxury box. I will come back to this later. The two \texttt{Border} objects are no longer stored in two separate object variables either; instead, they are placed into a luxury box as well: a \texttt{pygame.sprite.Group}\myindex{pyg}{\texttt{sprite}!\texttt{Group}|underline}\randnotiz{Group}. Here, I could also store additional boundaries or walls. From the point of view of the game logic, they could then all be processed together in one go. This becomes clear in this mini example in two places.
+The defender is no longer addressed directly, but is instead packed into a luxury box. I~will come back to this later. The two \texttt{Border} objects are no longer stored in two separate object variables either; instead, they are placed into a luxury box as well: a \texttt{pygame.sprite.Group}\myindex{pyg}{\texttt{sprite}!\texttt{Group}|underline}\randnotiz{Group}. Here, I~could also store additional boundaries or walls. From the point of view of the game logic, they could then all be processed together in one go. This becomes clear in this mini example in two places.
 
 
-The first location is \zeiref{srcInvader06c01}, where a different variant of collision detection is used: \texttt{pygame.sprite.spritecollide()}\myindex{pyg}{\texttt{sprite}!\texttt{spritecollide()}|underline}\randnotiz{spritecollide()}. The first parameter is a \emph{single} \texttt{Sprite} object—in our case, the defender. The second parameter is a sprite group containing all \texttt{Border} objects. Thus, the defender is checked for collisions with all members of the group. This only works if all sprites provide a \texttt{Rect} or \texttt{FRect} object named \texttt{rect} as an attribute. The third parameter—\false\ in this example—controls whether the colliding sprite should be removed from the group. This feature is quite useful in games, for example when rocks that are shot by a spaceship should be deleted.
+The first location is \zeiref{srcInvader06c01}, where a different variant of collision detection is used: \texttt{pygame.sprite.spritecollide()}\myindex{pyg}{\texttt{sprite}!\texttt{spritecollide()}|underline}\randnotiz{spritecollide()}. The first parameter is a \emph{single} \texttt{Sprite} object -- in our case, the defender. The second parameter is a sprite group containing all \texttt{Border} objects. Thus, the defender is checked for collisions with all members of the group. This only works if all sprites provide a \texttt{Rect} or \texttt{FRect} object named \texttt{rect} as an attribute. The third parameter -- \false\ in this example -- controls whether the colliding sprite should be removed from the group. This feature is quite useful in games, for example when rocks that are shot by a spaceship should be deleted.
 
 The second location is \zeiref{srcInvader06c03}. Here, \texttt{draw()} is no longer called for each object individually, but once for the entire group. When using this service, the \texttt{draw()} method can be removed from your own classes (here \texttt{Border} and \texttt{Defender}), which simplifies things even further.
 
-It therefore seems like a good idea to pack sprites into such luxury boxes. But what about the defender? To take advantage of sprite groups, you can also create groups that contain only a single element. To allow these groups to work more efficiently—after all, it is known that they contain only one element—Pygame provides the special case \texttt{pygame.sprite.GroupSingle}\myindex{pyg}{\texttt{sprite}!\texttt{GroupSingle}|underline}\randnotiz{GroupSingle}. Since there is often a need to access the single \texttt{Sprite} object of the \emph{group}, this group provides the additional attribute \texttt{sprite}\myindex{pyg}{\texttt{sprite}!\texttt{GroupSingle}!\texttt{sprite}} (see \zeiref{srcInvader06c01}f.).
+It therefore seems like a good idea to pack sprites into such luxury boxes. But what about the defender? To take advantage of sprite groups, you can also create groups that contain only a single element. To allow these groups to work more efficiently -- after all, it is known that they contain only one element -- Pygame provides the special case \texttt{pygame.sprite.GroupSingle}\myindex{pyg}{\texttt{sprite}!\texttt{GroupSingle}|underline}\randnotiz{GroupSingle}. Since there is often a need to access the single \texttt{Sprite} object of the \emph{group}, this group provides the additional attribute \texttt{sprite}\myindex{pyg}{\texttt{sprite}!\texttt{GroupSingle}!\texttt{sprite}} (see \zeiref{srcInvader06c01}f.).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{More Input}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{OO Issues}
-I want to pursue my object-oriented approach even further and also turn the main program into a \texttt{Game} class. What is important to me is to establish a sense of structural discipline right from the beginning. The longer you stay in software development, the more you will grow fond of terms like \emph{order} and \emph{structure}. They help you avoid losing the thread, even in more complex games. A particularly helpful concept here is the \Gls{srp}.
+\begin{diskbox}
+	\begin{itemize}
+		\item \url{https://github.com/adamsralf/pygame_book/tree/main/src/00%20Introduction/05%20Sprite/invader/v04}
+		\item \url{https://github.com/adamsralf/pygame_book/tree/main/src/00%20Introduction/05%20Sprite/invader/v05}
+	\end{itemize}
+\end{diskbox}
+
+I~want to pursue my object-oriented approach even further and also turn the main program into a \texttt{Game} class. What is important to me is to establish a sense of structural discipline right from the beginning. The longer you stay in software development, the more you will grow fond of terms like \emph{order} and \emph{structure}. They help you avoid losing the thread, even in more complex games. A particularly helpful concept here is the \Gls{srp}.
+
+\begin{hintbox}[Single Responsibility Principle (SRP)]
+	Each class or function should have exactly one responsibility. It should focus on that single task and do it well. A solution to a specific problem should be encapsulated in one class or one method, and changes to that responsibility should affect only that part of the code.
+\end{hintbox}
+
 
 \lstsource{SRC/00 Introduction/05 Sprite/invader/v04/invader.py}{37}{78}{python}{\texttt{Game}-Klasse}{srcInvader06d}
 
 An example of this last point is the design of the \texttt{Game} class. Here, the source code is no longer simply placed in \texttt{\_\_main\_\_}\index{\texttt{\_\_main\_\_}}, but is instead encapsulated, structured, and thus made flexibly reusable. A clear example of the SRP can be seen in the methods \texttt{watch\_for\_events()}, \texttt{update()}, and \texttt{draw()}. It is simply not the responsibility of \texttt{run()} to organize everything. From the perspective of the main loop, it is irrelevant which events are queried or how they are processed. All that matters is that events are handled once per frame. Likewise, \texttt{run()} should not be concerned with the order in which sprites are drawn to the screen. That task belongs to the \texttt{draw()} method. The \texttt{run()} method merely ensures that sprites first update their state and that rendering happens afterwards.
 
-One aspect remains that I would still like to address here: the call to \texttt{change\_direction()} in \zeiref{srcInvader06d01} does not appeal to me. It violates object-oriented design rules, specifically the \Gls{lsp}.
+One aspect remains that I~would still like to address here: the call to \texttt{change\_direction()} in \zeiref{srcInvader06d01} does not appeal to me. It violates object-oriented design rules, specifically the \Gls{lsp}.
+
+\begin{hintbox}[Liskov Substitution Principle (LSP)]
+	A principle of object-oriented programming stating that objects of a derived class must be usable anywhere an object of the base class is expected, without altering the correct behavior of the program. Formulated by Barbara Liskov in 1987. The LSP ensures that inheritance does not introduce unexpected side effects and that class hierarchies remain consistent.
+\end{hintbox}
 
 The sprite group is a collection of \texttt{Sprite} objects. However, the class \texttt{pygame\-.sprite\-.Sprite} does not define a method called \texttt{change\_direction()}. Calling such a method here is therefore not entirely clean. Python does not have a problem with this, but that should not be the benchmark.
 
-A better approach is to adapt the \texttt{update()} method instead. If you take a closer look at the \gls{signature} of \texttt{pygame.sprite.Sprite.update()}\myindex{pyg}{\texttt{sprite}!\texttt{Sprite}!\texttt{update()}}\randnotiz{update()}, you will see that it is designed to accept freely definable parameters. I have developed the habit of using a parameter named \texttt{action} to trigger specific behavior in subclasses. With this approach, \texttt{change\_direction()} is called internally from \texttt{update()} (see \zeiref{srcInvader06e02}) rather than being invoked from the outside.
+A better approach is to adapt the \texttt{update()} method instead. If you take a closer look at the \gls{signature} of \texttt{pygame.sprite.Sprite.update()}\myindex{pyg}{\texttt{sprite}!\texttt{Sprite}!\texttt{update()}}\randnotiz{update()}, you will see that it is designed to accept freely definable parameters. I~have developed the habit of using a parameter named \texttt{action} to trigger specific behavior in subclasses. With this approach, \texttt{change\_direction()} is called internally from \texttt{update()} (see \zeiref{srcInvader06e02}) rather than being invoked from the outside.
 
 \lstsource{SRC/00 Introduction/05 Sprite/invader/v05/invader.py}{20}{25}{python}{\texttt{Defender.update()}}{srcInvader06e1}
 
@@ -84,7 +112,11 @@ Note: This also complies with the object-oriented design principle \Gls{dontaskt
 
 \lstsource{SRC/00 Introduction/05 Sprite/invader/v05/invader.py}{74}{77}{python}{\texttt{Game.update()}}{srcInvader06e2}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Add Sprite Objects to a Group Right Away}
+\begin{diskbox}
+		\url{https://github.com/adamsralf/pygame_book/tree/main/src/00%20Introduction/05%20Sprite/invadergroup/v01}
+\end{diskbox}
 
 It is often very convenient to assign a sprite object to a group already at the time it is created. To do this, the signature of \texttt{\_\_init\_\_()} only needs to be adjusted accordingly.
 
@@ -101,7 +133,11 @@ ensures that the sprite object is immediately added to the given group or groups
 
 \lstsource{SRC/00 Introduction/05 Sprite/invadergroup/v01/invadergroup.py}{1}{67}{python}{Add Sprite Objects to a Group Right Away}{srcInvaderGroup01a}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Delete Sprites from Groups}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/00%20Introduction/05%20Sprite/invadergroup/v02}
+\end{diskbox}
 
 If you follow the program logic in \srcref[vref]{srcInvaderGroup01a}, you will notice that a spaceship is created at the bottom edge four times per second and then flies upward. Once it reaches the top, it simply stops.
 
@@ -116,11 +152,11 @@ You can see an example of this in \srcref[vref]{srcInvaderGroup02a}. Once the sp
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{What was new?}
+\begin{hintbox}
+	From a behavioral point of view: \emph{nothing at all}. The existing application has merely been embedded into a flexible framework.
+\end{hintbox}
 
-From a behavioral point of view: \emph{nothing at all}. The existing application has merely been embedded into a flexible framework.
-
-The following Pygame elements were introduced:
-
+\begin{pygbox}
 \begin{itemize}
 	\item \texttt{pygame.Rect.move()}:
 	\myindex{pyg}{\texttt{Rect}!\texttt{move()}}\\
@@ -158,6 +194,7 @@ The following Pygame elements were introduced:
     \myindex{pyg}{\texttt{sprite}!\texttt{spritecollide()}}\\
     \url{https://pyga.me/docs/ref/sprite.html#pygame.sprite.spritecollide}
 \end{itemize}
+\end{pygbox}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Homework}
@@ -165,5 +202,5 @@ The following Pygame elements were introduced:
 \begin{enumerate}
 	\item Modify the source code from \secref[vref]{secCreateBitmaps} so that \texttt{Meadow}, \texttt{Sky}, \texttt{Tree}, \texttt{House}, and \texttt{Sun} are subclasses of \texttt{pygame.sprite.Sprite}.
 
-	\item Manage all \texttt{Sprite} classes that implement an \texttt{update()} method in one \texttt{pygame.sprite.Group} object, and store the others in a separate group.
+	\item Manage all \texttt{Sprite} classes that implement an \texttt{update()} method in one \texttt{pygame\-.sprite\-.Group} object, and store the others in a separate group.
 \end{enumerate}

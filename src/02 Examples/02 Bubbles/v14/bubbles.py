@@ -3,9 +3,8 @@ from random import randint
 from time import time
 from typing import Any, Dict, Tuple
 
-import pygame
-
 import config as cfg
+import pygame
 
 
 class GameState(Enum):
@@ -175,7 +174,7 @@ class Game:
         if self.state == GameState.PLAYING:
             if self.check_bubblecollision():
                 if not self.restarting:
-                    Game.SOUND_CONTAINER["clash"].play()  # §\label{srcBubble1305}§
+                    Game.SOUND_CONTAINER["clash"].play()  
                     self.all_sprites.add(self.msgrestart)
                     self.restarting = True
                     self.set_game_over()

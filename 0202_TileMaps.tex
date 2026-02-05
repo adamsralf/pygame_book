@@ -1,19 +1,25 @@
 % !TeX spellcheck = en_US
+\newpage
 \section{Tiles Are Beautiful}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/02%20Tilemap}
+\end{diskbox}
 Very often, the visual appearance of games consists of many small and large tiles that are assembled in an appropriate way. These tiles are usually combined into larger bitmaps (\gls{spritelib}\index{Spritelib}\randnotiz{Spritelib}) and then have to be cut out correctly by the game developer. In \abbref[vref]{picTileMap01}, you can find such a simple sprite library.
 
-I will now show you how tiles can be cut out of a sprite library and used to assemble your own worlds. The required information is stored in a \Gls{csvdatei}. I will also use several example levels (not to be confused with difficulty levels or floors within the game world) in order to address different types of sprites in different ways.
+I~will now show you how tiles can be cut out of a sprite library and used to assemble your own worlds. The required information is stored in a \Gls{csvdatei}. I~will also use several example levels (not to be confused with difficulty levels or floors within the game world) in order to address different types of sprites in different ways.
 
-Note: There is an excellent tool that helps you create such levels and integrate them into a game. It is called \Gls{tiled}\randnotiz{Tiled} and can be downloaded from \hyperlink{https://www.mapeditor.org/}{MapEditor}. Since there are already sufficiently detailed and high -- quality introductions available for this software, I~will omit a description here.
+\begin{hintbox}[Hint]
+	There is an excellent tool that helps you create such levels and integrate them into a game. It is called \Gls{tiled} and can be downloaded from \hyperlink{https://www.mapeditor.org/}{MapEditor}. Since there are already sufficiently detailed and high-quality introductions available for this software, I~will omit a description here.
+	
+\end{hintbox}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Our Example}
 
 \myezweihbild{TileMap01.png}{0.40}{Sprite library (original)}{picTileMap01}{TileMap02.png}{0.40}{Sprite library (prepared)}{picTileMap02}
 
-In \abbref{picTileMap01}, we can see such a sprite library. It contains tiles for building a landscape consisting of lakes, meadows, and forests, along with some \gls{gadget}\randnotiz{Gadget}. In \abbref{picTileMap02}, I have made the individual tiles visible by adding a grid and numbering them. The numbers will become important again later. Our tiles have a width and a height of \SI{32}{px} each; they are arranged in \SI{16}{columns} and \SI{12}{rows}.
+In \abbref{picTileMap01}, we can see such a sprite library. It contains tiles for building a landscape consisting of lakes, meadows, and forests, along with some \gls{gadget}\randnotiz{Gadget}. In \abbref{picTileMap02}, I~have made the individual tiles visible by adding a grid and numbering them. The numbers will become important again later. Our tiles have a width and a height of \SI{32}{px} each; they are arranged in \SI{16}{columns} and \SI{12}{rows}.
 
 The goal is a game surface as shown in \abbref[vref]{picTileMap03}. The playing field -- coincidentally -- also has \SI{16}{columns} and \SI{12}{rows}.
 
@@ -21,7 +27,7 @@ The goal is a game surface as shown in \abbref[vref]{picTileMap03}. The playing 
 
 \subsection{A Green Meadow}
 
-In the first step, I will show how a single tile can be used to fill the entire game area. So let us get started. In \srcref{srcForest01}, we first find the usual suspects. The parameters \texttt{TILESIZE}, \texttt{TILEMAP\_NOF\_COLS}, \texttt{TILEMAP\_NOF\_ROWS}, and \texttt{TILEMAP\_WINDOW} should also be self-explanatory.
+In the first step, I~will show how a single tile can be used to fill the entire game area. So let us get started. In \srcref{srcForest01}, we first find the usual suspects. The parameters \texttt{TILESIZE}, \texttt{TILEMAP\_NOF\_COLS}, \texttt{TILEMAP\_NOF\_ROWS}, and \texttt{TILEMAP\_WINDOW} should also be self-explanatory.
 
 \lstsource{SRC/01 Techniques/02 Tilemap/config.py}{1}{14}{python}{Forest -- \texttt{config.py}}{srcForest01}
 
@@ -35,23 +41,23 @@ Using the two \texttt{for} loops, this image is then distributed across the enti
 
 The result then looks as shown in \abbref[vref]{picTileMap04}.
 
-
+\newpage
 \lstsource{SRC/01 Techniques/02 Tilemap/forest01.py}{8}{25}{python}{Forest -- \texttt{WindowGame}}{srcForest03}
 
-However, I would like to be able to select and display any arbitrary tile. For example, instead of a monotonous meadow, we might want it to be composed of the tiles with the numbers $0, 1, 2, 3, 4, 16, 17, 18, 19, 20, 32, 33, 34, 35, 36$. This practically calls for a separate class.
+However, I~would like to be able to select and display any arbitrary tile. For example, instead of a monotonous meadow, we might want it to be composed of the tiles with the numbers $0, 1, 2, 3, 4, 16, 17, 18, 19, 20, 32, 33, 34, 35, 36$. This practically calls for a separate class.
 
 In the constructor (see \srcref[vref]{srcForest04}), only the bitmap of the sprite library is loaded. The method \texttt{sub\-sur\-face()} expects the tile number as a parameter.  The tiles are assumed to be numbered from left to right and from top to bottom. This makes it fairly easy to compute the column number and the row number from the tile number.
 
-The column number is the value that remains after all complete rows have been removed. Example: The tile number is~34. I want to determine the column number. All complete rows above tile~34 are irrelevant. Therefore, with 16~columns, from
+The column number is the value that remains after all complete rows have been removed. Example: The tile number is~34. I~want to determine the column number. All complete rows above tile~34 are irrelevant. Therefore, with 16~columns, from
 
-\[34 \rightarrow 18 \rightarrow 2\].
+\[34 \rightarrow 18 \rightarrow 2.\]
 
 Mathematically, this is the remainder (\gls{modulo}) of an integer division. Do you remember? Elementary school? \emph{15 divided by 6 is 2 remainder 3}.  Or, in our case,
 \[34 \bmod 16 = 2.\]
 
 This is exactly what happens in \zeiref{srcforest0201}; the only difference is that the result is then multiplied by the number of pixels per column in order to obtain the left position of the tile.
 
-The row number—that is, the row in which tile~34 is located—is determined in a similar, but slightly different way. In other words: how many complete rows -- i.\,e.\ 16 tiles -- are contained in the tile number? For this, we use integer division:
+The row number -- that is, the row in which tile~34 is located -- is determined in a similar, but slightly different way. In other words: how many complete rows -- i.\,e.\ 16 tiles -- are contained in the tile number? For this, we use integer division:
 \[34 \div 16 = 2.\]
 
 And since in computer science we always start counting at~0, the tile is indeed located in row~2. Take a look at \abbref[vref]{picTileMap02}! In \zeiref{srcforest0201}, the row number is then multiplied by the row height to obtain the top position of the tile.  The rest should be self-explanatory.
@@ -93,16 +99,15 @@ The output is now simplified, as can be seen starting at \zeiref{srcforest0301}.
 
 \lstsource{SRC/01 Techniques/02 Tilemap/forest03.py}{42}{50}{python}{Forest -- \texttt{WindowGame.draw()} using a 2D array}{srcForest10}
 
-The result shown in \abbref[vref]{picTileMap06} is a bit unsatisfying.
-
-\begin{enumerate}
+\begin{warningbox}[The result is a bit unsatisfying.]
+\begin{itemize}
 	\item Since there is only space for a single tile number at each tile position, background tiles are missing. As a result, an ugly black border becomes visible around these tiles.
 	\item The semantic meaning of the tiles is completely lost. This may be acceptable for pure background tiles, but what if some tiles represent ground, others obstacles, and yet others gadgets with a special meaning?
-\end{enumerate}
+\end{itemize}
+\end{warningbox}
+I~usually get by with these three semantic layers and encapsulate the whole concept in a \texttt{Map} class.
 
-I usually get by with these three semantic layers and encapsulate the whole concept in a \texttt{Map} class.
-
-In the constructor, tile numbers are specified only for these three layers. For collision detection, the main program—or wherever it makes sense—can then always check whether a tile number is contained in \texttt{layer\_data[0]}, \texttt{layer\_data[1]}, or \texttt{layer\_data[2]}. The result with regard to the black backgrounds has also improved, as can be seen in \abbref[vref]{picTileMap07}; since I can now first draw a green meadow as a background in level~0 and later place a tent or a tree in level~1 or~2.
+In the constructor, tile numbers are specified only for these three layers. For collision detection, the main program—or wherever it makes sense—can then always check whether a tile number is contained in \texttt{layer\_data[0]}, \texttt{layer\_data[1]}, or \texttt{layer\_data[2]}. The result with regard to the black backgrounds has also improved, as can be seen in \abbref[vref]{picTileMap07}; since I~can now first draw a green meadow as a background in level~0 and later place a tent or a tree in level~1 or~2.
 
 \lstsource{SRC/01 Techniques/02 Tilemap/forest04.py}{19}{63}{python}{Forest -- \texttt{Map} with a 2D array}{srcForest11}
 
@@ -112,19 +117,23 @@ In \texttt{WindowGame}, the object of the class is now created:
 
 In \texttt{draw()}, only the \texttt{Map} object is accessed from now on. Unassigned tiles (see \zeiref{srcforest0401}) are skipped in the process.
 
-\lstsource{SRC/01 Techniques/02 Tilemap/forest04.py}{76}{87}{python}{Forest -- \texttt{WindowGame.draw()} using a \texttt{Map} object}{srcForest12}
+\lstsource{SRC/01 Techniques/02 Tilemap/forest04.py}{76}{87}{python}{Forest -- \texttt{WindowGame.draw()} using a \texttt{Map} object}{srcForest13}
 
 \myezweihbild{TileMap06.png}{0.50}{Forest playground (3)}{picTileMap06}{TileMap07.png}{0.50}{Forest playground (4)}{picTileMap07}
 
-Hard-coding the tile numbers directly in the source code is, of course, a nightmare. It is much better to store them in separate CSV files. The appeal of this approach is that it allows the use of external programs such as \emph{Tiled} for level design. Even self-made tools like \texttt{forest00.py} (which can be found in the GitHub repository of this script) are often sufficient and much more efficient than specifying the data directly in the source code.
+\begin{warningbox}
+	Hard-coding the tile numbers directly in the source code is, of course, a nightmare. 
+\end{warningbox}
+
+It is much better to store them in separate CSV files. The appeal of this approach is that it allows the use of external programs such as \emph{Tiled} for level design. Even self-made tools like \texttt{forest00.py} (which can be found in the GitHub repository of this script) are often sufficient and much more efficient than specifying the data directly in the source code.
 
 So let us quickly switch to using CSV files. First, the \texttt{csv} module needs to be imported.
 
-\lstsource{SRC/01 Techniques/02 Tilemap/forest05.py}{1}{1}{python}{Forest -- \texttt{csv} import}{srcForest13}
+\lstsource{SRC/01 Techniques/02 Tilemap/forest05.py}{1}{1}{python}{Forest -- \texttt{csv} import}{srcForest14}
 
 In the constructor, the CSV files located in the \texttt{level} subdirectory are now loaded. Please note that creating the \texttt{Map} object now requires specifying how many levels are available as CSV files.
 
-\lstsource{SRC/01 Techniques/02 Tilemap/forest05.py}{20}{28}{python}{Forest -- Constructor of \texttt{Map} using \texttt{csv}}{srcForest14}
+\lstsource{SRC/01 Techniques/02 Tilemap/forest05.py}{20}{28}{python}{Forest -- Constructor of \texttt{Map} using \texttt{csv}}{srcForest15}
 
 That should be sufficient at this point :-)
 

@@ -16,7 +16,7 @@ class Game:
         self.sounds()
 
     def sounds(self) -> None:
-        self.bubble = pygame.mixer.Sound(cfg.get_sound("plopp.mp3"))   # §\label{srcSound0101}§
+        self.bubble = pygame.mixer.Sound(cfg.get_sound("plopp.mp3"))    # §\label{srcSound0101}§
         self.clash = pygame.mixer.Sound(cfg.get_sound("glas.wav"))      # §\label{srcSound0102}§
 
     def watch_for_events(self) -> None:

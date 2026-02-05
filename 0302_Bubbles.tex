@@ -3,10 +3,11 @@
 \section{Bubbles}\index{Bubbles}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-In this chapter, the game \emph{Bubbles} is discussed as an example.  
-I would like to point out right away that the idea for the game did not come from me. A student once presented it as a mobile version at an \Gls{ita} fair. Unfortunately, I can no longer remember the student’s name, but I would like to take this opportunity to say a sincere \emph{thank you}.
+In this chapter, the game \emph{Bubbles} is discussed as an example. We will develop this game step by step in a systematic way. I will assume that the techniques introduced in \kapref{secGoals} are already familiar. I will deliberately omit docstring comments in the source code, since everything is explained in the text and the listings would otherwise become unnecessarily long. In the final version, however, these comments are included.
 
-We will develop this game step by step in a systematic way. I will assume that the techniques introduced in \kapref{secGoals} are already familiar. I will deliberately omit docstring comments in the source code, since everything is explained in the text and the listings would otherwise become unnecessarily long. In the final version, however, these comments are included.
+\begin{hintbox}[Thank you]
+	I would like to point out right away that the idea for the game did not come from me. A student once presented it as a mobile version at an \Gls{ita} fair. Unfortunately, I can no longer remember the student’s name, but I would like to take this opportunity to say a sincere \emph{thank you}.
+\end{hintbox}
 
 The game can be extended almost without limits: bubble popping animations, high score lists, and much more. But as is so often the case, the better is the enemy of the good. I hope you enjoy studying this example.
 
@@ -14,6 +15,9 @@ The game can be extended almost without limits: bubble popping animations, high 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\Reqref{reqStandard}: Standards}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/02%20Examples/02%20Bubbles/v01}
+\end{diskbox}
 
 \br{Standard functionality}{reqStandard}
 \begin{enumerate}
@@ -33,9 +37,8 @@ At this point, the preamble is presented once. I assume that you have sufficient
 
 It is required that the window has an appropriate size. With $\SI{1220}{px} \times \SI{1002}{px}$, the window is large enough to distribute the bubbles, yet small enough to allow quick mouse movement. Everything else has already been discussed in detail in previous chapters (e.g.\ \texttt{FPS}, \texttt{DELTATIME}, or \texttt{PATH}) and will therefore not be explained further here.
 
-\myebild{aquarium01}{0.15}{Bubbles: background image (aquarium.png)}{picAquarium01}
+\myebild{aquarium01}{0.15}{Bubbles: background image}{picAquarium01}
 
-\newpage
 \lstsource{SRC/02 Examples/02 Bubbles/v01/config.py}{1}{99}{python}{Bubbles (\reqref{reqStandard}.\ref{reqStandardGröße}) -- \texttt{config.py}
 }{srcBubbles01a}
 
@@ -54,8 +57,12 @@ However, these methods already define the overall flow of the game. All further 
 \lstsource{SRC/02 Examples/02 Bubbles/v01/bubbles.py}{55}{999}{python}{Bubbles (\reqref{reqStandard}) -- invocation}{srcBubbles01s}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\Reqref{reqBlasenErscheinen}: Bubbles appear}
-\br{Bubbles appear}{reqBlasenErscheinen}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/02%20Examples/02%20Bubbles/v02}
+\end{diskbox}
 
+
+\br{Bubbles appear}{reqBlasenErscheinen}
 \begin{enumerate}
 	\item A bubble appears at a random position.\label{reqBlasenErscheinenZufall}
 	\item At the beginning, this happens every half second.\label{reqBlasenErscheinenIntervall}
@@ -78,7 +85,7 @@ The playing area is a rectangle\index{rectangle}\index{self.rect} with an offset
 
 \lstsource{SRC/02 Examples/02 Bubbles/v02/config.py}{14}{16}{python}{Bubbles (\reqref{reqBlasenErscheinen}) -- additions in \texttt{config.py}}{srcBubbles02a}
 
-The \texttt{Timer} class is exactly the one described above in \kapref[vref]{secZeitstuerung}\index{Timer}; everything is explained there.
+The \texttt{Timer} class is exactly the one described above in \kapref[vref]{secZeitsteuerung}\index{Timer}; everything is explained there.
 
 \lstsource{SRC/02 Examples/02 Bubbles/v02/bubbles.py}{9}{21}{python}{Bubbles (\reqref{reqBlasenErscheinen}) -- \texttt{Timer}}{srcBubbles02b}  
 
@@ -94,7 +101,10 @@ In the \texttt{draw()} method, only the \texttt{draw()} methods of the sprite gr
 
 \lstsource{SRC/02 Examples/02 Bubbles/v02/bubbles.py}{71}{77}{python}{Bubbles (\reqref{reqBlasenErscheinen}) -- \texttt{draw()} and \texttt{update()} of \texttt{Game}}{srcBubbles02e}  
 
-The basic idea behind \texttt{spawn\_bubble()} is to keep guessing a position for a new bubble until a free area is found. To avoid ending up in an \gls{endlosschleife}, the number of attempts is limited to~100. If no free area is found, the bubble is not added to the sprite group -- it is simply discarded.
+The basic idea behind \texttt{spawn\_bubble()} is to keep guessing a position for a new bubble until a free area is found.
+\begin{warningbox}[Avoid endloss loop]
+	To avoid ending up in an \gls{endlosschleife}, the number of attempts is limited to~100. If no free area is found, the bubble is not added to the sprite group -- it is simply discarded.
+\end{warningbox}
 
 For this purpose, the radius is temporarily increased (\zeiref{srcBubble0207}) and then reduced back to its original value after the collision check (\zeiref{srcBubble0208}). 
 
@@ -108,6 +118,10 @@ The result can be seen in \abbref[vref]{picAquarium02}. The bubbles are evenly d
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\Reqref{reqBlasenanzahl}: Number of bubbles}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/02%20Examples/02%20Bubbles/v03}
+\end{diskbox}
+
 \br{Number of bubbles}{reqBlasenanzahl}
 	The maximum number of bubbles shall depend on the size of the playing area.
 \er
@@ -124,6 +138,10 @@ The rest of the program remains unchanged.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\Reqref{reqBlasenWachstum}: Bubble growth}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/02%20Examples/02%20Bubbles/v04}
+\end{diskbox}
+
 \br{Bubble growth}{reqBlasenWachstum}
 \begin{enumerate}
 	\item Bubbles of different sizes are managed in a container.\label{reqBlasenWachstumContainer}
@@ -140,19 +158,21 @@ The \texttt{get()} method then returns the appropriately scaled and ready-to-use
 
 So far, only a start value -- and thus a lower bound -- for the bubble radius has been defined in \texttt{Game}. This definition is now extended in \zeiref{srcBubble0400} in accordance with \reqref{reqBlasenWachstum}.\ref{reqBlasenWachstumMax} by adding a maximum radius.
 
-\lstsource{SRC/02 Examples/02 Bubbles/v04/bubbles.py}{14}{14}{python}{Bubbles (\reqref{reqBlasenWachstum}.\ref{reqBlasenWachstumMax}) -- extension of \texttt{config.py}}{srcBubbles04b}
+\lstsource{SRC/02 Examples/02 Bubbles/v04/config.py}{14}{14}{python}{Bubbles (\reqref{reqBlasenWachstum}.\ref{reqBlasenWachstumMax}) -- extension of \texttt{config.py}}{srcBubbles04b}
 
 The \texttt{BubbleContainer} is passed to the constructor of \texttt{Bubble}, allowing this class to retrieve images from it. A direct example of this can be found in \zeiref{srcBubble0407}. The \texttt{image} attribute is set according to the current \texttt{radius}.
 
-The \texttt{update()} method is no longer empty. Its main purpose is to make the bubble grow. To achieve this, the radius is continuously increased, which results in increasingly larger images being loaded from the \texttt{BubbleContainer} and displayed (\zeiref{srcBubble0412}). The new radius is calculated in \zeiref{srcBubble0410}. In the same line, this value is compared with the maximum radius from \texttt{Settings}, and the minimum of the two is selected. This logic prevents the radius from becoming too large.
+The \texttt{update()} method is no longer empty. Its main purpose is to make the bubble grow. To achieve this, the radius is continuously increased, which results in increasingly larger images being loaded from the \texttt{BubbleContainer} and displayed (\zeiref{srcBubble0412}). The new radius is calculated in \zeiref{srcBubble0410}. In the same line, this value is compared with the maximum radius from \texttt{config.py}, and the minimum of the two is selected. This logic prevents the radius from becoming too large.
 
-But what is the purpose of lines~\ref{srcBubble0411} and~\ref{srcBubble0413}\index{center-based scaling}\randnotiz{center\-based scaling}? The reference point of an image in a sprite is its top-left corner. If the bubble grows, it would therefore expand to the right and downward; the left and top edges would remain fixed, which looks awkward. To avoid this, we store the old center point, load the new image, create the corresponding \texttt{Rect} object, and then move it back to the old center. This way, the bubble visually grows outward from its center in all directions.
+\begin{hintbox}[Center-based scaling]
+	But what is the purpose of lines~\ref{srcBubble0411} and~\ref{srcBubble0413}\index{center-based scaling}? The reference point of an image in a sprite is its top-left corner. If the bubble grows, it would therefore expand to the right and downward; the left and top edges would remain fixed, which looks awkward. To avoid this, we store the old center point, load the new image, create the corresponding \texttt{Rect} object, and then move it back to the old center. This way, the bubble visually grows outward from its center in all directions.
+\end{hintbox}
 
-\lstsource{SRC/02 Examples/02 Bubbles/v04/bubbles.py}{72}{91}{python}{Bubbles (\reqref{reqBlasenWachstum}) -- extension of \texttt{Bubble}}{srcBubbles04c}  
+\lstsource{SRC/02 Examples/02 Bubbles/v04/bubbles.py}{45}{70}{python}{Bubbles (\reqref{reqBlasenWachstum}) -- extension of \texttt{Bubble}}{srcBubbles04c}  
 
 The \texttt{update()} method in \texttt{Game} only needs to be extended by calling all \texttt{update()} methods of the bubbles. This can be done very conveniently using the sprite group mechanism. Just like with \texttt{draw()}, \texttt{update()} can be called for the entire group in a single step (see \zeiref{srcBubble0414}).
 
-\lstsource{SRC/02 Examples/02 Bubbles/v04/bubbles.py}{45}{70}{python}{Bubbles (\reqref{reqBlasenWachstum}) -- extension of \texttt{Game.update()}}{srcBubbles04d}  
+\lstsource{SRC/02 Examples/02 Bubbles/v04/bubbles.py}{98}{100}{python}{Bubbles (\reqref{reqBlasenWachstum}) -- extension of \texttt{Game.update()}}{srcBubbles04d}  
 
 Create the BubbleContainer
 
@@ -167,7 +187,12 @@ The bubbles now grow outward from their center. The result might then look like 
 \myebild{aquarium03}{0.19}{Bubbles -- the bubbles have grown and merged}{picAquarium03}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
 \subsection{\Reqref{reqMauscursor}: Mouse cursor}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/02%20Examples/02%20Bubbles/v05}
+\end{diskbox}
+
 \br{Mouse cursor}{reqMauscursor}
 	If the mouse is inside a bubble, its appearance should change.
 \er
@@ -230,19 +255,25 @@ After that, the current mouse position is obtained using \texttt{pygame.mouse.\-
 
 The \texttt{update()} method in \texttt{Game} still needs to be extended by adding the call to the collision check.
 
-\lstsource{SRC/02 Examples/02 Bubbles/v05/bubbles.py}{126}{129}{python}{Bubbles (\reqref{reqMauscursor}) -- \texttt{update()} in \texttt{Game}}{srcbubbles05c}  
+\lstsource{SRC/02 Examples/02 Bubbles/v05/bubbles.py}{99}{102}{python}{Bubbles (\reqref{reqMauscursor}) -- \texttt{update()} in \texttt{Game}}{srcbubbles05c}  
 
 Try running the program. Place the mouse in a lower-left corner outside a bubble and wait until the growing bubble touches the mouse.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\Reqref{reqBlasenzerplatzen}: Bubbles burst}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/02%20Examples/02%20Bubbles/v06}
+\end{diskbox}
+
 \br{Bubbles burst}{reqBlasenzerplatzen}
 	When a left mouse click occurs inside a bubble, the bubble should burst.
 \er
 
 Most of the work required to implement this requirement has already been done with the implementation of the \texttt{Bubble.collidepoint()} method. We only need to use this method in a clever way -- in fact, only a few remaining steps are necessary. In \texttt{watch\_for\_events()}, the left mouse click is detected first (\zeiref{srcBubble0601})\myindex{pyg}{\texttt{MOUSEBUTTONDOWN}}\myindex{pyg}{\texttt{mouse}!\texttt{get\_pos()}}\randnotiz{MOUSEBUTTONDOWN get\_pos()} and the current mouse position is passed to the newly created \texttt{sting()} method (\zeiref{srcBubble0602}).
 
-Note: As a general rule, implement as little logic as possible in \texttt{watch\_\-for\_\-events()}. This method acts as a dispatcher; the actual processing should always be delegated to separate methods.
+\begin{hintbox}[\texttt{watch\_\-for\_\-events()} as a dispatcher]
+	As a general rule, implement as little logic as possible in \texttt{watch\_\-for\_\-events()}. This method acts as a dispatcher; the actual processing should always be delegated to separate methods.
+\end{hintbox}
 
 \lstsource{SRC/02 Examples/02 Bubbles/v06/bubbles.py}{85}{94}{python}{Bubbles (\reqref{reqBlasenzerplatzen}) -- \texttt{Game.watch\_for\_event()}}{srcbubbles06a}  
 
@@ -251,7 +282,12 @@ The \texttt{sting()} method is now very simple. All \texttt{Bubble} objects are 
 \lstsource{SRC/02 Examples/02 Bubbles/v06/bubbles.py}{138}{141}{python}{Bubbles (\reqref{reqBlasenzerplatzen}) -- \texttt{Game.sting()}}{srcbubbles06b}  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{\Reqref{reqPunktestand}: Score}\br{Score}{reqPunktestand}
+\subsection{\Reqref{reqPunktestand}: Score}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/02%20Examples/02%20Bubbles/v07}
+\end{diskbox}
+
+\br{Score}{reqPunktestand}
 \begin{enumerate}
 	\item The game starts with 0~points.\label{reqPunktestandNull}
 	\item When a bubble bursts, the score is increased proportionally to its radius.\label{reqPunktestandRadius}
@@ -259,7 +295,7 @@ The \texttt{sting()} method is now very simple. All \texttt{Bubble} objects are 
 \end{enumerate}
 \er
 
-Popping bubbles should, of course, be rewarded with points. To do this, the score has to be calculated and displayed. The simplest way to keep track of the score is to use a static variable in \texttt{Settings} or a global variable. I prefer option~1 (see \srcref[vref]{srcbubbles07a}).
+Popping bubbles should, of course, be rewarded with points. To do this, the score has to be calculated and displayed. The simplest way to keep track of the score is to use a variable in \texttt{config.py} or a global variable. I prefer option~1 (see \srcref[vref]{srcbubbles07a}).
 
 \lstsource{SRC/02 Examples/02 Bubbles/v07/config.py}{18}{18}{python}{Bubbles (\reqref{reqPunktestand}.\ref{reqPunktestandNull}) -- extension of \texttt{config.py}}{srcbubbles07a}  
 
@@ -281,7 +317,7 @@ This leaves \reqref{reqPunktestand}.\ref{reqPunktestandAnzeige}. Similar to the 
 
 \lstsource{SRC/02 Examples/02 Bubbles/v07/bubbles.py}{19}{19}{python}{Bubbles (\reqref{reqPunktestand}.\ref{reqPunktestandAnzeige}) -- extension of \texttt{config.py}}{srcbubbles07e}  
 
-For displaying the score itself, I once again create a small class that encapsulates this task: \texttt{Points}. In the constructor, a \texttt{Font}\myindex{pyg}{\texttt{font}!\texttt{Font}}\randnotiz{Font} object is created, which is then used in \texttt{update()} to render the score. The position of the text output is determined from the values defined in \texttt{Settings}. The rest is handled for me by the \texttt{Sprite} class.
+For displaying the score itself, I once again create a small class that encapsulates this task: \texttt{Points}. In the constructor, a \texttt{Font}\myindex{pyg}{\texttt{font}!\texttt{Font}}\randnotiz{Font} object is created, which is then used in \texttt{update()} to render the score. The position of the text output is determined from the values defined in \texttt{config.py}. The rest is handled for me by the \texttt{Sprite} class.
 
 \lstsource{SRC/02 Examples/02 Bubbles/v07/bubbles.py}{79}{90}{python}{Bubbles (\reqref{reqPunktestand}.\ref{reqPunktestandAnzeige}) -- Class \texttt{Points}}{srcbubbles07f}  
 
@@ -295,6 +331,10 @@ In \abbref[vref]{picAquarium04}, you can see the score display in the lower part
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\Reqref{reqSpielende}: Game over}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/02%20Examples/02%20Bubbles/v08}
+\end{diskbox}
+
 \br{Game over}{reqSpielende}
 \begin{enumerate}
 	\item If two bubbles touch, the game is lost.\label{reqSpielendeBlase}
@@ -332,6 +372,10 @@ In \abbref[vref]{picAquarium05}, the collision of a bubble with the edge is show
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\Reqref{reqZeitanpassungen}: Time-based adjustments}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/02%20Examples/02%20Bubbles/v09}
+\end{diskbox}
+
 \br{Time-based adjustments}{reqZeitanpassungen}
 	The bubbles should grow faster over time.
 \er
@@ -353,6 +397,10 @@ If you now try out the game, you will notice an easy start and a moderate increa
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\Reqref{reqKollisionanzeigen}: Display collision}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/02%20Examples/02%20Bubbles/v10}
+\end{diskbox}
+
 \br{Display collision}{reqKollisionanzeigen}
 	If bubbles collide with the edge or with each other, they should change color and remain visible for~\SI{5}{s} before the application terminates.
 \er
@@ -378,6 +426,7 @@ The constructor of \texttt{BubbleContainer} now receives a filename as a paramet
 
 The constructor of \texttt{Game} now populates the static dictionary \texttt{BUBBLE\_CONTAINER} (\zeiref{srcBubble1003} and \zeiref{srcBubble1004}).
 
+\newpage
 \lstsource{SRC/02 Examples/02 Bubbles/v10/bubbles.py}{108}{111}{python}{Bubbles (\reqref{reqKollisionanzeigen}) -- change to the constructor of \texttt{Game}}{srcbubbles10c}
 
 Several changes are now required in \texttt{Bubble}. The new attribute \texttt{mode} (\zeiref{srcBubble1005}) determines the color of the bubble. Whenever an image is loaded from the \texttt{Bubble\-Con\-tainer}, this attribute controls which of the two \texttt{Bubble\-Con\-tainer} instances is used as the data source. As an example, \zeiref{srcBubble1006} in \texttt{update()} can be mentioned here.
@@ -388,6 +437,7 @@ If the mode changes, the alternative color has to be reloaded. This is handled b
 
 \lstsource{SRC/02 Examples/02 Bubbles/v10/bubbles.py}{71}{74}{python}{Bubbles (\reqref{reqKollisionanzeigen}) -- \texttt{Bubble.set\_mode()}}{srcbubbles10e}  
 
+\newpage
 \begin{wrapfigure}[15]{l}{11.0cm}%
 	\begin{center}%
 		\vspace{-1.0em}%
@@ -492,9 +542,14 @@ To give me enough time to see the collision, I want to wait for~\SI{2}{s} at the
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
 \subsection{\Reqref{reqPause}: Pause}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/02%20Examples/02%20Bubbles/v11}
+\end{diskbox}
+
 \br{Pause}{reqPause}
-	The game enters or leaves pause mode by pressing the right mouse button or \keys{P}. The current game state is frozen and displayed in a \emph{grayed-out} form.
+	The game enters or leaves pause mode by pressing the right mouse button or \keys{p}. The current game state is frozen and displayed in a \emph{grayed-out} form.
 \er
 
 The idea behind this requirement is that a necessary interruption should not automatically mean that the player loses the game. In \abbref[vref]{picAquarium08}, you can see what the pause screen should look like.
@@ -503,6 +558,7 @@ The idea behind this requirement is that a necessary interruption should not aut
 
 In the constructor of \texttt{Game}, the flag \texttt{pausing} is defined. It later controls whether the game is currently in pause mode or not.
 
+\newpage
 \lstsource{SRC/02 Examples/02 Bubbles/v11/bubbles.py}{125}{125}{python}{Bubbles (\reqref{reqPause}) -- constructor in \texttt{Game}}{srcbubbles11b}
 
 In \texttt{watch\_for\_events()}, it is now checked whether the \texttt{P} key (\zeiref{srcBubble1103}) or the right mouse button (\zeiref{srcBubble1104}) has been pressed. In both cases, the new \texttt{setpause()} method is called.
@@ -525,6 +581,10 @@ Nothing more is required, since the rest is handled by the usual \texttt{update(
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\Reqref{reqNeustart}: Restart}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/02%20Examples/02%20Bubbles/v12}
+\end{diskbox}
+
 \br{Restart}{reqNeustart}
 	At the end of the game, the player should be asked whether they want to restart the game or not.
 \er
@@ -550,7 +610,7 @@ The score is reset, the sprite group containing the bubbles is cleared, the time
 
 The method is called in \texttt{update()} when the corresponding flag \texttt{do\_start} is set. In addition, \texttt{update()} inserts the restart screen into the sprite group and sets the flag \texttt{restarting} to \true\ when a collision is detected.
 
-
+\newpage
 \lstsource{SRC/02 Examples/02 Bubbles/v12/bubbles.py}{150}{161}{python}{Bubbles (\reqref{reqNeustart}) -- \texttt{Game.update()}}{srcbubbles12e}  
 
 The response to the restart screen is queried in \texttt{watch\_for\_events()} and translated into the corresponding flag values. If the player responds with~\keys{y} (\zeiref{srcBubble1205}), the game has to be restarted, so \texttt{do\_start} is set to \true. If the player presses~\emph{N}, the game should end, which is why the flag of the main game loop is set to \false\ (\zeiref{srcBubble1206}).
@@ -562,6 +622,10 @@ Since we now display a semi-transparent foreground at the end of the game, there
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\Reqref{reqSound}: Sound}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/02%20Examples/02%20Bubbles/v13}
+\end{diskbox}
+
 \br{Sound}{reqSound}
 \begin{enumerate}
 	\item The appearance of bubbles is accompanied by a sound.\label{reqSoundErscheinen}
@@ -578,7 +642,7 @@ In the constructor of \texttt{Game}, the dictionary is populated with objects of
 
 \lstsource{SRC/02 Examples/02 Bubbles/v13/bubbles.py}{113}{122}{python}{Bubbles (\reqref{reqSound}) -- populating \texttt{SOUND\_CONTAINER}}{srcbubbles13b}
 
-Now the sounds only need to be played at the appropriate places using \texttt{pygame.mixer.Sound.\-play()}\myindex{pyg}{\texttt{mixer}!\texttt{Sound}!\texttt{play()}}\randnotiz{play()}. First, the sound that is played when a new bubble appears: in \texttt{spawn\_\-bubb\-le()} in \zeiref{srcBubble1303}.
+Now the sounds only need to be played at the appropriate places using \texttt{pygame.mixer\-.Sound\-.play()}\myindex{pyg}{\texttt{mixer}!\texttt{Sound}!\texttt{play()}}\randnotiz{play()}. First, the sound that is played when a new bubble appears: in \texttt{spawn\_\-bubb\-le()} in \zeiref{srcBubble1303}.
 
 \lstsource{SRC/02 Examples/02 Bubbles/v13/bubbles.py}{198}{201}{python}{Bubbles  (\reqref{reqSound}.\ref{reqSoundErscheinen}) -- \texttt{spawn\_bubble()}}{srcbubbles13c}
 
@@ -594,6 +658,10 @@ And that’s it :-)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Or maybe not?}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/02%20Examples/02%20Bubbles/v14}
+\end{diskbox}
+
 Pause, restart, and game over are currently still implemented rather sloppily; for example, the end of the game is delayed by playing a sound instead of using a properly programmed delay. In one version (see \srcref[vref]{srcbubbles10g}), I even froze the entire program for several seconds using \texttt{pygame.time.wait()}\myindex{pyg}{\texttt{time}!\texttt{wait()}} -- brrr :-(
 
 It is far more advantageous to control the game using states. What exactly this means should become clear when looking at the solution.
@@ -623,13 +691,13 @@ Consider pressing \keys{p} as an example: if the game state is currently \texttt
 
 Let us now take a closer look at the three helper methods, each of which is tailored to a specific state: \texttt{set\_pause()}, \texttt{set\_resume()}, and \texttt{set\_game\_over()}. All three methods consist of two parts: in the first part, the state change itself is performed, and in the second part, an action required by this state change is executed. In some cases, a message screen is added to the sprite group; in others, it is removed again. In the third method, the time at which the \SI{10}{seconds} waiting period begins is stored in \texttt{wait\_start\_time}.
 
-\lstsource{SRC/02 Examples/02 Bubbles/v14/bubbles.py}{202}{212}{python}{Bubbles game state -- \texttt{set\_pause()}, \texttt{set\_resume()}, and \texttt{set\_game\_over()} of \texttt{Game}}{srcBubbles14d}  
+\lstsource{SRC/02 Examples/02 Bubbles/v14/bubbles.py}{201}{211}{python}{Bubbles game state -- \texttt{set\_pause()}, \texttt{set\_resume()}, and \texttt{set\_game\_over()} of \texttt{Game}}{srcBubbles14d}  
 
 Just as the game states are taken into account in \texttt{watch\_for\_events()}, they must also be considered in \texttt{update()}.
 
 \lstsource{SRC/02 Examples/02 Bubbles/v14/bubbles.py}{174}{189}{python}{Bubbles game state -- \texttt{Game.update()}}{srcBubbles14e}  
 
-What remains is the helper method that checks whether the \SI{10}{seconds} have elapsed: \texttt{check\_waiting\_timeout()}. In this method, the elapsed time is compared with \texttt{wait\_duration}. If the time has elapsed, the game state is set to \texttt{GAME\_OVER}, so that the game can terminate cleanly.
+What remains is the helper method that checks whether the \SI{10}{seconds} have elapsed: \texttt{check\_waiting\_timeout()}. In this method, the elapsed time is compared with \texttt{wait\_du\-ra\-tion}. If the time has elapsed, the game state is set to \texttt{GAME\_OVER}, so that the game can terminate cleanly.
 
 \lstsource{SRC/02 Examples/02 Bubbles/v14/bubbles.py}{274}{279}{python}{Bubbles game state -- \texttt{Game.check\_waiting\_timeout()}}{srcBubbles14f}  
 

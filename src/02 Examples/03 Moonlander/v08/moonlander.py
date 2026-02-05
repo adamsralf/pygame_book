@@ -376,7 +376,7 @@ class Game:
         self.window.flip()
 
     def restart(self) -> None:
-        self.landing = True                            #§\label{moonlander0807}§
+        self.landing = True                            #§\label{moonlander0809}§
         self.background = Sky(self.screen)
         self.moon = Moon(self.screen)
         self.earth = Earth(self.screen)

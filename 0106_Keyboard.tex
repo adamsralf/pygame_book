@@ -4,6 +4,9 @@
 \section{Handling Keyboard Input}\index{Tastatur}\label{secTastatur}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Introduction}\label{KeyboardByEvent}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/00%20Introduction/06%20Keyboard/keyboard/v01}
+\end{diskbox}
 
 %begin{wrapfigure}[10]{r}{3.1cm}%
 %	\begin{center}%
@@ -11,17 +14,20 @@
 %		\myfigure{invader07.png}{0.8}{Keyboard}{picInvader07}%
 %	\end{center}%
 %\end{wrapfigure}%
-I do not intend to cover the keyboard exhaustively here, but merely to illustrate the basic principle. The movement of the spaceship is controlled by keyboard events. Every time I press a arrow key -- left, right, up, down -- the spaceship moves in the corresponding direction. If I release the arrow key, the spaceship stops. The game can now also be exited using the Escape key (\Gls{boss}).
+I~do not intend to cover the keyboard exhaustively here, but merely to illustrate the basic principle. The movement of the spaceship is controlled by keyboard events. Every time I~press a arrow key -- left, right, up, down -- the spaceship moves in the corresponding direction. If I~release the arrow key, the spaceship stops. The game can now also be exited using the Escape key (\Gls{boss}).
 
-As a first step, a dictionary\index{Dictionary} of possible directions is created in \texttt{config.py}. These directions are managed as \texttt{Vector2} objects \myindex{pyg}{\texttt{math}!\texttt{Vector2D}}, since they are easier to use for mathematical operations.
+As a first step, a dictionary\index{Dictionary} of possible directions is created in \texttt{config.py}. 
+\begin{hintbox}[Vector2D]
+	These directions are managed as \texttt{Vector2} objects \myindex{pyg}{\texttt{math}!\texttt{Vector2D}}, since they are easier to use for mathematical operations.
+\end{hintbox}
 
 \lstsource{SRC/00 Introduction/06 Keyboard/keyboard/v01/config.py}{1}{99}{python}{Control Direction by Keys (1), \texttt{config.py}}{srcTastatur00aa} 
 
 
-Next, we prepare the \texttt{Defender} class or modify it slightly (\srcref[vref]{srcTastatur00a}). The sprite is no longer placed at the bottom but centered (\zeiref{srcTastatur0001}), and the spaceship should now also be able to move vertically. For this, we either need two separate variables or a \texttt{Vector2} object. I choose a \texttt{Vector2} object, where the first component represents the horizontal direction vector and the second the vertical direction. Each direction vector is set according to the semantics introduced earlier. 
+Next, we prepare the \texttt{Defender} class or modify it slightly (\srcref[vref]{srcTastatur00a}). The sprite is no longer placed at the bottom but centered (\zeiref{srcTastatur0001}), and the spaceship should now also be able to move vertically. For this, we either need two separate variables or a \texttt{Vector2} object. I~choose a \texttt{Vector2} object, where the first component represents the horizontal direction vector and the second the vertical direction. Each direction vector is set according to the semantics introduced earlier. 
 
 
-I would like to draw special attention to \zeiref{srcTastatur0008}. The methods \texttt{clamp\_ip()}\randnotiz{clamp\_ip()\newline clamp()}\myindex{pyg}{\texttt{rect}!\texttt{Rect}!\texttt{clamp\_ip()}|underline}\myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{clamp\_ip()}|underline} as well as \texttt{clamp()}\myindex{pyg}{\texttt{rect}!\texttt{Rect}!\texttt{clamp()}|underline}\myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{clamp()}|underline} provide a very convenient shortcut in programming. Both methods check whether the inner rectangle has crossed the boundary of the outer rectangle on any side and, if necessary, move it back to the edge of the outer rectangle.
+I~would like to draw special attention to \zeiref{srcTastatur0008}. The methods \texttt{clamp\_ip()}\randnotiz{clamp\_ip()\newline clamp()}\myindex{pyg}{\texttt{rect}!\texttt{Rect}!\texttt{clamp\_ip()}|underline}\myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{clamp\_ip()}|underline} as well as \texttt{clamp()}\myindex{pyg}{\texttt{rect}!\texttt{Rect}!\texttt{clamp()}|underline}\myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{clamp()}|underline} provide a very convenient shortcut in programming. Both methods check whether the inner rectangle has crossed the boundary of the outer rectangle on any side and, if necessary, move it back to the edge of the outer rectangle.
 
 Here is an equivalent check without using \texttt{clamp()}, shown only for the left edge of the outer rectangle:
 \lstset{firstnumber=1}
@@ -34,9 +40,9 @@ The method \texttt{clamp()} performs this kind of check for all sides of the inn
 
 The difference between the two methods is that \texttt{clamp()} does not modify the values of the inner rectangle but instead returns a new, adjusted rectangle, whereas \texttt{clamp\_ip()} modifies the values of the inner rectangle directly.
 
-\lstsource{SRC/00 Introduction/06 Keyboard/keyboard/v01/keyboard.py}{9}{26}{python}{Control Direction by Keys (2), Class \texttt{Defender}}{srcTastatur00a} 
+\lstsource{SRC/00 Introduction/06 Keyboard/keyboard/v01/keyboard.py}{8}{25}{python}{Control Direction by Keys (2), Class \texttt{Defender}}{srcTastatur00a} 
 
-Let us now turn to the actual handling of keyboard input: Pressing a key can trigger the event types\index{event}\myindex{pyg}{\texttt{Event}}\texttt{pygame.KEYDOWN}\myindex{pyg}{\texttt{KEYDOWN}|underline} or \texttt{pygame.KEYUP}\myindex{pyg}{\texttt{KEYUP}|underline}\randnotiz{KEYDOWN\\KEYUP}. In our example (\zeiref{srcTastatur0003}), we are interested in which key is \emph{pressed}, so we use \texttt{KEYDOWN}. After that, we can determine which key was pressed via \texttt{pygame.event.key}\myindex{pyg}{\texttt{event}!\texttt{key}}\randnotiz{key}. For this purpose, Pygame provides a set of predefined constants in \texttt{pygame.key}\myindex{pyg}{\texttt{key}} (see \tabref[vref]{tabKey} and \tabref[vref]{tabKeyMod}).
+Let us now turn to the actual handling of keyboard input: Pressing a key can trigger the event types\index{event}\myindex{pyg}{\texttt{Event}} \texttt{pygame.KEYDOWN}\myindex{pyg}{\texttt{KEYDOWN}|underline} or \texttt{pygame.KEYUP}\myindex{pyg}{\texttt{KEYUP}|underline}\randnotiz{KEYDOWN\\KEYUP}. In our example (\zeiref{srcTastatur0003}), we are interested in which key is \emph{pressed}, so we use \texttt{KEYDOWN}. After that, we can determine which key was pressed via \texttt{pygame.event.key}\myindex{pyg}{\texttt{event}!\texttt{key}}\randnotiz{key}. For this purpose, Pygame provides a set of predefined constants in \texttt{pygame.key}\myindex{pyg}{\texttt{key}} (see \tabref[vref]{tabKey} and \tabref[vref]{tabKeyMod}).
 
 
 \lstsource{SRC/00 Introduction/06 Keyboard/keyboard/v01/keyboard.py}{54}{72}{python}{Control Direction by Keys (3)), \texttt{Game}.\texttt{watch\_for\_events()}}{srcTastatur00d}
@@ -53,22 +59,27 @@ This should be sufficient for now. The keyboard is only one possible way to cont
 \subsection{More Input}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Example: Shift and Related Keys}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/00%20Introduction/06%20Keyboard/keyboard/v02}
+\end{diskbox}
 
 With the help of \keys{\shift}, \keys{\ctrl}, or other modifier keys, additional meanings can be assigned to regular keys. But how can we detect that such keys are being pressed? In the source code of the previous example, only a reaction to \emph{one} key press per condition is implemented.
 
-I will now extend the example so that pressing a movement key together with the left Shift key makes the spaceship move faster, while pressing it together with the right Shift key makes it move slower.
+I~will now extend the example so that pressing a movement key together with the left Shift key makes the spaceship move faster, while pressing it together with the right Shift key makes it move slower.
 
 To do this, we first adapt the \texttt{update()} method of the \texttt{Defender}. As you can see, the signals to speed up or slow down can now be handled as well. It is also possible to reset the speed to its normal value. The concrete values are more or less arbitrary, but they are chosen so that the difference in speed is easy to perceive.
 
-
+\newpage
 \lstsource{SRC/00 Introduction/06 Keyboard/keyboard/v02/keyboard.py}{20}{33}{python}{Control Direction by Keys (4)), \texttt{Defender}.\texttt{update()}}{srcTastatur01a}
 
 Now we adapt \texttt{watch\_for\_events()}. To be able to detect simultaneous key presses, a slightly different mechanism must be used. Internally, a \texttt{modifier} bit
-\randnotiz{event.mod}\index{event.mod} is set. This bitmask must be checked using the \gls{binaryand} operation.
-
-In our example, this is done in \zeiref{srcTastatur0102} using \texttt{KMOD\_LSHIFT}\randnotiz{KMOD\_LSHIFT KMOD\_RSHIFT}\myindex{pyg}{\texttt{KMOD\_LSHIFT}} and in \zeiref{srcTastatur0103} using \texttt{KMOD\_RSHIFT}\myindex{pyg}{\texttt{KMOD\_RSHIFT}}.
+\randnotiz{event.mod}\index{event.mod} is set. This bitmask must be checked using the \gls{binaryand}. In our example, this is done in \zeiref{srcTastatur0102} using \texttt{KMOD\_LSHIFT}\randnotiz{KMOD\_LSHIFT KMOD\_RSHIFT}\myindex{pyg}{\texttt{KMOD\_LSHIFT}} and in \zeiref{srcTastatur0103} using \texttt{KMOD\_RSHIFT}\myindex{pyg}{\texttt{KMOD\_RSHIFT}}.
 
 \lstsource{SRC/00 Introduction/06 Keyboard/keyboard/v02/keyboard.py}{61}{87}{python}{Control Direction by Keys (5)), \texttt{Game}.\texttt{watch\_for\_events()}}{srcTastatur01b}
+
+\begin{hintbox}[Querying modifier keys]
+	You cannot check the modifier keys directly. Instead, you have to use a binary AND operation to determine whether the corresponding bit is set in a mask or not.
+\end{hintbox}
 
 In this way, the state of multiple modifier keys can be encoded and queried within a single integer. For example, if you want to check whether the keys \keys{\shift} and \keys{\Alt} are pressed at the same time, you can do so as follows:
 
@@ -78,11 +89,22 @@ In this way, the state of multiple modifier keys can be encoded and queried with
 		...
 \end{lstlisting}
 
-As a complement, it should also be noted that \texttt{KMOD\_NONE}\randnotiz{KMOD\_NONE}\myindex{pyg}{\texttt{KMOD\_NONE}} can be used to check whether no modifier key is pressed at all (see \zeiref{srcTastatur0101}).
+Or
+
+\lstset{firstnumber=69}
+\begin{lstlisting}
+	if (event.mod & (pygame.KMOD_SHIFT event.mod | pygame.KMOD_ALT)):
+	...
+\end{lstlisting}
+
+As a complement, it should also be noted that \texttt{KMOD\_NONE}\myindex{pyg}{\texttt{KMOD\_NONE}} can be used to check whether no modifier key is pressed at all\randnotiz{KMOD\-\_NONE} (see \zeiref{srcTastatur0101}).
  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{In Which Window was the Key Pressed?}\label{secMultipleWindowKeyboard}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/00%20Introduction/06%20Keyboard/keyboard/v03}
+\end{diskbox}
 
 When working with multiple windows, it is certainly important to determine in which window a keyboard input was made. There are many ways to achieve this, but the two approaches presented here are probably the most straightforward.
 
@@ -111,12 +133,16 @@ ID 2: Side Window (Key Pressed: '4')
 \end{lstlisting}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
 \subsubsection{Example: Visualizing the Keyboard}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/00%20Introduction/06%20Keyboard/typewriter}
+\end{diskbox}
 
-Just as a small exercise, let us write a simple program that visualizes a key press (see \abbref[vref]{picKeyboard00}). For this purpose, I want to define the keyboard layout in \texttt{config.py} so that it can be easily adapted to different variants. Here is a simple U.S. keyboard layout.
- 
 \myebild{keyboard00}{0.55}{Typewriter}{picKeyboard00}
 
+Just as a small exercise, let us write a simple program that visualizes a key press (see \abbref[vref]{picKeyboard00}). For this purpose, I~want to define the keyboard layout in \texttt{config.py} so that it can be easily adapted to different variants -- here a simple U.S. keyboard layout.
+ 
 \lstsource{SRC/00 Introduction/06 Keyboard/typewriter/config.py}{0}{99}{python}{Typewriter, \texttt{config.py}}{srcTypewriter00Config}
 
 The constructor of \texttt{KeySprite} receives its label (i.e., its meaning), its value according to \tabref[vref]{tabKey}, and its position. Based on this data, the sprite, the text label, its position, and its size are computed and processed.
@@ -140,7 +166,7 @@ The constructor and the \texttt{run()} method of \texttt{Game} should be self-ex
 
 \lstsource{SRC/00 Introduction/06 Keyboard/typewriter/typewriter.py}{45}{64}{python}{Typewriter, \texttt{Game.init()} and \texttt{Game.run()}}{srckeyboard02b}
 
-The creation of this dictionary takes place in the method \texttt{generate\_sprites()}. First, I define the starting position of the first key. It is placed in the upper-left corner and starts with twice the vertical key spacing -- a purely arbitrary choice, but one that results in a visually pleasing layout.
+The creation of this dictionary takes place in the method \texttt{generate\_sprites()}. First, I~define the starting position of the first key. It is placed in the upper-left corner and starts with twice the vertical key spacing -- a purely arbitrary choice, but one that results in a visually pleasing layout.
 
 Next, the keyboard layout defined in \texttt{config.py} is traversed using a nested loop. In \zeiref{keyboard0203}, the corresponding \texttt{Pygame} key value is determined from the key label. This value is used as the dictionary key in \zeiref{keyboard0204}, allowing it to be easily compared with and processed from the parameters of keyboard events later on.
 
@@ -158,20 +184,19 @@ For all other keys, we construct our own mapping tables. The underlying logic is
 
 The implementations of the methods \texttt{update()} and \texttt{draw()} are straightforward and require no further explanation.
 
-
+\newpage
 \lstsource{SRC/00 Introduction/06 Keyboard/typewriter/typewriter.py}{77}{83}{python}{Typewriter, \texttt{Game.update()} and \texttt{Game.draw()}}{srckeyboard02e}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Not by Event, but by Function}\label{secKeyPressed}
-Another way to find out which key was pressed or released is to use the following functions:
-
+\begin{hintbox}[Another way to find out which key was pressed or released]
 \begin{itemize}
 	\item \texttt{pygame.key.get\_pressed()}\myindex{pyg}{\texttt{key}!\texttt{get\_pressed()}}
 	\item \texttt{pygame.key.get\_just\_pressed()}\myindex{pyg}{\texttt{key}!\texttt{get\_just\_pressed()}}
 	\item \texttt{pygame.key.get\_just\_released()}\myindex{pyg}{\texttt{key}!\texttt{get\_just\_released()}}
 \end{itemize}
-
+\end{hintbox}
 These functions each return a dictionary containing all available keys, where every entry is associated with a Boolean flag:
 
 \begin{itemize}
@@ -180,9 +205,9 @@ These functions each return a dictionary containing all available keys, where ev
 	\item otherwise it is \false.
 \end{itemize}
 
-The infix \gls{infix} \emph{just} therefore refers to the time span within two frames.
+The \gls{infix} \emph{just} therefore refers to the time span within two frames.
 
-So, if you want to check whether the key \keys{K} is currently pressed, you can simply write something like:
+So, if you want to check whether \keys{K} is currently pressed, you can simply write something like:
 
 \lstset{firstnumber=1}
 \begin{lstlisting}
@@ -198,8 +223,14 @@ Often you will see constructions like this:
 	   ...
 \end{lstlisting}
 
-With this approach, actions inside the loop can react immediately to a key being held down -- for example, \emph{walking to the right}. However, you then get ``trapped'' inside the loop. If the game is supposed to react to something else as well, or if other game objects need to be updated, this does not work. In that case, it is better to query the keyboard once per frame:
+With this approach, actions inside the loop can react immediately to a key being held down -- for example, \emph{walking to the right}. 
 
+\begin{warningbox}
+	However, you then get \emph{trapped} inside the loop. If the game is supposed to react to something else as well, or if other game objects need to be updated, this does not work. 
+\end{warningbox}
+
+\newpage
+In that case, it is better to query the keyboard once per frame:
 \lstset{firstnumber=1}
 \begin{lstlisting}
 	keys = pygame.key.get_pressed()
@@ -207,18 +238,19 @@ With this approach, actions inside the loop can react immediately to a key being
 	   ...
 \end{lstlisting}
 
-This can be quite useful, but I have never really grown comfortable with this style of logic. Handling events as described above (see \secref[vref]{KeyboardByEvent}) does not trap me in loops and also feels ``cleaner'' to me, even though I cannot fully justify that feeling.
+This can be quite useful, but I~have never really grown comfortable with this style of logic. Handling events as described above (see \secref[vref]{KeyboardByEvent}) does not trap me in loops and also feels ``cleaner'' to me, even though I~cannot fully justify that feeling.
 
 One important note from the documentation: with this function, you cannot determine the order in which keys were used. This is only possible via event handling.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{What was new?}
-The keyboard sends event messages that can be intercepted and evaluated. First, a distinction is made as to what kind of keyboard action occurred (\texttt{event.type}), and then which key was involved (\texttt{event.key}). Using \texttt{event.mod}, it is possible to query bitwise which modifier keys on the keyboard were used.
+\begin{hintbox}
+	The keyboard sends event messages that can be intercepted and evaluated. First, a distinction is made as to what kind of keyboard action occurred (\texttt{event.type}), and then which key was involved (\texttt{event.key}). Using \texttt{event.mod}, it is possible to query bitwise which modifier keys on the keyboard were used.
+\end{hintbox}
 
-The following Pygame elements were introduced:
 
-
+\begin{pygbox}
 \begin{itemize}
   \item \texttt{pygame.rect.FRect.clamp()}:
   \myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{clamp()}}\\
@@ -260,6 +292,7 @@ The following Pygame elements were introduced:
 	\myindex{pyg}{\texttt{KEYDOWN}}\myindex{pyg}{\texttt{KEYUP}}\\ \url{https://pyga.me/docs/ref/event.html}
 	
 \end{itemize}
+\end{pygbox}
 
 
 \begin{longtable}{lll}
