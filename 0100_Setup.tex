@@ -1,0 +1,251 @@
+% !TeX spellcheck = en_US
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setcounter{section}{-1}
+\section{Installation and Organization}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Installing Python and Pygame}
+
+\subsubsection{Python}\index{Installation!Python}
+\begin{diskbox}
+	\url{https://www.python.org/downloads/}
+\end{diskbox}
+
+I will not provide a detailed step-by-step installation guide for Python here. For that, it is best to consult the up-to-date instructions on the official Python website (see above). So, if you do not yet have Python installed, visit the homepage, download the current installation files, and run the installer.
+
+The exact procedure differs depending on whether you are working on Windows, Linux, macOS, Android, or even with Docker images.
+
+For the current edition of this book, I used Python~{3.12.150} on Windows~{10.0.26200}. Python was installed using the official Python stand alone installer.
+
+\begin{warningbox}[Python options]
+	\begin{itemize}
+		\item During installation, you can choose whether Python should be added to the system search path (environment variable) or not. It is is highly recommended to do so, as it allows you to start a Python program simply with \texttt{python program.py}. Otherwise, you would always have to specify the full path to the Python executable.
+
+		\item You will also be asked whether Python should be installed just for you or for all users. My recommendation is to always install it for yourself only. This allows other users to use different Python versions, and any customization remain local. It also makes it much harder to break things ;-)
+
+		\item If you do not need multiple Python versions, consider removing older installations -- this avoids a lot of unnecessary confusion.	
+	\end{itemize}
+\end{warningbox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\subsubsection{Pygame Community Edition}\index{Installation!Pygame-ce}
+\begin{diskbox}
+	\begin{itemize}
+		\item  \url{https://pyga.me/}
+		\item  \url{https://github.com/adamsralf/pygame_book/blob/main/src/00%20Introduction/00%20Setup/start.py}
+	\end{itemize}
+
+\end{diskbox}
+
+The installation itself is very simple. Before we continue, however, we should make sure that the original Pygame (not Pygame-ce) is not already installed:
+
+\lstset{firstnumber=1}
+\begin{lstlisting}
+§\textcolor{blue}{\texttt{pip uninstall pygame}}§
+WARNING: Skipping pygame as it is not installed.
+\end{lstlisting}
+
+If you receive this response, everything is fine. Otherwise, you will be asked whether all Pygame files should be removed, which you can safely confirm with Yes.
+
+After that, install Pygame-ce using:
+\lstset{firstnumber=1}
+%\begin{minted}{text}
+\begin{lstlisting}
+§\textcolor{blue}{\texttt{pip install pygame-ce}}§
+Collecting pygame-ce
+Using cached pygame_ce-2.5.6-cp312-cp312-win_amd64.whl.metadata (12 kB)
+Using cached pygame_ce-2.5.6-cp312-cp312-win_amd64.whl (10.4 MB)
+Installing collected packages: pygame-ce
+Successfully installed pygame-ce-2.5.6
+\end{lstlisting}
+%\end{minted}
+
+And that’s it -- everything is in place :-)
+
+You might also see the following output:
+\lstset{firstnumber=1}
+%\begin{minted}{text}
+\begin{lstlisting}
+§\textcolor{blue}{\texttt{pip install pygame-ce}}§
+Requirement already satisfied: pygame-ce in .\AppData\Local\Programs\Python\Python312\Lib\site-packages (2.5.6)
+\end{lstlisting}
+%\end{minted}
+
+In this case, everything is fine as well. You should only check the version number. If it is not the desired or the most recent one, simply uninstall Pygame-ce and then install it again.
+
+After Python and Pygame have been installed, you should run a quick installation check. To do so, download a minimal program and try to start it.
+
+\lstsource{src/00 Introduction/00 Setup/start.py}{1}{99}{python}{Pygame installation test}{srcPygameTest01}
+
+If everything is configured correctly, you should see a window like the one in \abbref[vref]{picPygameTest00}.
+
+\myebild{pygame_test.png}{1.0}{Pygame installation test}{picPygameTest00}
+
+\begin{hintbox}[Error reason number~1]
+	This is by far the most common problem I see with my students: The editor in Visual Studio Code, the word \texttt{pygame} is underlined in the line \texttt{import pygame}, accompanied by an error message claiming that the module cannot be found.
+
+	In the vast majority of cases, this has nothing to do with Pygame itself. The real reason is almost always that multiple Python installations exist on the system.
+
+	Pygame is installed into one specific Python installation, usually in the subdirectory
+
+	\verb+.\AppData\Local\Programs\Python\Python+\emph{xyz}\verb+\Lib\site-packages+
+
+	If the development environment happens to use a different Python interpreter, it will simply not find the Pygame files -- even though they are actually installed.
+\end{hintbox}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{A Recommended Project Structure}\index{project structure}
+
+At the beginning, it is tempting to put everything into a single file called \texttt{main.py}.
+This works -- for about five minutes.
+
+As soon as your game grows beyond a few hundred lines, structure becomes important. A good directory layout makes your code easier to understand, easier to extend, and much easier to debug.
+
+
+\begin{wrapfigure}[27]{r}{6.0cm}
+%	\vspace{-1.0em}
+\definecolor{pygblue}{RGB}{220,235,250}
+\definecolor{hintgreen}{RGB}{225,245,230}
+\definecolor{iconred}{RGB}{150,40,40}
+	\begin{tikzpicture}[
+		node distance=3mm and 3mm, % (vertikal) and (horizontal)
+		n/.style={anchor=west},
+		e/.style={draw=black!50, line width=0.4pt},
+		folder/.style={
+			font=\ttfamily\small,
+			draw=black!40,
+			rounded corners=2pt,
+			inner sep=2pt,
+			fill=pygblue,
+			align=left,
+			text width=35mm,
+			draw=none
+		},
+		dots/.style={
+			draw=black!40,
+			rounded corners=2pt,
+			inner ysep=4pt,
+			fill=white,
+			align=left,
+			text width=35mm
+		},
+		file/.style={
+			font=\ttfamily\small,
+			draw=black!30,
+			rounded corners=2pt,
+			inner sep=2pt,
+			fill=hintgreen,
+			align=left,
+			text width=35mm,
+			draw=none
+		}
+		]
+		\pgfmathsetmacro{\row}{7} % mm pro Zeile
+		
+		\node[folder] (root) {\textcolor{iconred}{\faFolder\ }project\_name/};
+		\path (root.west) coordinate (L0);
+		\coordinate (L1) at ($(L0)+(9mm,0)$);
+		\coordinate (L2) at ($(L1)+(9mm,0)$);
+		
+		% top level (Ebene 0)
+		\node[n, file] at ($(L1 |- root)   + (0mm,-\row mm)$) (main)   {\textcolor{iconred}{\faFile\ }main.py};
+		\node[n, file] at ($(L1 |- main)   + (0mm,-\row mm)$) (config) {\textcolor{iconred}{\faFile\ }config.py};
+		\node[n, folder] at ($(L1 |- config) + (0mm,-\row mm)$) (assets) {\textcolor{iconred}{\faFolder\ }assets/};
+		
+		% assets children (Ebene 1)
+		\node[n, folder] at ($(L2 |- assets) + (0mm,-\row mm)$) (images) {\textcolor{iconred}{\faFolder\ }images/};
+		\node[n, folder] at ($(L2 |- images) + (0mm,-\row mm)$) (sounds) {\textcolor{iconred}{\faFolder\ }sounds/};
+		\node[n, folder] at ($(L2 |- sounds) + (0mm,-\row mm)$) (fonts)  {\textcolor{iconred}{\faFolder\ }fonts/};
+		\node[n, dots] at ($(L2 |- fonts)  + (0mm,-\row mm)$) (moreA)  {...};
+		
+		% next top level (Ebene 0), aligned left
+		\node[n, folder] at ($(L1 |- moreA) + (0mm,-\row mm)$) (scenes) {\textcolor{iconred}{\faFolder\ }scenes/};
+		
+		% scenes children (Ebene 1)
+		\node[n, file] at ($(L2 |- scenes) + (0mm,-\row mm)$) (menu)  {\textcolor{iconred}{\faFile\ }menu.py};
+		\node[n, file] at ($(L2 |- menu)   + (0mm,-\row mm)$) (game)  {\textcolor{iconred}{\faFile\ }game.py};
+		\node[n, file] at ($(L2 |- game)   + (0mm,-\row mm)$) (pause) {\textcolor{iconred}{\faFile\ }pause.py};
+		\node[n, dots] at ($(L2 |- pause)  + (0mm,-\row mm)$) (moreS) {...};
+		
+		% next top level
+		\node[n, folder] at ($(L1 |- moreS) + (0mm,-\row mm)$) (sprites) {\textcolor{iconred}{\faFolder\ }sprites/};
+		
+		% sprites children
+		\node[n, file] at ($(L2 |- sprites) + (0mm,-\row mm)$) (player)  {\textcolor{iconred}{\faFile\ }player.py};
+		\node[n, file] at ($(L2 |- player)  + (0mm,-\row mm)$) (enemies) {\textcolor{iconred}{\faFile\ }enemies.py};
+		\node[n, dots] at ($(L2 |- enemies) + (0mm,-\row mm)$) (moreSp)  {...};
+		
+		% next top level
+		\node[n, folder] at ($(L1 |- moreSp) + (0mm,-\row mm)$) (utils) {\textcolor{iconred}{\faFolder\ }utils/};
+		
+		% utils children
+		\node[n, file] at ($(L2 |- utils)   + (0mm,-\row mm)$) (helpers) {\textcolor{iconred}{\faFile\ }helpers.py};
+		\node[n, dots] at ($(L2 |- helpers) + (0mm,-\row mm)$) (moreU)   {...};
+		
+		% final
+		\node[n, dots] at ($(L1 |- moreU) + (0mm,-\row mm)$) (more1) {...};
+		
+		% Connect root to each top-level entry
+		\draw[e] (root.west) ++(-2mm,0) -- ++(2mm,0); % small stub (optional)
+		\foreach \x in {main,config,assets,scenes,sprites,utils,more1} {
+			\draw[e] (root.south west) ++(0,-0.5mm) |- (\x.west);
+		}
+		
+		% Level 2: assets children (indented to the right)
+		
+		\foreach \x in {images,sounds,fonts,moreA} {
+			\draw[e] (assets.south west) ++(0,-0.5mm) |- (\x.west);
+		}
+		
+		% Level 2: scenes children
+		
+		\foreach \x in {menu,game,pause,moreS} {
+			\draw[e] (scenes.south west) ++(0,-0.5mm) |- (\x.west);
+		}
+		
+		% Level 2: sprites children
+		
+		\foreach \x in {player,enemies,moreSp} {
+			\draw[e] (sprites.south west) ++(0,-0.5mm) |- (\x.west);
+		}
+		
+		% Level 2: utils children
+		
+		\foreach \x in {helpers,moreU} {
+			\draw[e] (utils.south west) ++(0,-0.5mm) |- (\x.west);
+		}
+		
+	\end{tikzpicture}
+
+\end{wrapfigure}%
+Here is a simple and proven project structure that we will \emph{loosely} follow throughout this book.
+
+Do not worry if this feels like overkill right now. It will make sense very soon. But what goes where? Let us briefly go through the most important parts.
+
+\begin{itemize}
+	\item[\texttt{main.py}] This is the entry point of your game. It starts Pygame, creates the main window, and runs the main loop. Ideally, \texttt{main.py} does not contain a lot of game logic. Think of it as the conductor, not the orchestra.
+	
+	\item[\texttt{assets/}] description Everything that is not Python code goes here: images, sounds, fonts.	Keeping assets separate from code avoids clutter and makes it easier to move or reuse them later.
+	
+	\item[\texttt{scenes/}] Scenes (or states) represent different phases of the game: main menu, actual gameplay, pause screen, game over screen, etc. Separating scenes into individual files keeps each part manageable and avoids huge, unreadable files.
+	
+	\item[\texttt{sprites/}] This directory contains sprite classes such as the player, enemies, or other game objects.	If an object moves, animates, or collides with something, it usually belongs here.
+	
+	\item[\texttt{utils/}] Helper functions, small tools, or reusable code that does not belong to a specific scene or sprite can live here.
+\end{itemize}
+
+
+Not every project needs this directory -- but many projects end up needing it sooner or later. In this book i.\,e. I skip the level \texttt{assets/}.
+
+\begin{warningbox}[A note on file paths]
+	One important habit: Always use relative paths, and always load assets relative to your project directory. Hard-coded absolute paths like \verb+C:\Users\...+ or \verb+/home/... +	will break as soon as you move the project to another computer. We will look at clean and safe ways to handle paths later in the book (see \srcref[vref]{srcTextbitmaps00a}).
+\end{warningbox}
+
+
+
+If you have reached this point and Pygame starts without errors, the test window opens and your project directory looks reasonably clean, then you are perfectly prepared for the chapters ahead.
+
+From here on, we can finally focus on what this book is really about: writing games instead of fighting your setup.
+

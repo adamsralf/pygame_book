@@ -253,6 +253,10 @@ _build/
 build/
 latexmk/
 
+# minted temporary files
+_minted*
+
+
 # ======================
 # OS / Editor
 # ======================

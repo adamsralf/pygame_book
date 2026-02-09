@@ -33,7 +33,7 @@
 % -------------------------------------------------
 % Code Listings
 % -------------------------------------------------
-%\usepackage[newfloat]{minted}
+\usepackage{minted}
 \usepackage{listings}
 \usepackage{verbatim}
 % -------------------------------------------------
@@ -123,7 +123,7 @@
 
   \title{Introduction to \\ Pygame-ce\\2D Game Programming}
   \author{Ralf Adams}
-  \date{Version 1.0 (\today)}
+  \date{Version 1.1 (\today)}
 %  \maketitle
   
 \begin{titlepage}
@@ -134,11 +134,11 @@
 	{\Large 2D Game Programming\par}
 	\vfill
 	{\large Ralf Adams\par}
-	{\large Version 1.0 (\today)\par}
+	{\large Version 1.1 (\today)\par}
 \end{titlepage}
   
   
-  \tableofcontents
+ \tableofcontents
 
 %%%%%%%% Einige eigene Einstellungen
 \setlength{\parindent}{0.0em}
@@ -146,10 +146,39 @@
 \setlength{\itemsep}{-0.3ex plus0.2ex}
 
 %%%%%%%%%%%%%%%%%%%%%%% START TEXT
+\lstset%
+{%
+	numbers={left},%
+	numberstyle=\color[gray]{0.5},%
+	escapechar={§},%
+	basicstyle={\ttfamily\scriptsize},%
+	breaklines=true,%
+	breakatwhitespace=true,%
+	frame={tb},%
+	framextopmargin={1mm},%
+	xleftmargin={0mm},%
+	framexleftmargin={0mm},%
+	belowcaptionskip={5pt},%
+	abovecaptionskip={4mm},%
+	keywordstyle={\color{blue}},%
+	commentstyle={\color{ForestGreen}},%
+	stringstyle={\color{BrickRed}},%
+	showspaces=false,%
+	showstringspaces=false,%
+	literate=%
+	{Ö}{{\"O}}1%
+	{Ä}{{\"A}}1%
+	{Ü}{{\"U}}1%
+	{ß}{{\ss}}1%
+	{ü}{{\"u}}1%
+	{ä}{{\"a}}1%
+	{ö}{{\"o}}1%
+}%
 
 \chapter{Goals}\label{secGoals}
 	\input{0001_Goals.tex}
 \chapter{Basics}\label{secBasics}
+	\input{0100_Setup}
 	\input{0101_TheBeginning}
 	\input{0102_Primitives}
 	\input{0103_BitmapLoadingBlitting}
