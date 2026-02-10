@@ -8,6 +8,8 @@
 		\item  \url{https://github.com/adamsralf/pygame_book/blob/main/src/00%20Introduction/01%20TheBeginning/v02}
 	\end{itemize}
 \end{diskbox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{The Very First Steps}
 \lstsource{src/00 Introduction/01 TheBeginning/v01/start.py}{1}{24}{python}{My first \emph{Game}, Version 1.0}{srcStart00}
 
@@ -79,7 +81,9 @@ In \zeiref{srcStart0101}, a \texttt{pygame.time.Clock}\randnotiz{Clock}\myindex{
 \myebild{TaskManager01.png}{0.7}{Resource usage with timing control}{picTaskManager01}
 
 \newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{More Input}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Multiple Windows}\label{secMultipleWindows}
 \begin{diskbox}
 	\url{https://github.com/adamsralf/pygame_book/blob/main/src/00%20Introduction/01%20TheBeginning/v03/start.py}
@@ -100,6 +104,7 @@ You can also create multiple windows for a game (see \url{https://pyga.me/docs/r
 \end{figure}
 
 \newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Information About the Graphics Environment}
 \begin{diskbox}
 	\url{https://github.com/adamsralf/pygame_book/blob/main/src/00%20Introduction/01%20TheBeginning/v04/start.py}
@@ -188,7 +193,27 @@ Please refer to \tabref[vref]{tabDisplayInfo} for the meaning of the values (sou
 
 \myebild{ginfo.png}{1.0}{Infos about the graphical environment}{picInfo00}
 
-\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Using \texttt{pygame.display} instead of \texttt{pygame.Window}}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/blob/main/src/00%20Introduction/01%20TheBeginning/v04/start.py}
+\end{diskbox}
+
+Based on feedback from the community, it became clear that there is a need to also show how to create a window using \texttt{pygame.display}. This seems to cause issues especially on Linux systems running \Gls{wayland}.
+
+Creating the window happens like this (or something very close to it) in \zeiref{srcStart0501}. Using \texttt{pygame.dis\-play.set\_mode()}\myindex{pyg}{\texttt{display}!\texttt{set\_mode()}|underline}\randnotiz{set\_mode()}, you pass the window size in pixels as a pair of numbers -- here $\SI{400}{px}\times \SI{600}{px}$. The function returns a \texttt{Surface} object, which we can then use to draw everything we need (or want) onto the screen.
+
+\begin{warningbox}[Number pair!]
+	A very common beginner mistake is passing the size as two separate numbers instead of a number pair. So don’t forget the parentheses -- even if they look a bit odd at first!
+\end{warningbox}
+
+
+\lstsource{src/00 Introduction/01 TheBeginning/v05/start.py}{1}{99}{python}{Window by \texttt{pygame.display}}{srcStart05}
+
+The function \texttt{set\_mode()} can take a couple of additional parameters. For example, you can decide whether the window should be resizable (see \tabref[vref]{tabDispMod}) or specify which color depth to use.
+
+The window title is set in \zeiref{srcStart0502} using \texttt{pygame.display.set\_caption()}\myindex{pyg}{\texttt{display}!\texttt{set\_caption()}}\randnotiz{set\_caption()}. Finally, \texttt{pygame\-.dis\-play.flip()}\myindex{pyg}{\texttt{display}!\texttt{flip()}}\randnotiz{flip()} pushes the complete contents of \texttt{screen} to the display in one go.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{What was new?}
 
@@ -213,10 +238,22 @@ Please refer to \tabref[vref]{tabDisplayInfo} for the meaning of the values (sou
 \begin{itemize}
 	\item \texttt{import pygame}:\\ \url{https://pyga.me/docs/tutorials/en/import-init.html}
 	
+	\item \texttt{pygame.display.flip()}:
+	\myindex{pyg}{\texttt{display}!\texttt{flip()}}\\
+	\url{https://pyga.me/docs/ref/display.html#pygame.display.flip}
+	
+	\item \texttt{pygame.display.set\_caption()}:
+	\myindex{pyg}{\texttt{display}!\texttt{set\_caption()}}\\
+	\url{https://pyga.me/docs/ref/display.html#pygame.display.set_caption}
+
+	\item \texttt{pygame.display.set\_mode()}:
+	\myindex{pyg}{\texttt{display}!\texttt{set\_mode()}}\\
+	\url{https://pyga.me/docs/ref/display.html#pygame.display.set_mode}
+
 	\item \texttt{pygame.init()}:
 	\myindex{pyg}{\texttt{init()}}\\
 	\url{https://pyga.me/docs/ref/pygame.html#pygame.init}
-	
+
 	\item \texttt{pygame.quit()}:
 	\myindex{pyg}{\texttt{quit()}}\\
 	\url{https://pyga.me/docs/ref/pygame.html#pygame.quit}
@@ -278,6 +315,39 @@ Please refer to \tabref[vref]{tabDisplayInfo} for the meaning of the values (sou
 \end{itemize}	
 \end{pygbox}
 
+
+\begin{longtable}{ll}
+	\caption{Predefined Display Modes}\label{tabDispMod}\index{Display!Mode} \\
+	% Definition des Tabellenkopfes auf der ersten Seite
+	\toprule
+	Constant  & Description\\
+	\midrule
+	\endfirsthead % Erster Kopf zu Ende
+	
+	% Definition des Tabellenkopfes auf den folgenden Seiten
+	\caption{Predefined Display Modes (continued)}\\
+	\toprule
+	Constant  & Description\\
+	\midrule
+	\endhead % Zweiter Kopf ist zu Ende
+	
+	\midrule
+	\multicolumn{2}{r}{\emph{continued on next page}} \\
+	\endfoot
+	
+	\bottomrule
+	\endlastfoot
+	% Ab hier kommt der Inhalt der Tabelle
+	\myindex{pyg}{\texttt{FULLSCREEN}}  \texttt{FULLSCREEN}   &  create a fullscreen display\\ 
+	\myindex{pyg}{\texttt{DOUBLEBUF}} 	\texttt{DOUBLEBUF} &  only applicable with OPENGL\\ 
+	\myindex{pyg}{\texttt{HWSURFACE}} 	\texttt{HWSURFACE} &   (obsolete in pygame 2) hardware accelerated, only in FULLSCREEN\\ 
+	\myindex{pyg}{\texttt{OPENGL}}  	\texttt{OPENGL}  &  create an OpenGL-renderable display\\ 
+	\myindex{pyg}{\texttt{RESIZABLE}}  	\texttt{RESIZABLE}  &  display window should be sizeable\\ 
+	\myindex{pyg}{\texttt{NOFRAME}}  	\texttt{NOFRAME}  &  display window will have no border or controls\\ 
+	\myindex{pyg}{\texttt{SCALED}}   	\texttt{SCALED}   &  resolution depends on desktop size and scale graphics\\ 
+	\myindex{pyg}{\texttt{SHOWN}}   	\texttt{SHOWN}   &  window is opened in visible mode (default)\\ 
+	\myindex{pyg}{\texttt{HIDDEN}}   	\texttt{HIDDEN}   &   window is opened in hidden mode 
+\end{longtable} 
 %\begin{pygbox}[The following Pygame elements were introduced]
 %\tcbsubtitle{import pygame}
 %\url{https://pyga.me/docs/tutorials/en/import-init.html}

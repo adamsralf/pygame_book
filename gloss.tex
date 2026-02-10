@@ -654,7 +654,18 @@
 	description={A trigonometric function that produces a smooth, periodic wave. For an angle \(x\) (usually in radians), it is defined as \(y=\sin(x)\). The output is always between \(-1\) and \(1\), and the function repeats every \(2\pi\). In game programming, \(\sin\) is often used for natural-looking oscillations such as floating, bobbing, and smooth back-and-forth motion. \textbf{Pygame tip:} A common pattern is \texttt{y = base\_y + amplitude * math.sin(t * speed)} to animate smooth vertical bobbing}
 }
 
-
+\newglossaryentry{tradeoff}
+{
+	name={Trade-off},
+	text={trade-off},
+	description={A situation in which an advantage is gained at the expense of a disadvantage. In algorithmic and software-related contexts, a trade-off requires evaluating -- based on the available data—whether the overall benefits outweigh the associated costs. For example, using indexes can dramatically speed up access to database contents (benefit). To achieve this speed-up, additional files must be created and maintained, which makes inserting, updating, and deleting data slower (cost). In software development, a trade-off often describes the deliberate balancing between competing factors such as accuracy and computational effort, memory usage and execution speed, or flexibility and complexity. Trade-offs are unavoidable and require decisions that depend on the specific situation}
+}
+\newglossaryentry{wayland}
+{
+	name={Wayland},
+	text={wayland},
+	description={Wayland is a modern display server protocol for Linux and other Unix-like systems. It defines how graphical applications (clients) communicate with the display server (the compositor) to draw windows, handle input devices like keyboard and mouse, and manage screen updates. Unlike the older X11 system, Wayland is designed to be simpler, more secure, and more efficient. Many tasks that were previously handled by a separate window manager are integrated directly into the compositor, reducing complexity and latency.	In practice, Wayland often results in smoother graphics, better support for modern hardware, and improved security, since applications cannot freely access or manipulate each other’s windows. Popular desktop environments such as GNOME and KDE increasingly use Wayland as their default display system}
+}
 \label{GRENZE}
 % ------------------------------------------------------------------------------------
 
@@ -728,11 +739,8 @@
 
 
 
-\newglossaryentry{tradeoff}
-{
-    name={Trade-off},
-    description={Jeder Vorteil wird durch einen Nachteil erkauft. Algorithmisch muss dann anhand der Datenlage abgewägt werden, ob in der Gesamtbetrachtung der Nutzen die Kosten überwiegt. Beispiel: Durch die Verwendung von Indizes werden Zugriffe auf Datenbankinhalte dramatisch beschleunigt (Nutzen). Um diese Beschleunigung zu erreichen, müssen Dateien angelegt werden, und das Anlegen, Ändern und Löschen von Daten wird langsamer, da diese Dateien dann mitgepflegt werden müssen (Kosten). In der Softwareentwicklung beschreibt ein Trade-off häufig die bewusste Abwägung zwischen konkurrierenden Faktoren wie Genauigkeit und Rechenaufwand, Speicherverbrauch und Geschwindigkeit oder Flexibilität und Komplexität. Trade-offs sind unvermeidlich und erfordern eine situationsabhängige Entscheidung} 
-}
+
+
 
 
 
