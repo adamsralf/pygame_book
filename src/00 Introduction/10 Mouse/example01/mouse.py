@@ -35,7 +35,7 @@ class Ball(pygame.sprite.Sprite):
         if "center" in kwargs.keys():               # §\label{srcMaus0012}§
             self.set_center(kwargs["center"])
 
-    def draw(self, screen: pygame.surface.Surface) -> None:
+    def draw(self, screen: pygame.Surface) -> None:
         screen.blit(self.image, self.rect)
 
     def rotate(self, angle: float) -> None:
@@ -53,8 +53,8 @@ class Ball(pygame.sprite.Sprite):
 
 
 class Game:
-    WINDOW = pygame.rect.Rect((0, 0), (600, 600))
-    INNER_RECT = pygame.rect.Rect(100, 100, WINDOW.width - 200, WINDOW.height - 200)
+    WINDOW = pygame.Rect((0, 0), (600, 600))
+    INNER_RECT = pygame.Rect(100, 100, WINDOW.width - 200, WINDOW.height - 200)
     FPS = 60
     DELTATIME = 1.0 / FPS
 

@@ -26,7 +26,7 @@ In most cases, however, I~do not need to define my own colors. Pygame provides a
 	\end{center}%
 \end{wrapfigure}%
 Let us go through the individual shapes one by one and start with the
-rectangle. There are several ways to define a rectangle in Pygame. Since we will need it very often later on, I~would like to introduce the class \texttt{pygame.rect.Rect}\myindex{pyg}{\texttt{rect}!\texttt{Rect}}\randnotiz{Rect} here. It is defined by four parameters: the upper-left corner, its width, and its height. In \zeiref{srcPrimitives02}, a rectangle is therefore defined at the position $(10,10)$ with a width of \SI{20}{px} and a height of \SI{30}{px}.
+rectangle. There are several ways to define a rectangle in Pygame. Since we will need it very often later on, I~would like to introduce the class \texttt{pygame.Rect}\myindex{pyg}{\texttt{Rect}}\randnotiz{Rect} here. It is defined by four parameters: the upper-left corner, its width, and its height. In \zeiref{srcPrimitives02}, a rectangle is therefore defined at the position $(10,10)$ with a width of \SI{20}{px} and a height of \SI{30}{px}.
 
 
 In \zeiref{srcPrimitives03}, \texttt{pygame.draw.rect()}\myindex{pyg}{\texttt{draw}!\texttt{rect()}}\randnotiz{rect()}\index{Rectangle|underline}\index{Graphic primitives!Rectangle|underline} draws a filled rectangle. The \Gls{semantik} of the parameters should be self-explanatory.
@@ -94,7 +94,7 @@ The radius is also reduced to \SI{2}{px}. The color is likewise varied using ran
 Feel free to experiment with the color channels and the random values yourself. The result shown in \abbref[vref]{picCircles02} already looks much better.
 
 
-\lstsource{src/00 Introduction/02 Primitives/circles/v02/circles.py}{7}{12}{python}{Particle swarm, Version 2.0}{srcCircles02}
+\lstsource{src/00 Introduction/02 Primitives/circles/v02/circles.py}{7}{11}{python}{Particle swarm, Version 2.0}{srcCircles02}
 
 Now we want to add a bit of dynamics to the game. The particles should first rise upward and then fall down again. To achieve this, I~added the vertical velocity \texttt{speedy} to the \texttt{Circle} class and assigned it a random initial value
 (\zeiref{srcCircles0301}). The division by~$10.1$ ensures that no smooth, rounded values are created. Here as well, feel free to experiment with the values to see the
@@ -293,8 +293,8 @@ In \texttt{main()}, only the relative progress of the sun is now taken and passe
 	\myindex{pyg}{\texttt{mouse}!\texttt{get\_pressed()}}\\
 	\url{https://pyga.me/docs/ref/mouse.html#pygame.mouse.get_pressed}
 	
-	\item \texttt{pygame.rect.Rect}:
-	\myindex{pyg}{\texttt{rect}!\texttt{Rect}}\\
+	\item \texttt{pygame.Rect}:
+	\myindex{pyg}{\texttt{Rect}}\\
 	\url{https://pyga.me/docs/ref/rect.html}
 	
 	\item \texttt{pygame.Surface.set\_at()}:

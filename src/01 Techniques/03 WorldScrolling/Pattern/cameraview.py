@@ -38,9 +38,9 @@ class CamScroll(ABC):
     def __init__(
         self,
         camera: Camera,
-        player: pygame.rect.FRect,
-        rect_world: pygame.rect.FRect,
-        rect_view: pygame.rect.FRect,
+        player: pygame.FRect,
+        rect_world: pygame.FRect,
+        rect_view: pygame.FRect,
     ) -> None:
         super().__init__()
         self.camera = camera
@@ -67,9 +67,9 @@ class CenteredCamera(CamScroll):
     def __init__(
         self,
         camera: Camera,
-        player: pygame.rect.FRect,
-        rect_world: pygame.rect.FRect,
-        rect_view: pygame.rect.FRect,
+        player: pygame.FRect,
+        rect_world: pygame.FRect,
+        rect_view: pygame.FRect,
     ) -> None:
         super().__init__(camera, player, rect_world, rect_view)
 
@@ -100,10 +100,10 @@ class AutoCamera(CamScroll):
     def __init__(
         self,
         camera: Camera,
-        player: pygame.rect.FRect,
+        player: pygame.FRect,
         direction: pygame.Vector2,
-        rect_world: pygame.rect.FRect,
-        rect_view: pygame.rect.FRect,
+        rect_world: pygame.FRect,
+        rect_view: pygame.FRect,
     ) -> None:
         super().__init__(camera, player, rect_world, rect_view)
         self.direction = direction
@@ -138,14 +138,14 @@ class PagewiseCamera(CamScroll):
     def __init__(
         self,
         camera: Camera,
-        player: pygame.rect.FRect,
+        player: pygame.FRect,
         inner: pygame.Vector2,
-        rect_world: pygame.rect.FRect,
-        rect_view: pygame.rect.FRect,
+        rect_world: pygame.FRect,
+        rect_view: pygame.FRect,
     ) -> None:
         super().__init__(camera, player, rect_world, rect_view)
         self.inner = inner
-        self.inner_rect = pygame.rect.FRect(self.rect_view.centerx - self.inner.x,
+        self.inner_rect = pygame.FRect(self.rect_view.centerx - self.inner.x,
                                             self.rect_view.centery - self.inner.y,
                                             2 * self.inner.x,
                                             2 * self.inner.y)
@@ -183,7 +183,7 @@ class Camera:
         self.offset = pygame.Vector2(0, 0)
 
         # Float-precision rectangle representing the viewport.
-        self.rect = pygame.rect.FRect((0, 0), size_view)
+        self.rect = pygame.FRect((0, 0), size_view)
 
         # The active scrolling strategy. Must be set via set_scroller().
         self.scroller: Optional[CamScroll] = None
@@ -211,7 +211,7 @@ class Camera:
         self.scroller.scroll()
         self.rect.topleft = self.offset
 
-    def world2camera(self, rect: pygame.rect.FRect) -> pygame.rect.FRect:
+    def world2camera(self, rect: pygame.FRect) -> pygame.FRect:
         """Convert a world-space rectangle into camera/view coordinates.
 
         Args:
@@ -220,9 +220,9 @@ class Camera:
         Returns:
             A new FRect positioned relative to the current camera offset.
         """
-        return pygame.rect.FRect(rect.topleft - self.offset, rect.size)
+        return pygame.FRect(rect.topleft - self.offset, rect.size)
 
-    def camera2world(self, rect: pygame.rect.FRect) -> pygame.rect.FRect:
+    def camera2world(self, rect: pygame.FRect) -> pygame.FRect:
         """Convert a camera/view-space rectangle into world coordinates.
 
         Args:
@@ -231,4 +231,4 @@ class Camera:
         Returns:
             A new FRect positioned in world coordinates.
         """
-        return pygame.rect.FRect(rect.topleft + self.offset, rect.size)
+        return pygame.FRect(rect.topleft + self.offset, rect.size)

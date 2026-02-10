@@ -33,7 +33,7 @@ In the first step, I~will show how a single tile can be used to fill the entire 
 
 Also \texttt{Game} is very easy to understand.
 
-\lstsource{SRC/01 Techniques/02 Tilemap/forest01.py}{28}{64}{python}{Forest -- \texttt{Game}}{srcForest02}
+\lstsource{SRC/01 Techniques/02 Tilemap/forest01.py}{78}{63}{python}{Forest -- \texttt{Game}}{srcForest02}
 
 So far, everything happens inside the \texttt{WindowGame} class, which will of course change later on. In the constructor, the window is created with all its parameters and the sprite library is loaded. In \texttt{draw()}, a single tile is now cut out of the sprite library and stored in the variable \texttt{image}. The crucial part here is the parameters passed to \texttt{subsurface()}\myindex{pyg}{\texttt{surface}!\texttt{Surface}!\texttt{subsurface()}}\randnotiz{subsurface()}. Starting at position $(0,0)$ in the sprite library -- i.\,e.\ the top-left corner -- a rectangle of size $\SI{32}{px} \times \SI{32}{px}$ is cut out. This corresponds to the yellow-bordered rectangle~0 in \abbref[vref]{picTileMap02}.
 
@@ -42,7 +42,7 @@ Using the two \texttt{for} loops, this image is then distributed across the enti
 The result then looks as shown in \abbref[vref]{picTileMap04}.
 
 \newpage
-\lstsource{SRC/01 Techniques/02 Tilemap/forest01.py}{8}{25}{python}{Forest -- \texttt{WindowGame}}{srcForest03}
+\lstsource{SRC/01 Techniques/02 Tilemap/forest01.py}{7}{24}{python}{Forest -- \texttt{WindowGame}}{srcForest03}
 
 However, I~would like to be able to select and display any arbitrary tile. For example, instead of a monotonous meadow, we might want it to be composed of the tiles with the numbers $0, 1, 2, 3, 4, 16, 17, 18, 19, 20, 32, 33, 34, 35, 36$. This practically calls for a separate class.
 
@@ -93,7 +93,7 @@ Nothing could be simpler, you might think. And the reader would be right ;-)
 
 First, let us replace the random selection with a meaningful assignment using a two-dimensional array. The tile numbers are no longer random, but already correspond to those that we want to see later.
 
-\lstsource{SRC/01 Techniques/02 Tilemap/forest03.py}{19}{40}{python}{Forest -- Tile numbers in a 2D array}{srcForest09}
+\lstsource{SRC/01 Techniques/02 Tilemap/forest03.py}{18}{39}{python}{Forest -- Tile numbers in a 2D array}{srcForest09}
 
 The output is now simplified, as can be seen starting at \zeiref{srcforest0301}.
 

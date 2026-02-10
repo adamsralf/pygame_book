@@ -42,10 +42,10 @@ class Settings:
     TILESIZE_BIRD = pygame.Vector2(4, 4)
     NOF_COLS = 90
     NOF_ROWS = 70
-    WORLD : pygame.rect.FRect = pygame.rect.FRect(
+    WORLD : pygame.FRect = pygame.FRect(
         0, 0, NOF_COLS * TILESIZE_WORLD.y, NOF_ROWS * TILESIZE_WORLD.y
     )
-    WINDOW : pygame.rect.FRect = pygame.rect.FRect(
+    WINDOW : pygame.FRect = pygame.FRect(
         0, 0, NOF_COLS * TILESIZE_WORLD.x // 4, NOF_ROWS * TILESIZE_WORLD.y // 4
     )
     TILE_WITH_BORDER = 0
@@ -84,7 +84,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, position: tuple[float, float]) -> None:
         """Create the player centered at the given world position."""
         super().__init__()
-        self.image : pygame.surface.Surface = pygame.surface.Surface(Settings.TILESIZE_WORLD)
+        self.image : pygame.Surface = pygame.Surface(Settings.TILESIZE_WORLD)
         self.image.set_colorkey((0, 0, 0))
 
         # Draw a simple red disc.
@@ -92,7 +92,7 @@ class Player(pygame.sprite.Sprite):
         pygame.draw.circle(self.image, (255, 0, 0), (self.radius, self.radius), self.radius)
 
         # Player world-rect (integer precision is fine for drawing).
-        self.rect : pygame.rect.FRect = self.image.get_frect(center=position)
+        self.rect : pygame.FRect = self.image.get_frect(center=position)
 
         # Movement configuration.
         self.speed = 400.0  # pixels per second
@@ -217,7 +217,7 @@ class Game:
         """Create the main/plain window and build the tiled world."""
         self.window_main = pygame.Window(size=Settings.WINDOW.size, title="Plain Camera View")
         self.window_main.position = (0, 30)
-        self.screen_main : pygame.surface.Surface = self.window_main.get_surface()
+        self.screen_main : pygame.Surface = self.window_main.get_surface()
 
         # Fill the world sprite group with tiles laid out on a grid.
         for row in range(Settings.NOF_ROWS):
@@ -244,7 +244,7 @@ class Game:
         )
         self.window_auto = pygame.Window(size=Settings.WINDOW.size, title="Auto Camera View")
         self.window_auto.position = (2 * (Settings.WINDOW.width + 10), 30)
-        self.screen_auto : pygame.surface.Surface = self.window_auto.get_surface()
+        self.screen_auto : pygame.Surface = self.window_auto.get_surface()
 
     def create_pagewise(self) -> None:
         """Create the Pagewise camera/window pair with the inner safe area."""
@@ -262,7 +262,7 @@ class Game:
             size=Settings.WINDOW.size, title="Pagewise Camera View"
         )
         self.window_pagewise.position = (1 * (Settings.WINDOW.width + 10), Settings.WINDOW.height + 60)
-        self.screen_pagewise : pygame.surface.Surface = self.window_pagewise.get_surface()
+        self.screen_pagewise : pygame.Surface = self.window_pagewise.get_surface()
 
     def create_window_birdeye(self) -> None:
         """Create the bird's-eye window and compute a world→screen zoom factor."""
@@ -273,7 +273,7 @@ class Game:
             size=Settings.WINDOW.size, title="Birdeye Camera View"
         )
         self.window_birdeye.position = (0, Settings.WINDOW.height + 60)
-        self.screen_birdeye : pygame.surface.Surface = self.window_birdeye.get_surface()
+        self.screen_birdeye : pygame.Surface = self.window_birdeye.get_surface()
 
     def draw_window_plain(self) -> None:
         """Render the full world into the main window, then the player."""
@@ -347,7 +347,7 @@ class Game:
         pygame.draw.rect(self.screen_pagewise, "green", self.screen_pagewise.get_rect(), 5)
         self.window_pagewise.flip()
 
-    def zoom_rect(self, rect: Union[pygame.rect.Rect, pygame.rect.FRect]) -> pygame.rect.FRect:
+    def zoom_rect(self, rect: Union[pygame.Rect, pygame.FRect]) -> pygame.FRect:
         """Scale a world-space rect into bird's-eye view coordinates.
 
         Args:
@@ -360,7 +360,7 @@ class Game:
         y = rect.y * self.zoom.y
         w = rect.w * self.zoom.x
         h = rect.h * self.zoom.y
-        return pygame.rect.FRect(x, y, w, h)
+        return pygame.FRect(x, y, w, h)
     
     def get_visible_sprites(self, camera: Camera) -> list[pygame.sprite.Sprite]:
         """Return a list of all world sprites currently visible in a camera view.

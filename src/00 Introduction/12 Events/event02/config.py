@@ -7,7 +7,7 @@ class MyEvents:
     NEWPARTICLES = pygame.USEREVENT + 2
 
 
-WINDOW = pygame.rect.Rect((0, 0), (600, 150))
+WINDOW = pygame.Rect((0, 0), (600, 150))
 FPS = 60
 DELTATIME = 1.0 / FPS
 STARTNOFPARTICLES = 500

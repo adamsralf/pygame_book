@@ -9,10 +9,10 @@ import pygame
 class BubbleContainer:
     def __init__(self, filename: str) -> None:
         imagename = cfg.get_image(filename)
-        image: pygame.surface.Surface = pygame.image.load(imagename).convert_alpha()
+        image: pygame.Surface = pygame.image.load(imagename).convert_alpha()
         self.images = {i: pygame.transform.scale(image, (i * 2, i * 2)) for i in range(cfg.RADIUS["min"], cfg.RADIUS["max"] + 1)}
 
-    def get(self, radius: int) -> pygame.surface.Surface:
+    def get(self, radius: int) -> pygame.Surface:
         radius = max(cfg.RADIUS["min"], radius)
         radius = min(cfg.RADIUS["max"], radius)
         return self.images[radius]
@@ -37,7 +37,7 @@ class Background(pygame.sprite.Sprite):
     def __init__(self) -> None:
         super().__init__()
         imagename = cfg.get_image("aquarium.png")
-        self.image: pygame.surface.Surface = pygame.image.load(imagename).convert()
+        self.image: pygame.Surface = pygame.image.load(imagename).convert()
         self.image = pygame.transform.scale(self.image, cfg.WINDOW.size)
         self.rect = self.image.get_rect()
 
@@ -46,7 +46,7 @@ class Pause(pygame.sprite.Sprite):
     def __init__(self) -> None:
         super().__init__()
         imagename = cfg.get_image("pause.png")
-        self.image: pygame.surface.Surface = pygame.image.load(imagename).convert_alpha()
+        self.image: pygame.Surface = pygame.image.load(imagename).convert_alpha()
         self.rect = self.image.get_rect()
 
 
@@ -56,7 +56,7 @@ class Bubble(pygame.sprite.Sprite):
         self.mode = "blue"
         self.radius = cfg.RADIUS["min"]
         self.image = Game.BUBBLE_CONTAINER[self.mode].get(self.radius)
-        self.rect: pygame.rect.Rect = self.image.get_rect()
+        self.rect: pygame.Rect = self.image.get_rect()
         self.fradius = float(self.radius)
         self.speed = speed
 

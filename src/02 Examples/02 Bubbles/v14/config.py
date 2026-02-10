@@ -3,7 +3,7 @@ from typing import Dict
 
 import pygame
 
-WINDOW = pygame.rect.Rect(0, 0, 1220, 1002)
+WINDOW = pygame.Rect(0, 0, 1220, 1002)
 FPS = 60
 DELTATIME = 1.0 / FPS
 PATH: Dict[str, str] = {}
@@ -13,10 +13,10 @@ PATH["sound"] = os.path.join(PATH["file"], "sounds")
 CAPTION = 'Bubbles'
 RADIUS = {"min": 15, "max": 240}
 DISTANCE = 50
-PLAYGROUND = pygame.rect.Rect(90, 90, 1055, 615)
+PLAYGROUND = pygame.Rect(90, 90, 1055, 615)
 MAX_BUBBLES = PLAYGROUND.height * PLAYGROUND.width // 10000
 POINTS = 0                                   
-BOX = pygame.rect.Rect(90, 770, 1055, 130)   
+BOX = pygame.Rect(90, 770, 1055, 130)   
 
 def get_file(filename: str) -> str:
     return os.path.join(PATH["file"], filename)

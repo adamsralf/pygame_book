@@ -2,7 +2,7 @@ from os import path
 
 import pygame
 
-WINDOW = pygame.rect.Rect((0, 0), (700, 200))
+WINDOW = pygame.Rect((0, 0), (700, 200))
 FPS = 60
 DELTATIME = 1.0 / FPS
 TITLE = "Fireball Using Counter-based Movement"

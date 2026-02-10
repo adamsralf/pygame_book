@@ -64,25 +64,25 @@ The \texttt{Button} class should also be understandable for the most part. The f
 
 Afterwards, in \zeiref{srcEvent0104}, the event is dispatched using \texttt{pygame.event.post()}\randnotiz{post()}\myindex{pyg}{\texttt{event}!\texttt{post()}|underline}.
 
-\lstsource{SRC/00 Introduction/12 Events/event01/events.py}{17}{32}{python}{Events (2) -- Class \texttt{Button}}{srcEvent01b}
+\lstsource{SRC/00 Introduction/12 Events/event01/events.py}{12}{27}{python}{Events (2) -- Class \texttt{Button}}{srcEvent01b}
 
 The \texttt{Particle} class consists of a lot of source code with little that is new. Particles of random size, color, direction, and speed move across the screen and may bounce off the edges. They do not contain any event-specific functionality. The attribute \texttt{halted} is used to stop the particle or let it move again after the buttons have been pressed.
 
-\lstsource{SRC/00 Introduction/12 Events/event01/events.py}{35}{66}{python}{Events (2) -- Class \texttt{Particle}}{srcEvent01c}
+\lstsource{SRC/00 Introduction/12 Events/event01/events.py}{30}{61}{python}{Events (2) -- Class \texttt{Particle}}{srcEvent01c}
 
 With \texttt{Box}, a kind of digit box is implemented. The constructor receives a position and an index as parameters. The meaning of the parameter \texttt{position} should be clear. Using \texttt{index}, it can later be determined which box caused an overflow to the next higher power of ten.
 
 In \texttt{update()}, the internal counter \texttt{count} is increased by~1 each time. If the value~10 is reached (\zeiref{srcEvent0105}), an event is generated and the index is passed as event data. This allows the main program to determine which box now needs to receive an \texttt{update()} call.
 
-\lstsource{SRC/00 Introduction/12 Events/event01/events.py}{69}{94}{python}{Events (2) -- Klasse \texttt{Box}}{srcEvent01d}
+\lstsource{SRC/00 Introduction/12 Events/event01/events.py}{64}{89}{python}{Events (2) -- Klasse \texttt{Box}}{srcEvent01d}
 
 And now the main program: In the constructor, the buttons, boxes, and particles are created and assigned to sprite groups.
 
-\lstsource{SRC/00 Introduction/12 Events/event01/events.py}{97}{113}{python}{Events (2) --  Constructor of \texttt{Game}}{srcEvent01e}
+\lstsource{SRC/00 Introduction/12 Events/event01/events.py}{92}{108}{python}{Events (2) --  Constructor of \texttt{Game}}{srcEvent01e}
 
 The \texttt{run()} method is almost boring.
 
-\lstsource{SRC/00 Introduction/12 Events/event01/events.py}{115}{125}{python}{Events (2) --  \texttt{Game.run()}}{srcEvent01f}
+\lstsource{SRC/00 Introduction/12 Events/event01/events.py}{110}{120}{python}{Events (2) --  \texttt{Game.run()}}{srcEvent01f}
 
 \begin{hintbox}
 	User-defined events are handled in exactly the same way as predefined ones. 
@@ -90,11 +90,11 @@ The \texttt{run()} method is almost boring.
 
 First, you check the \texttt{type}, and then you process the event data. In \zeiref{srcEvent0106}, it is checked whether one of the two buttons was pressed. Afterwards, the message is forwarded to the particles via the event field \texttt{text}, telling them whether they should stop or keep moving. The same idea is used starting at \zeiref{srcEvent0107}. First, it is checked whether a box has overflowed, and then the next box is informed -- using the event field \texttt{index} -- that it has to increase by~1.
 
-\lstsource{SRC/00 Introduction/12 Events/event01/events.py}{127}{141}{python}{Events (2) --  \texttt{Game.watch\_for\_events()}}{srcEvent01g}
+\lstsource{SRC/00 Introduction/12 Events/event01/events.py}{122}{136}{python}{Events (2) --  \texttt{Game.watch\_for\_events()}}{srcEvent01g}
 
 The rest is shown here for completeness.
 
-\lstsource{SRC/00 Introduction/12 Events/event01/events.py}{143}{169}{python}{Events (2) --  The Rest of \texttt{Game}}{srcEvent01h}
+\lstsource{SRC/00 Introduction/12 Events/event01/events.py}{138}{164}{python}{Events (2) --  The Rest of \texttt{Game}}{srcEvent01h}
 
 Finally, I would like to briefly explain the whole mechanism of the counter again using \abbref[vref]{picCounter01}, in order to make it clearer how the event \texttt{MyEvent.OVER\-FLOW} works in this context.
 
@@ -175,19 +175,19 @@ This is actually quite simple. The previous example is extended so that new part
 
 In the constructor of \texttt{Game}, a periodic timer is set in \zeiref{srcEvent0201} using \texttt{pygame.time.set\-\_timer()}\randnotiz{set\_timer()}\myindex{pyg}{\texttt{time}!\texttt{set\_timer()}|underline}. This timer fires the corresponding event ID every~\SI{500}{ms}.
 
-\lstsource{SRC/00 Introduction/12 Events/event02/events.py}{122}{124}{python}{Events (3) -- \texttt{Timer} in the constructor of \texttt{Game}}{srcEvent02b}
+\lstsource{SRC/00 Introduction/12 Events/event02/events.py}{117}{119}{python}{Events (3) -- \texttt{Timer} in the constructor of \texttt{Game}}{srcEvent02b}
 
 Like the other events, this one is caught in \texttt{watch\_for\_event()} (\zeiref{srcEvent0202}) and processed. In this case, this is done by calling the method \texttt{generate\_particles()}.
 
-\lstsource{SRC/00 Introduction/12 Events/event02/events.py}{153}{154}{python}{Events (3) -- Catching a periodical event}{srcEvent02c}
+\lstsource{SRC/00 Introduction/12 Events/event02/events.py}{148}{149}{python}{Events (3) -- Catching a periodical event}{srcEvent02c}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Structuring the Event Loop Correctly}
 
 \begin{hintbox}[Best practice]
+In each frame, the event loop should follow a clear and consistent structure:
 \begin{enumerate}
-	\item In each frame, the event loop should follow a clear and consistent structure:
 	\item Retrieve all events from the event queue
 	\item Process the events
 	\item Update the game state

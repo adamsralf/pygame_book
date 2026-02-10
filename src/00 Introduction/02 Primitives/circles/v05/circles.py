@@ -26,7 +26,7 @@ class Circle:
         elif self.posy - self.radius > window.size[1]:  # Bottom out§\label{srcCircles0503}§
             self.todelete = True
 
-    def draw(self, screen: pygame.surface.Surface) -> None:
+    def draw(self, screen: pygame.Surface) -> None:
         pygame.draw.circle(screen, self.color, (self.posx, self.posy), self.radius)
 
 

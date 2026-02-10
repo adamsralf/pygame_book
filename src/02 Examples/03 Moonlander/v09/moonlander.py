@@ -14,12 +14,12 @@ class MyEvents:
 
 
 class Sky:
-    def __init__(self, screen:pygame.surface.Surface, star_count: int=200) -> None:
+    def __init__(self, screen:pygame.Surface, star_count: int=200) -> None:
         top = 0 
         left = 0
         width = cfg.WINDOW.width
         height = cfg.WINDOW.height - cfg.HORIZONT
-        self.rect = pygame.rect.Rect(top, left, width, height)
+        self.rect = pygame.Rect(top, left, width, height)
         self.screen = screen
         self.stars = []         
         for _ in range(star_count):
@@ -43,15 +43,15 @@ class Sky:
             pygame.draw.circle(self.screen, (255,255,star["color"]), star["pos"], star["size"])
 
 class Moon:
-    def __init__(self, screen: pygame.surface.Surface, layer_count:int=5, peaks: int=35):
+    def __init__(self, screen: pygame.Surface, layer_count:int=5, peaks: int=35):
         self.screen = screen
-        self.surface = pygame.surface.Surface((cfg.WINDOW.width, 
+        self.surface = pygame.Surface((cfg.WINDOW.width, 
                                                 cfg.HORIZONT + layer_count*30),
                                                 pygame.SRCALPHA)
         self.rect = self.surface.get_rect()
         self.rect.left = cfg.WINDOW.left
         self.rect.bottom = cfg.WINDOW.bottom
-        landingarea = pygame.rect.Rect(0, self.rect.height - cfg.HORIZONT, 
+        landingarea = pygame.Rect(0, self.rect.height - cfg.HORIZONT, 
                                      cfg.WINDOW.width, cfg.HORIZONT) 
 
         layers = []
@@ -91,10 +91,10 @@ class Moon:
         self.screen.blit(self.surface, self.rect.topleft)
  
 class Earth:
-    def __init__(self, screen:pygame.surface.Surface) -> None:
+    def __init__(self, screen:pygame.Surface) -> None:
         self.radius = 80
         d = 2*self.radius
-        self.surface = pygame.surface.Surface((d, d), pygame.SRCALPHA)
+        self.surface = pygame.Surface((d, d), pygame.SRCALPHA)
         self.rect = self.surface.get_rect()
         self.rect.left = cfg.WINDOW.right - 200
         self.rect.top = cfg.WINDOW.top + 50
@@ -121,8 +121,8 @@ class Earth:
 class Lander:
     def __init__(self, window: pygame.window.Window) -> None: 
         self.screen = window.get_surface()
-        self.surface = pygame.surface.Surface((90,81), pygame.SRCALPHA)
-        self.surface_thrusting = pygame.surface.Surface((90,81), pygame.SRCALPHA)
+        self.surface = pygame.Surface((90,81), pygame.SRCALPHA)
+        self.surface_thrusting = pygame.Surface((90,81), pygame.SRCALPHA)
         self.rect = self.surface.get_frect()
         self.rect.centerx = cfg.WINDOW.centerx 
         self.rect.top = self.rect.height       
@@ -316,7 +316,7 @@ class Lander:
         return self.rect.bottom >= cfg.WINDOW.bottom - cfg.HORIZONT
 
 class Question:
-    def __init__(self, screen:pygame.surface.Surface) -> None:
+    def __init__(self, screen:pygame.Surface) -> None:
         self.font = pygame.font.Font(None, 24)
         self.screen = screen
         self.surface = self.font.render("(Q)uit or (R)estart?", True, "red")

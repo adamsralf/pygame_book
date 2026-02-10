@@ -30,7 +30,7 @@ class Circle:
         elif self.radius <= 0.0:                            # Can be removed§\label{srcCircles0603}§
             self.todelete = True
 
-    def draw(self, screen: pygame.surface.Surface) -> None:
+    def draw(self, screen: pygame.Surface) -> None:
         pygame.draw.circle(screen, self.color, (self.posx, self.posy), self.radius)
 
 

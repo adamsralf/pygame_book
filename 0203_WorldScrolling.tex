@@ -82,7 +82,7 @@ If we take a look at the screen outputs of the current source code in \abbref{pi
 
 If we take a look at the method \texttt{draw()} in \srcref[vref]{srcWindows01}, we see that all tiles and all moving objects are rendered into the target window -- that is, drawn -- even though the vast majority of these objects are not visible within the window at all.
 
-One possible approach is to first check all sprites, or rather their rectangles, to see whether they are actually located inside the output window. The list~\texttt{a} is created by iterating over all sprites in the group and, for each one, using \texttt{colliderect()}\myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{colliderect()}} to check whether it lies within or at least touches the rectangle of the window.
+One possible approach is to first check all sprites, or rather their rectangles, to see whether they are actually located inside the output window. The list~\texttt{a} is created by iterating over all sprites in the group and, for each one, using \texttt{colliderect()}\myindex{pyg}{\texttt{FRect}!\texttt{colliderect()}} to check whether it lies within or at least touches the rectangle of the window.
 
 \lstsource{SRC/01 Techniques/03 WorldScrolling/V02/windows.py}{18}{28}{python}{Big World --  \texttt{WindowPlain.draw()} with Visibility culling}{srcWindows02}
 

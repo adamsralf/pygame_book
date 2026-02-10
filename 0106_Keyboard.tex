@@ -94,7 +94,7 @@ Or
 \lstset{firstnumber=69}
 \begin{lstlisting}
 	if (event.mod & (pygame.KMOD_SHIFT event.mod | pygame.KMOD_ALT)):
-	...
+	    ...
 \end{lstlisting}
 
 As a complement, it should also be noted that \texttt{KMOD\_NONE}\myindex{pyg}{\texttt{KMOD\_NONE}} can be used to check whether no modifier key is pressed at all\randnotiz{KMOD\-\_NONE} (see \zeiref{srcTastatur0101}).
@@ -116,6 +116,7 @@ When a keyboard event is triggered, the event also carries a handle to the windo
 
 Alternatively, one can use the \texttt{id}\randnotiz{Window.id}\myindex{pyg}{\texttt{Window}!\texttt{id}} attribute. This value is also unique for each window and reflects the order in which the windows were created.
 
+\newpage
 \lstsource{SRC/00 Introduction/06 Keyboard/keyboard/v03/keyboard.py}{4}{43}{python}{In which window was the key pressed?}{srcKeyboard03}
 
 Running the program produces the following console output when the corresponding keys are pressed:

@@ -10,7 +10,7 @@ class Circle:
         self.radius = 2
         self.color = [randint(100, 255), randint(50, 255), 0]
 
-    def draw(self, screen: pygame.surface.Surface) -> None:
+    def draw(self, screen: pygame.Surface) -> None:
         pygame.draw.circle(screen, self.color, (self.posx, self.posy), self.radius)
 
 

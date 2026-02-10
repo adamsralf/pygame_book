@@ -10,7 +10,7 @@ class Ship(pygame.sprite.Sprite):
         super().__init__(*groups)
         self.image = pygame.image.load("images/defender01.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (30, 30))
-        self.rect = pygame.rect.FRect(self.image.get_rect())
+        self.rect = pygame.FRect(self.image.get_rect())
         self.rect.left = position[0]
         self.rect.bottom = position[1]
         self.speed = -300
@@ -26,7 +26,7 @@ class Game():
     FPS = 60
     DELTATIME = 1.0 / FPS
     SPWAN = 15
-    WINDOW = pygame.rect.Rect(0,0,300,600)
+    WINDOW = pygame.Rect(0,0,300,600)
 
     def __init__(self) -> None:
         pygame.init()

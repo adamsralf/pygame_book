@@ -1,6 +1,6 @@
 import pygame
 
-WINDOW = pygame.rect.Rect((0, 0), (1035, 345))
+WINDOW = pygame.Rect((0, 0), (1035, 345))
 FPS = 30
 
 ROWS = [

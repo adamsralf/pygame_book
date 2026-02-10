@@ -11,7 +11,7 @@ class Defender(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load("images/defender01.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (30, 30))
-        self.rect = pygame.rect.FRect(self.image.get_rect())
+        self.rect = pygame.FRect(self.image.get_rect())
         self.rect.center = cfg.WINDOW.center            #§\label{srcTastatur0001}§ 
         self.speed = 100
         self.direction = cfg.DIRECTIONS["stop"]    

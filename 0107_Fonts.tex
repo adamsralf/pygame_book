@@ -229,14 +229,14 @@ The class \texttt{Spritelib} is mainly used as a container. It loads the spritel
 \end{figure}
 
 
-\lstsource{SRC/00 Introduction/07 Fonts/textbitmaps/textbitmaps.py}{7}{19}{python}{Textbitmaps (2), \texttt{Spritelib}}{srcTextbitmaps00b} 
+\lstsource{SRC/00 Introduction/07 Fonts/textbitmaps/textbitmaps.py}{6}{18}{python}{Textbitmaps (2), \texttt{Spritelib}}{srcTextbitmaps00b} 
 
 Let us now move on to the actually interesting class: \texttt{Letters}. This class cuts out all sprites of a single color from the spritelib and makes them available as \texttt{Surface} objects in a \gls{dictionary}\randnotiz{Dictionary}\index{Dictionary}. This involves quite a bit of calculation, but do not let that intimidate you; in the end, it is nothing more than basic arithmetic.
 
 Let us start with the constructor. The constructor has two parameters. The first parameter, \texttt{spritelib}, is a reference to the \texttt{Spritelib} object, which has loaded the original bitmap and provides several spacing and layout parameters. The second parameter, \texttt{colornumber}, allows us to extract the complete set of symbols for exactly one color later on: \texttt{0} stands for the white sprites, \texttt{1} for the yellow ones, and so on.
 
 
-\lstsource{SRC/00 Introduction/07 Fonts/textbitmaps/textbitmaps.py}{22}{28}{python}{Textbitmaps (3), Constructor of \texttt{Letters}}{srcTextbitmaps00c} 
+\lstsource{SRC/00 Introduction/07 Fonts/textbitmaps/textbitmaps.py}{21}{27}{python}{Textbitmaps (3), Constructor of \texttt{Letters}}{srcTextbitmaps00c} 
 
 In the method \texttt{create\_letter\_bitmap()}, the individual sprites are now cut out and stored in a dictionary. The indices of this dictionary are defined in \zeiref{srcTextbitmaps0000}. Here, the order must of course match the order in which the sprites are cut out. The variable \texttt{index} ensures exactly this: with each loop iteration, the next \texttt{lettername} is used as the key for the dictionary.
 
@@ -247,13 +247,13 @@ Starting at \zeiref{srcTextbitmaps0002}, a nested \forSchleife{} begins. The out
 Height and width in \zeiref{srcTextbitmaps0005} are straightforward, since all sprites always have the same dimensions. After that, the \texttt{Rect} object is created and used to cut out the bitmap with the help of \texttt{subsurface()}\myindex{pyg}{\texttt{Surface}!\texttt{subsurface()}}. This extracted bitmap is then stored in the dictionary under its symbol name.
 
 \newpage
-\lstinputlisting[caption={Textbitmaps (4): \texttt{create\_letter\_bitmap()} von \texttt{Letters}},label={srcTextbitmaps00d},firstline={30},lastline={86},linerange={30-33,66-86}, consecutivenumbers=false]{SRC/00 Introduction/07 Fonts/textbitmaps/textbitmaps.py}
+\lstinputlisting[caption={Textbitmaps (4): \texttt{create\_letter\_bitmap()} von \texttt{Letters}},label={srcTextbitmaps00d},firstline={29},lastline={85},linerange={29-33,66-86}, consecutivenumbers=false]{SRC/00 Introduction/07 Fonts/textbitmaps/textbitmaps.py}
 
 
 The method \texttt{get\_text()} finally returns the matching sequence of bitmap sprites for a given text. To do this, it uses the method \texttt{get\_letter()}, which is necessary so that the program does not crash when an undefined letter or symbol is used. For example, if you type an \texttt{ü}, a square placeholder will be displayed.
 
 
-\lstsource{SRC/00 Introduction/07 Fonts/textbitmaps/textbitmaps.py}{88}{101}{python}{Textbitmaps (5), \texttt{get\_letter()} and \texttt{get\_text()} von \texttt{Letters}}{srcTextbitmaps00e} 
+\lstsource{SRC/00 Introduction/07 Fonts/textbitmaps/textbitmaps.py}{87}{100}{python}{Textbitmaps (5), \texttt{get\_letter()} and \texttt{get\_text()} von \texttt{Letters}}{srcTextbitmaps00e} 
 
 
 The actual main program is encapsulated in the class \texttt{TextBitmaps}. Since the source code does not introduce anything fundamentally new, it should be largely self-explanatory. However, I would like to take a closer look at two specific lines:
@@ -265,7 +265,7 @@ The actual main program is encapsulated in the class \texttt{TextBitmaps}. Since
 	directly to the string.
 \end{itemize}
 
-\lstsource{SRC/00 Introduction/07 Fonts/textbitmaps/textbitmaps.py}{104}{140}{python}{Textbitmaps (6), \texttt{TextBitmaps}}{srcTextbitmaps00f}
+\lstsource{SRC/00 Introduction/07 Fonts/textbitmaps/textbitmaps.py}{103}{139}{python}{Textbitmaps (6), \texttt{TextBitmaps}}{srcTextbitmaps00f}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

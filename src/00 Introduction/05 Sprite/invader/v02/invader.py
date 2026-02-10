@@ -1,8 +1,7 @@
 from time import time
 
-import pygame
-
 import config as cfg
+import pygame
 
 
 class Defender(pygame.sprite.Sprite):
@@ -11,7 +10,7 @@ class Defender(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load("images/defender01.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (30, 30))
-        self.rect = pygame.rect.FRect(self.image.get_rect())
+        self.rect = pygame.FRect(self.image.get_rect())
         self.rect.centerx = cfg.WINDOW.centerx
         self.rect.bottom = cfg.WINDOW.bottom - 5
         self.speed = 300
@@ -19,7 +18,7 @@ class Defender(pygame.sprite.Sprite):
     def update(self) -> None:
         self.rect.move_ip(self.speed * cfg.DELTATIME, 0)  # Move in-place§\label{srcInvader06b01}§
 
-    def draw(self, screen: pygame.surface.Surface) -> None:
+    def draw(self, screen: pygame.Surface) -> None:
         screen.blit(self.image, self.rect)
 
     def change_direction(self) -> None:
@@ -36,7 +35,7 @@ class Border(pygame.sprite.Sprite):
         if leftright == "right":
             self.rect.left = cfg.WINDOW.width - self.rect.width
 
-    def draw(self, screen: pygame.surface.Surface) -> None:
+    def draw(self, screen: pygame.Surface) -> None:
         screen.blit(self.image, self.rect)
 
 

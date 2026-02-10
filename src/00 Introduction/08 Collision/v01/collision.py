@@ -1,8 +1,7 @@
 from typing import Any
 
-import pygame
-
 import config as cfg
+import pygame
 
 
 class Obstacle(pygame.sprite.Sprite):
@@ -12,9 +11,9 @@ class Obstacle(pygame.sprite.Sprite):
         self.image_normal = pygame.image.load(cfg.imagepath(filename1)).convert_alpha()
         self.image_hit = pygame.image.load(cfg.imagepath(filename2)).convert_alpha()
         self.image = self.image_normal
-        self.rect: pygame.rect.Rect = self.image.get_rect()  # Bounding rectangle§\label{srcCollision01}§
-        self.mask = pygame.mask.from_surface(self.image)     # Pixel mask§\label{srcCollision02}§
-        self.radius = self.rect.width // 2                   # Bounding circle§\label{srcCollision03}§
+        self.rect: pygame.Rect = self.image.get_rect()      # Bounding rectangle§\label{srcCollision01}§
+        self.mask = pygame.mask.from_surface(self.image)    # Pixel mask§\label{srcCollision02}§
+        self.radius = self.rect.width // 2                  # Bounding circle§\label{srcCollision03}§
         self.rect.centery = cfg.WINDOW.centery
         self.hit = False
 

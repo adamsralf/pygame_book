@@ -2,10 +2,9 @@ import random
 from time import time
 from typing import Any
 
+import config as cfg
 import pygame
 from pygame.constants import K_ESCAPE, KEYDOWN, QUIT
-
-import config as cfg
 
 
 class Timer:
@@ -32,7 +31,7 @@ class Timer:
 class Animation:
 
     def __init__(self, namelist: list[str], endless: bool, animationtime: int, colorkey: tuple[int, int, int] | None = None) -> None:
-        self.images: list[pygame.surface.Surface] = []
+        self.images: list[pygame.Surface] = []
         self.endless = endless
         self.timer = Timer(animationtime)
         for filename in namelist:
@@ -44,7 +43,7 @@ class Animation:
             self.images.append(bitmap)
         self.imageindex = -1
 
-    def next(self) -> pygame.surface.Surface:
+    def next(self) -> pygame.Surface:
         if self.timer.is_next_stop_reached():
             self.imageindex += 1
             if self.imageindex >= len(self.images):
@@ -66,7 +65,7 @@ class Rock(pygame.sprite.Sprite):
         super().__init__()
         rocknb = random.randint(6, 9)
         self.image = pygame.image.load(cfg.imagepath(f"felsen{rocknb}.png")).convert_alpha()
-        self.rect = pygame.rect.FRect(self.image.get_rect())
+        self.rect = pygame.FRect(self.image.get_rect())
         self.rect.centerx = random.randint(int(self.rect.width), int(cfg.WINDOW.width - self.rect.width))
         self.rect.centery = random.randint(int(self.rect.height), int(cfg.WINDOW.height - self.rect.height))
         self.speed = pygame.math.Vector2(random.randint(-100, 100), random.randint(-100, 100))

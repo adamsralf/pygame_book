@@ -8,13 +8,13 @@ import pygame
 class Background(pygame.sprite.Sprite):
     def __init__(self, *groups: Tuple[pygame.sprite.Group]) -> None:
         super().__init__(*groups)
-        self.image = pygame.surface.Surface(cfg.WINDOW.size).convert()
+        self.image = pygame.Surface(cfg.WINDOW.size).convert()
         self.rect = self.image.get_rect()
         self.image.fill("darkred")
         self.paint_net()
 
     def paint_net(self) -> None:
-        net_rect = pygame.rect.Rect(0, 0, 0, 0)
+        net_rect = pygame.Rect(0, 0, 0, 0)
         net_rect.centerx = cfg.WINDOW.centerx
         net_rect.top = 50
         net_rect.size = (3, 30)
@@ -29,7 +29,7 @@ class Paddle(pygame.sprite.Sprite):
 
     def __init__(self, player: str, *groups: Tuple[pygame.sprite.Group]) -> None:
         super().__init__(*groups)
-        self.rect = pygame.rect.FRect(0, 0, 15, cfg.WINDOW.height // 10)# Size§\label{srcPong0201}§
+        self.rect = pygame.FRect(0, 0, 15, cfg.WINDOW.height // 10)# Size§\label{srcPong0201}§
         self.rect.centery = cfg.WINDOW.centery                          # Position §\label{srcPong0202}§
         self.player = player
         if self.player == "left":
@@ -38,7 +38,7 @@ class Paddle(pygame.sprite.Sprite):
             self.rect.right = cfg.WINDOW.right - Paddle.BORDERDISTANCE["horizontal"]
         self.speed = cfg.WINDOW.height // 2                             # Speed§\label{srcPong0206}§
         self.direction = Paddle.DIRECTION["halt"]   # 
-        self.image = pygame.surface.Surface(self.rect.size)             # Surface§\label{srcPong0203}§
+        self.image = pygame.Surface(self.rect.size)             # Surface§\label{srcPong0203}§
         self.image.fill("yellow")
 
     def update(self, *args: Any, **kwargs: Any) -> None:

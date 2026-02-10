@@ -19,7 +19,7 @@ class Circle:
         self.posx += self.speedx
         self.posy += self.speedy
 
-    def draw(self, screen: pygame.surface.Surface) -> None:
+    def draw(self, screen: pygame.Surface) -> None:
         pygame.draw.circle(screen, self.color, (self.posx, self.posy), self.radius)
 
 

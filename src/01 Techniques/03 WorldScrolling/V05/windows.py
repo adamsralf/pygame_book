@@ -1,7 +1,7 @@
 from typing import Union
 
-import pygame
 import config as cfg
+import pygame
 
 
 class WindowPlain:
@@ -12,7 +12,7 @@ class WindowPlain:
         self.window = pygame.Window(size=cfg.WINDOW.size)
         self.window.position = (0 * (cfg.WINDOW.width + 60), 
                                 0 * (cfg.WINDOW.height) + 30)
-        self.screen : pygame.surface.Surface = self.window.get_surface()
+        self.screen : pygame.Surface = self.window.get_surface()
         self.rect = self.screen.get_frect()
         self.window.title = f"Plain Window (size={self.rect.size})"
         self.clock = pygame.time.Clock()
@@ -41,7 +41,7 @@ class WindowBirdEyeView:
         self.window = pygame.Window(size=cfg.WINDOW.size)
         self.window.position = (1 * (cfg.WINDOW.width + 60), 
                                 0 * (cfg.WINDOW.height) + 30)
-        self.screen : pygame.surface.Surface = self.window.get_surface()
+        self.screen : pygame.Surface = self.window.get_surface()
         self.rect = self.screen.get_frect()
         self.window.title = f"Birdeye (zoom=({self.zoom.x:0.2f}, {self.zoom.y:0.2f})"
         self.clock = pygame.time.Clock()
@@ -56,12 +56,12 @@ class WindowBirdEyeView:
                 pygame.draw.rect(self.screen, item["color"], self.zoom_rect(item["rect"]), 2)
         self.window.flip()
 
-    def zoom_rect(self, rect: Union[pygame.rect.Rect, pygame.rect.FRect]) -> pygame.rect.FRect:
+    def zoom_rect(self, rect: Union[pygame.Rect, pygame.FRect]) -> pygame.FRect:
         x = rect.x * self.zoom.x
         y = rect.y * self.zoom.y
         w = rect.w * self.zoom.x
         h = rect.h * self.zoom.y
-        return pygame.rect.FRect(x, y, w, h)
+        return pygame.FRect(x, y, w, h)
 
     def save(self) -> None:
         pygame.image.save(self.screen, "birdeye_image.png")
@@ -77,7 +77,7 @@ class WindowCenteredCamera:
         self.window = pygame.Window(size=cfg.WINDOW.size)
         self.window.position = (2 * (cfg.WINDOW.width + 60), 
                                 0 * (cfg.WINDOW.height) + 30)
-        self.screen : pygame.surface.Surface = self.window.get_surface()
+        self.screen : pygame.Surface = self.window.get_surface()
         self.rect = self.screen.get_frect()
         self.clock = pygame.time.Clock()
 
@@ -99,5 +99,5 @@ class WindowCenteredCamera:
         self.offset.y = self.player.rect.y - self.rect.height / 2
         self.rect.topleft = self.offset
 
-    def world2camera(self, rect: pygame.rect.FRect) -> pygame.rect.FRect:
-        return pygame.rect.FRect(rect.topleft - self.offset, rect.size)
+    def world2camera(self, rect: pygame.FRect) -> pygame.FRect:
+        return pygame.FRect(rect.topleft - self.offset, rect.size)

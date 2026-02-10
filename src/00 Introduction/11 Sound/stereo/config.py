@@ -2,7 +2,7 @@ from os import path
 
 import pygame
 
-WINDOW: pygame.rect.Rect = pygame.rect.Rect(0, 0, 800, 224)
+WINDOW: pygame.Rect = pygame.Rect(0, 0, 800, 224)
 FPS = 60
 DELTATIME = 1.0 / FPS
 PATH: dict[str, str] = {}

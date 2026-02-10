@@ -1,7 +1,6 @@
 
-import pygame
-
 import config as cfg
+import pygame
 
 
 class Spritelib(pygame.sprite.Sprite):
@@ -15,7 +14,7 @@ class Spritelib(pygame.sprite.Sprite):
         self.offset = {"h": 6, "v": 6}
         self.distance = {"h": 14, "v": 14}
 
-    def draw(self, screen: pygame.surface.Surface) -> None:
+    def draw(self, screen: pygame.Surface) -> None:
         screen.blit(self.image, self.rect)
 
 
@@ -24,13 +23,13 @@ class Letters(object):
     def __init__(self, spritelib: Spritelib, colornumber: int) -> None:
         super().__init__()
         self.spritelib = spritelib
-        self.letters: dict[str, pygame.surface.Surface] = {}
+        self.letters: dict[str, pygame.Surface] = {}
         self.create_letter_bitmap(colornumber)
 
     def create_letter_bitmap(self, colornumber: int):
         lettername = (
             "0",
-            "1",  # The rows between 34 and 62 are skipped!!
+            "1",  # The rows between 34 and 65 are skipped!!
             "2",
             "3",
             "4",
@@ -81,17 +80,17 @@ class Letters(object):
                 top = startpos[1] + row * (self.spritelib.letter["height"] + self.spritelib.distance["v"])  # §\label{srcTextbitmaps0005}§
                 width  = self.spritelib.letter["width"]         # Size§\label{srcTextbitmaps0006}§
                 height = self.spritelib.letter["height"]
-                r = pygame.rect.Rect(left, top, width, height)
+                r = pygame.Rect(left, top, width, height)
                 self.letters[lettername[index]] = self.spritelib.image.subsurface(r)  # §\label{srcTextbitmaps0007}§
                 index += 1
 
-    def get_letter(self, letter: str) -> pygame.surface.Surface:
+    def get_letter(self, letter: str) -> pygame.Surface:
         if letter in self.letters:
             return self.letters[letter]
         else:
             return self.letters["square"]
 
-    def get_text(self, text: str) -> pygame.surface.Surface:
+    def get_text(self, text: str) -> pygame.Surface:
         l = len(text) * self.spritelib.letter["width"]
         h = self.spritelib.letter["height"]
         bitmap = pygame.Surface((l, h))

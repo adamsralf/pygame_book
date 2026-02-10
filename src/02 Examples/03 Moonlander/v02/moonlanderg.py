@@ -3,32 +3,31 @@ from time import time
 
 import config as cfg
 import pygame
-
 from continent_polygons import continent_polygons
 
 
 class Sky:
-    def __init__(self, screen:pygame.surface.Surface) -> None:
+    def __init__(self, screen:pygame.Surface) -> None:
         top = 0 
         left = 0
         width = cfg.WINDOW.width
         height = cfg.WINDOW.height - cfg.HORIZONT
-        self.rect = pygame.rect.Rect(top, left, width, height)
+        self.rect = pygame.Rect(top, left, width, height)
         self.screen = screen
 
     def draw(self) -> None:
         pygame.draw.rect(self.screen, "black", self.rect)
 
 class Moon:
-    def __init__(self, screen: pygame.surface.Surface, layer_count:int=5, peaks: int=35):
+    def __init__(self, screen: pygame.Surface, layer_count:int=5, peaks: int=35):
         self.screen = screen
-        self.surface = pygame.surface.Surface((cfg.WINDOW.width, 
+        self.surface = pygame.Surface((cfg.WINDOW.width, 
                                                 cfg.HORIZONT + layer_count*30),
                                                 pygame.SRCALPHA)
         self.rect = self.surface.get_rect()
         self.rect.left = cfg.WINDOW.left
         self.rect.bottom = cfg.WINDOW.bottom
-        landingarea = pygame.rect.Rect(0, self.rect.height - cfg.HORIZONT, 
+        landingarea = pygame.Rect(0, self.rect.height - cfg.HORIZONT, 
                                      cfg.WINDOW.width, cfg.HORIZONT) 
 
         layers = []
@@ -68,9 +67,9 @@ class Moon:
         self.screen.blit(self.surface, self.rect.topleft)
  
 class Earth:
-    def __init__(self, screen:pygame.surface.Surface) -> None:
+    def __init__(self, screen:pygame.Surface) -> None:
         self.radius = 80
-        self.surface = pygame.surface.Surface(
+        self.surface = pygame.Surface(
             (2*self.radius, 2*self.radius), 
             pygame.SRCALPHA)
         self.rect = self.surface.get_rect()

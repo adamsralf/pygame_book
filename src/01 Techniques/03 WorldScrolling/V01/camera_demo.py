@@ -14,7 +14,7 @@ class Game:
         self.create_tiles()
         self.create_mobs()
         self.window_plain = WindowPlain(self.tiles, self.mobs)
-        self.world_image = pygame.surface.Surface(cfg.WORLD.size)
+        self.world_image = pygame.Surface(cfg.WORLD.size)
         self.player = Player(cfg.WORLD.center)
         self.mobs.add(self.player)
         self.running = True

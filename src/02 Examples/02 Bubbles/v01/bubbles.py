@@ -8,9 +8,9 @@ class Background(pygame.sprite.Sprite):
     def __init__(self) -> None:
         super().__init__()
         imagename = cfg.get_image("aquarium.png")
-        self.image: pygame.surface.Surface = pygame.image.load(imagename).convert()
+        self.image: pygame.Surface = pygame.image.load(imagename).convert()
         self.image = pygame.transform.scale(self.image, cfg.WINDOW.size)
-        self.rect: pygame.rect.Rect = self.image.get_rect()
+        self.rect: pygame.Rect = self.image.get_rect()
 
 
 class Game:

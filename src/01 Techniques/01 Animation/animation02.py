@@ -2,10 +2,9 @@ import random
 from time import time
 from typing import Any
 
+import config as cfg
 import pygame
 from pygame.constants import K_ESCAPE, KEYDOWN, QUIT
-
-import config as cfg
 
 
 class Timer:
@@ -32,7 +31,7 @@ class Timer:
 class Animation:
 
     def __init__(self, namelist: list[str], endless: bool, animationtime: int, colorkey: tuple[int, int, int] | None = None) -> None:
-        self.images: list[pygame.surface.Surface] = []
+        self.images: list[pygame.Surface] = []
         self.endless = endless
         self.timer = Timer(animationtime)
         for filename in namelist:
@@ -44,7 +43,7 @@ class Animation:
             self.images.append(bitmap)
         self.imageindex = -1
 
-    def next(self) -> pygame.surface.Surface:
+    def next(self) -> pygame.Surface:
         if self.timer.is_next_stop_reached():
             self.imageindex += 1
             if self.imageindex >= len(self.images):

@@ -16,20 +16,20 @@ This class should contain all information related to updating and rendering the 
 
 Let us therefore define the \texttt{Defender} class as a subclass of \texttt{Sprite} (\zeiref{srcInvader06a01}).
 
-\lstsource{SRC/00 Introduction/05 Sprite/invader/v01/invader.py}{8}{33}{python}{Sprites (1), Version 1.0}{srcInvader06a1}
+\lstsource{SRC/00 Introduction/05 Sprite/invader/v01/invader.py}{7}{32}{python}{Sprites (1), Version 1.0}{srcInvader06a1}
 
 The lines in the constructor (\zeiref{srcInvader06a02}ff.) correspond to those of the previous version. Only the prefix \texttt{defender\_} is replaced by \texttt{self.}, which turns the variables into attributes of the class. You should have no difficulty understanding these changes.
 
 Every subclass of \texttt{Sprite} must provide two attributes: \texttt{rect}\index{Sprite!self.rect|underline}\randnotiz{self.rect} and \texttt{image}\index{Sprite!self.image|underline}\randnotiz{self.image}. These two attributes are accessed by the already predefined solutions for collision detection, rendering, and related tasks. We will see their usefulness later on.
 
-In \zeiref{srcInvader06a03}ff., the boundary collisions and state changes are implemented. One detail that stands out is the computation of the new position using \texttt{move()}\myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{move()}}.
+In \zeiref{srcInvader06a03}ff., the boundary collisions and state changes are implemented. One detail that stands out is the computation of the new position using \texttt{move()}\myindex{pyg}{\texttt{FRect}!\texttt{move()}}.
 
 New is the call to the method \texttt{change\_direction()}. This method (\zeiref{srcInvader06a08}) is more \emph{object-oriented} than the previous version. In object-oriented programming, algorithms are not implemented directly; instead, messages are sent to objects, which then handle the details internally -- in a way that is not visible from the outside. In this case, this means that instead of performing the direction change directly at the relevant point, I~send a message to the object telling it that the direction needs to be changed.
 
 With the method \texttt{draw()} in \zeiref{srcInvader06a04}, the screen output is encapsulated.
 
 
-\lstsource{SRC/00 Introduction/05 Sprite/invader/v01/invader.py}{36}{63}{python}{Sprites (2), Version 1.0}{srcInvader06a2}
+\lstsource{SRC/00 Introduction/05 Sprite/invader/v01/invader.py}{35}{62}{python}{Sprites (2), Version 1.0}{srcInvader06a2}
 
 Using the \texttt{Defender} class has now become straightforward. In \zeiref{srcInvader06a05}, an object of the class is created. In \zeiref{srcInvader06a06}, \texttt{update()} is called, and in \zeiref{srcInvader06a07}, \texttt{draw()} is executed.
 
@@ -37,21 +37,21 @@ One advantage of the new architecture is the improved clarity and readability of
 
 I~now want to make use of the capabilities of the \texttt{Sprite} class so that boundary collision checks no longer have to be implemented manually.
 
-Let us get started: Since we want to organize collision detection differently, we first simplify \texttt{update()} again. We now only compute the new position. In doing so, the method \texttt{pygame.rect.FRect.move\_ip()}\myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{move\_ip()}|underline}\randnotiz{move\_ip()} is introduced in \zeiref{srcInvader06b01}. It works like \texttt{move()}, but in this case the modification is applied directly to the rectangle; \texttt{ip} stands for \emph{in place}. With \texttt{move()}, the original rectangle remains unchanged.
+Let us get started: Since we want to organize collision detection differently, we first simplify \texttt{update()} again. We now only compute the new position. In doing so, the method \texttt{pygame.FRect.move\_ip()}\myindex{pyg}{\texttt{FRect}!\texttt{move\_ip()}|underline}\randnotiz{move\_ip()} is introduced in \zeiref{srcInvader06b01}. It works like \texttt{move()}, but in this case the modification is applied directly to the rectangle; \texttt{ip} stands for \emph{in place}. With \texttt{move()}, the original rectangle remains unchanged.
 
-\lstsource{SRC/00 Introduction/05 Sprite/invader/v02/invader.py}{19}{20}{python}{Sprites (1), Version 1.1}{srcInvader06b1}
+\lstsource{SRC/00 Introduction/05 Sprite/invader/v02/invader.py}{18}{19}{python}{Sprites (1), Version 1.1}{srcInvader06b1}
 
 To make the boundaries visible and to better recognize collisions, the edges are now replaced by two stone walls on the left and right. These bitmaps are also implemented as subclasses of \texttt{pygame.sprite.Sprite}. Since the state of the two walls never changes, the implementation of \texttt{update()} can be omitted.
 
-\lstsource{SRC/00 Introduction/05 Sprite/invader/v02/invader.py}{29}{40}{python}{Sprites (2), Version 1.1}{srcInvader06b2}
+\lstsource{SRC/00 Introduction/05 Sprite/invader/v02/invader.py}{28}{39}{python}{Sprites (2), Version 1.1}{srcInvader06b2}
 
 I~now create the two boundaries:
 
-\lstsource{SRC/00 Introduction/05 Sprite/invader/v02/invader.py}{49}{51}{python}{Sprites (3), Version 1.1}{srcInvader06b3}
+\lstsource{SRC/00 Introduction/05 Sprite/invader/v02/invader.py}{49}{50}{python}{Sprites (3), Version 1.1}{srcInvader06b3}
 
 So far, everything has been easy.
 
-\lstsource{SRC/00 Introduction/05 Sprite/invader/v02/invader.py}{61}{66}{python}{Sprites (4), Version 1.1}{srcInvader06b4}
+\lstsource{SRC/00 Introduction/05 Sprite/invader/v02/invader.py}{60}{65}{python}{Sprites (4), Version 1.1}{srcInvader06b4}
 
 What is happening here? The method \texttt{pygame.sprite.collide\_rect()}\myindex{pyg}{\texttt{sprite}!\texttt{collide\_rect()}}\randnotiz{collide\-\_rect()} checks whether the rectangles of two \texttt{Sprite} objects collide. This means that I~no longer have to manually check the left and right boundaries myself.
 
@@ -61,7 +61,7 @@ Here, the collision of a single object with both boundaries -- or more generally
 	In practice, sprites rarely exist on their own; they are usually organized into groups. This concept is also built into Pygame and leads to further simplifications.
 \end{hintbox}
 
-\lstsource{SRC/00 Introduction/05 Sprite/invader/v03/invader.py}{37}{71}{python}{Sprites (1), Version 1.2}{srcInvader06c1}
+\lstsource{SRC/00 Introduction/05 Sprite/invader/v03/invader.py}{36}{71}{python}{Sprites (1), Version 1.2}{srcInvader06c1}
 
 The defender is no longer addressed directly, but is instead packed into a luxury box. I~will come back to this later. The two \texttt{Border} objects are no longer stored in two separate object variables either; instead, they are placed into a luxury box as well: a \texttt{pygame.sprite.Group}\myindex{pyg}{\texttt{sprite}!\texttt{Group}|underline}\randnotiz{Group}. Here, I~could also store additional boundaries or walls. From the point of view of the game logic, they could then all be processed together in one go. This becomes clear in this mini example in two places.
 

@@ -2,11 +2,10 @@ import os
 from time import time
 from typing import Any
 
+import config as cfg
 import pygame
 from pygame.constants import (K_DOWN, K_ESCAPE, K_LEFT, K_RIGHT, K_SPACE, K_UP,
                               KEYDOWN, QUIT)
-
-import config as cfg
 
 
 class Ground(pygame.sprite.Sprite):
@@ -28,7 +27,7 @@ class Tank(pygame.sprite.Sprite):
     def __init__(self) -> None:
         super().__init__()
         self.image_filename = (209, 190, 202, 214, 226, 238, 250, 262)
-        self.images: dict[str, list[pygame.surface.Surface]] = {"up": [], "down": [], "left": [], "right": []}
+        self.images: dict[str, list[pygame.Surface]] = {"up": [], "down": [], "left": [], "right": []}
         for number in self.image_filename:
             fullfilename = cfg.get_image(f"tankbrigade_part{number}.png")
             picture = pygame.image.load(fullfilename).convert()
@@ -40,7 +39,7 @@ class Tank(pygame.sprite.Sprite):
         self.direction = "right"
         self.imageindex = 0
         self.image = self.images[self.direction][self.imageindex]
-        self.rect = pygame.rect.FRect(self.image.get_rect())
+        self.rect = pygame.FRect(self.image.get_rect())
         self.rect.left, self.rect.top = 3 * self.rect.width, 2 * self.rect.height
         self.sound_drive = pygame.mixer.Sound(cfg.get_sound("tank_drive1.wav"))  # §\label{srcSound0201}§
         self.channel = pygame.mixer.find_channel()  # Find a free sound channel§\label{srcSound0204}§
@@ -185,6 +184,13 @@ class Game:
             time_previous = time_current
         pygame.quit()
 
+
+def main():
+    Game().run()
+
+
+if __name__ == "__main__":
+    main()
 
 def main():
     Game().run()

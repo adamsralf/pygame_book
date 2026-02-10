@@ -5,13 +5,8 @@ from typing import Any, Tuple
 import config as cfg
 import pygame
 from config import MyEvents
-from pygame.constants import (
-    K_ESCAPE,
-    KEYDOWN,
-    MOUSEBUTTONDOWN,
-    QUIT,
-    WINDOWPOS_CENTERED,
-)
+from pygame.constants import (K_ESCAPE, KEYDOWN, MOUSEBUTTONDOWN, QUIT,
+                              WINDOWPOS_CENTERED)
 
 
 class Button(pygame.sprite.Sprite):
@@ -37,10 +32,10 @@ class Particle(pygame.sprite.Sprite):
 
     def __init__(self, *groups: Tuple[pygame.sprite.Group]) -> None:
         super().__init__(*groups)
-        self.image = pygame.surface.Surface((randint(3, 6), randint(3, 6)))
+        self.image = pygame.Surface((randint(3, 6), randint(3, 6)))
         self.image.fill((Particle.r, Particle.g, Particle.b))
         self.nextcolor()
-        self.rect = pygame.rect.FRect(self.image.get_rect())
+        self.rect = pygame.FRect(self.image.get_rect())
         self.rect.topleft = (
             randint(30, cfg.WINDOW.right - 30),
             randint(30, cfg.WINDOW.bottom - 30),
@@ -82,7 +77,7 @@ class Box(pygame.sprite.Sprite):
 
     def __init__(self, index: int, position: Tuple[int], *groups: Tuple[pygame.sprite.Group]) -> None:
         super().__init__(*groups)
-        self.image = pygame.surface.Surface((cfg.BOXWIDTH, 20))
+        self.image = pygame.Surface((cfg.BOXWIDTH, 20))
         self.rect = self.image.get_rect(center=position)
         self.font = pygame.font.SysFont(None, 30)
         self.counter = 0

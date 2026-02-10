@@ -10,13 +10,13 @@ from config import MyEvents
 class Background(pygame.sprite.Sprite):
     def __init__(self, *groups: Tuple[pygame.sprite.Group]) -> None:
         super().__init__(*groups)
-        self.image = pygame.surface.Surface(cfg.WINDOW.size).convert()
+        self.image = pygame.Surface(cfg.WINDOW.size).convert()
         self.rect = self.image.get_rect()
         self.image.fill("darkred")
         self.paint_net()
 
     def paint_net(self) -> None:
-        net_rect = pygame.rect.Rect(0, 0, 0, 0)
+        net_rect = pygame.Rect(0, 0, 0, 0)
         net_rect.centerx = cfg.WINDOW.centerx
         net_rect.top = 50
         net_rect.size = (3, 30)
@@ -28,16 +28,16 @@ class Background(pygame.sprite.Sprite):
 class Pause(pygame.sprite.Sprite):
     def __init__(self, *groups: Tuple[pygame.sprite.Group]) -> None:
         super().__init__(*groups)
-        self.rect = pygame.rect.Rect(cfg.WINDOW.topleft, cfg.WINDOW.size)
-        self.image = pygame.surface.Surface(self.rect.size).convert_alpha()
+        self.rect = pygame.Rect(cfg.WINDOW.topleft, cfg.WINDOW.size)
+        self.image = pygame.Surface(self.rect.size).convert_alpha()
         self.image.fill([120, 120, 120, 200])       # Transparent Grey§\label{srcPong0801}§
 
 
 class Help(pygame.sprite.Sprite):
     def __init__(self, *groups: Tuple[pygame.sprite.Group]) -> None:
         super().__init__(*groups)
-        self.rect = pygame.rect.Rect(cfg.WINDOW.topleft, cfg.WINDOW.size)
-        self.image = pygame.surface.Surface(self.rect.size).convert_alpha()
+        self.rect = pygame.Rect(cfg.WINDOW.topleft, cfg.WINDOW.size)
+        self.image = pygame.Surface(self.rect.size).convert_alpha()
         self.image.fill([20, 20, 20, 200])          # Transparent Grey§\label{srcPong0802}§
         font = pygame.font.Font(pygame.font.get_default_font(), 20)
         text_l = "h\np\nESC\n\nF2\nk\nl\nr\n\nUP\nDOWN\nw\ns"
@@ -56,11 +56,11 @@ class Paddle(pygame.sprite.Sprite):
 
     def __init__(self, player: str, *groups: Tuple[pygame.sprite.Group]) -> None:
         super().__init__(*groups)
-        self.rect = pygame.rect.FRect(0, 0, 15, cfg.WINDOW.height // 10)
+        self.rect = pygame.FRect(0, 0, 15, cfg.WINDOW.height // 10)
         self.rect.centery = cfg.WINDOW.centery
         self.images = {
-            "byhand": pygame.surface.Surface(self.rect.size).convert(),
-            "byki": pygame.surface.Surface(self.rect.size).convert(),
+            "byhand": pygame.Surface(self.rect.size).convert(),
+            "byki": pygame.Surface(self.rect.size).convert(),
         }
         self.images["byhand"].fill("yellow")
         self.images["byki"].fill("deepskyblue2")
@@ -111,8 +111,8 @@ class Ball(pygame.sprite.Sprite):
         self.sounds["right"] = pygame.mixer.Sound(cfg.get_sound("playerr.mp3"))
         self.sounds["bounce"] = pygame.mixer.Sound(cfg.get_sound("bounce.mp3"))
         self.channel = pygame.mixer.find_channel()
-        self.rect = pygame.rect.FRect(0, 0, 20, 20)
-        self.image = pygame.surface.Surface(self.rect.size).convert()
+        self.rect = pygame.FRect(0, 0, 20, 20)
+        self.image = pygame.Surface(self.rect.size).convert()
         self.image.set_colorkey("black")
         pygame.draw.circle(self.image, "green", self.rect.center, self.rect.width // 2)
         self.speed = cfg.WINDOW.width // 3
@@ -181,8 +181,8 @@ class Score(pygame.sprite.Sprite):
         super().__init__(*groups)
         self.font = pygame.font.SysFont(None, 30)
         self.score = {1: 0, 2: 0}
-        self.image: pygame.surface.Surface = None
-        self.rect: pygame.rect.Rect = None
+        self.image: pygame.Surface = None
+        self.rect: pygame.Rect = None
         self.render()
 
     def update(self, *args: Any, **kwargs: Any) -> None:

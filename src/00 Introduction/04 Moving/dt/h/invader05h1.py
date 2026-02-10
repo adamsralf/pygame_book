@@ -5,7 +5,7 @@ import pygame.time
 
 
 class Settings:
-    WINDOW = pygame.rect.Rect((0, 0), (120, 650))
+    WINDOW = pygame.Rect((0, 0), (120, 650))
     FPS = 10  # 10 30 60 120 240 300 600
     LIMIT = 500
     DELTATIME = 1.0 / FPS
@@ -19,7 +19,7 @@ def main():
 
     defender_image = pygame.image.load("images/defender01.png").convert_alpha()
     defender_image = pygame.transform.scale(defender_image, (30, 30))
-    defender_rect = pygame.rect.FRect(defender_image.get_rect())
+    defender_rect = pygame.FRect(defender_image.get_rect())
     result = {}
     for fps in range(10, 610, 10):
         Settings.FPS = fps
