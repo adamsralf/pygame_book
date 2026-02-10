@@ -2,7 +2,7 @@ import pygame
 
 
 class Settings:
-    WINDOW = pygame.rect.Rect((0, 0), (120, 650))
+    WINDOW = pygame.Rect((0, 0), (120, 650))
     FPS = 300  # 10 30 60 120 240 300 600
     LIMIT = 500
     DELTATIME = 1.0 / FPS
@@ -16,7 +16,7 @@ def main():
 
     defender_image = pygame.image.load("images/defender01.png").convert_alpha()
     defender_image = pygame.transform.scale(defender_image, (30, 30))
-    defender_rect = pygame.rect.FRect(defender_image.get_rect())  # float§\label{srcInvader05h01}§
+    defender_rect = pygame.FRect(defender_image.get_rect())  # float§\label{srcInvader05h01}§
     defender_rect.centerx = Settings.WINDOW.centerx
     defender_rect.bottom = Settings.WINDOW.bottom - 5
     defender_speed = 600

@@ -29,12 +29,12 @@ class Player(pygame.sprite.Sprite):
 
     def __init__(self, position: tuple[float, float]) -> None:
         super().__init__()
-        self.image : pygame.surface.Surface = pygame.surface.Surface(cfg.TILESIZE_WORLD)
+        self.image : pygame.Surface = pygame.Surface(cfg.TILESIZE_WORLD)
         self.image.set_colorkey((0, 0, 0))
 
         self.radius = int(cfg.TILESIZE_WORLD.x // 2)
         pygame.draw.circle(self.image, "red", (self.radius, self.radius), self.radius)
-        self.rect : pygame.rect.FRect = self.image.get_frect(center=position)
+        self.rect : pygame.FRect = self.image.get_frect(center=position)
 
         self.speed = 400.0  # pixels per second
         self.directions = {

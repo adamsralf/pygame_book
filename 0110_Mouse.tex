@@ -78,7 +78,7 @@ In the first step, it is checked whether a parameter was provided, as shown in \
 \begin{warningbox}[Two final notes on \texttt{pygame.transform.rotate()}\myindex{pyg}{\texttt{transform}!\texttt{rotate()}|underline}]
 \begin{itemize}
 	\item Unlike many other systems that work with angles, the angle here is measured in \gls{degree} rather than in \gls{radian}.
-	\item The approach used here works only because the bitmap represents a ball. In general, you should not repeatedly rotate the already rotated image. Instead, keep the original image unchanged and update only an angle variable. If you rotate the image over and over again, the contents may be scaled up or down depending on the bitmap’s shape, resulting in visual artifacts and severe pixel degradation.
+	\item The approach used here works only because the bitmap represents a ball. In general, you should not repeatedly rotate the already rotated image. Instead, keep the original image unchanged and update only an angle variable. If you rotate the same image, the contents may be scaled up or down depending on the bitmap’s shape, resulting in visual artifacts and severe pixel degradation.
 \end{itemize}
 \end{warningbox}
 

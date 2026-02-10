@@ -1,18 +1,17 @@
 from time import time
 
-import pygame
-
 import config as cfg
+import pygame
 
 
 class Spritelib:
     def __init__(self, filename: str) -> None:
         self.image = pygame.image.load(filename).convert_alpha()
 
-    def subsurface(self, tilenumber: int) -> pygame.surface.Surface:
+    def subsurface(self, tilenumber: int) -> pygame.Surface:
         left = (tilenumber % cfg.TILEMAP_NOF_COLS) * cfg.TILESIZE.x # 
         top = (tilenumber // cfg.TILEMAP_NOF_COLS) * cfg.TILESIZE.y # 
-        tile_rect = pygame.rect.Rect((left, top), cfg.TILESIZE)
+        tile_rect = pygame.Rect((left, top), cfg.TILESIZE)
         return self.image.subsurface(tile_rect)
 
 
@@ -66,7 +65,7 @@ class WindowGame:
 
     def __init__(self) -> None:
         self.window = pygame.Window(size=cfg.TILEMAP_WINDOW.size)
-        self.screen : pygame.surface.Surface = self.window.get_surface()
+        self.screen : pygame.Surface = self.window.get_surface()
         self.rect = self.screen.get_frect()
         self.window.title = "Tilemap Example"
         self.clock = pygame.time.Clock()

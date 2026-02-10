@@ -1,8 +1,8 @@
 from random import choice, randint
 from typing import Any
 
-import pygame
 import config as cfg
+import pygame
 
 
 class Tile(pygame.sprite.Sprite):
@@ -30,11 +30,11 @@ class Player(pygame.sprite.Sprite):
 
     def __init__(self, position: tuple[float, float]) -> None:
         super().__init__()
-        self.image : pygame.surface.Surface = pygame.surface.Surface(cfg.TILESIZE_WORLD)
+        self.image : pygame.Surface = pygame.Surface(cfg.TILESIZE_WORLD)
         self.image.set_colorkey((0, 0, 0))
         self.radius = int(cfg.TILESIZE_WORLD.x // 2)
         pygame.draw.circle(self.image, "red", (self.radius, self.radius), self.radius)
-        self.rect : pygame.rect.FRect = self.image.get_frect(center=position)
+        self.rect : pygame.FRect = self.image.get_frect(center=position)
         self.image_small = pygame.transform.scale_by(self.image, cfg.ZOOM_BIRDEYE)#§\label{tilev0402}§
         rect = self.image_small.get_frect()
         pygame.draw.circle(self.image_small, "red", rect.center, self.radius * cfg.ZOOM_BIRDEYE.x)

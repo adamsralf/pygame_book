@@ -8,13 +8,13 @@ import pygame
 class Background(pygame.sprite.Sprite):
     def __init__(self, *groups: Tuple[pygame.sprite.Group]) -> None:
         super().__init__(*groups)
-        self.image = pygame.surface.Surface(cfg.WINDOW.size).convert()
+        self.image = pygame.Surface(cfg.WINDOW.size).convert()
         self.rect = self.image.get_rect()
         self.image.fill("darkred")
         self.paint_net()
 
     def paint_net(self) -> None:
-        net_rect = pygame.rect.Rect(0, 0, 0, 0)
+        net_rect = pygame.Rect(0, 0, 0, 0)
         net_rect.centerx = cfg.WINDOW.centerx
         net_rect.top = 50
         net_rect.size = (3, 30)

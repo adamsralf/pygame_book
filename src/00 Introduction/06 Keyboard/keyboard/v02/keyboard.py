@@ -1,9 +1,8 @@
 from time import time
 from typing import Any
 
-import pygame
-
 import config as cfg
+import pygame
 
 
 class Defender(pygame.sprite.Sprite):
@@ -12,7 +11,7 @@ class Defender(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load("images/defender01.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (30, 30))
-        self.rect = pygame.rect.FRect(self.image.get_rect())
+        self.rect = pygame.FRect(self.image.get_rect())
         self.rect.center = cfg.WINDOW.center       
         self.speed = 100
         self.direction = cfg.DIRECTIONS["stop"]    

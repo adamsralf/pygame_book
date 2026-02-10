@@ -2,9 +2,8 @@ import random
 from time import time
 from typing import Any
 
-import pygame
-
 import config as cfg
+import pygame
 from windows import WindowBirdEyeView, WindowCenteredCamera
 
 
@@ -27,7 +26,7 @@ class TreeContainer:
 class Player(pygame.sprite.Sprite):
     def __init__(self) -> None:
         super().__init__()
-        self.rect = pygame.rect.FRect(0, 0, 32, 32)
+        self.rect = pygame.FRect(0, 0, 32, 32)
         self.image = pygame.Surface(self.rect.size, pygame.SRCALPHA)
         pygame.draw.circle(self.image, (255, 0, 0), (16, 16), 16)
         self.rect.centerx = cfg.WORLD.centerx

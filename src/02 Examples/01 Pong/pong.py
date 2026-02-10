@@ -36,7 +36,7 @@ import pygame
 class Settings:
     """Project global settings."""
 
-    WINDOW = pygame.rect.Rect(0, 0, 1000, 600)
+    WINDOW = pygame.Rect(0, 0, 1000, 600)
     FPS = 60
     DELTATIME = 1.0 / FPS
     KI = {"left": False, "right": False}
@@ -80,14 +80,14 @@ class Background(pygame.sprite.Sprite):
     def __init__(self, *groups: Tuple[pygame.sprite.Group]) -> None:
         """Constructor"""
         super().__init__(*groups)
-        self.image = pygame.surface.Surface(Settings.WINDOW.size).convert()
+        self.image = pygame.Surface(Settings.WINDOW.size).convert()
         self.rect = self.image.get_rect()
         self.image.fill("darkred")
         self.paint_net()
 
     def paint_net(self) -> None:
         """A helping method to draw the net."""
-        net_rect = pygame.rect.Rect(0, 0, 0, 0)
+        net_rect = pygame.Rect(0, 0, 0, 0)
         net_rect.centerx = Settings.WINDOW.centerx
         net_rect.top = 50
         net_rect.size = (3, 30)
@@ -108,8 +108,8 @@ class Pause(pygame.sprite.Sprite):
     def __init__(self, *groups: Tuple[pygame.sprite.Group]) -> None:
         """Constructor."""
         super().__init__(*groups)
-        self.rect = pygame.rect.Rect(Settings.WINDOW.topleft, Settings.WINDOW.size)
-        self.image = pygame.surface.Surface(self.rect.size).convert_alpha()
+        self.rect = pygame.Rect(Settings.WINDOW.topleft, Settings.WINDOW.size)
+        self.image = pygame.Surface(self.rect.size).convert_alpha()
         self.image.fill([120, 120, 120, 200])  # transparentes Grau§\label{srcPong0801}§
 
 
@@ -126,8 +126,8 @@ class Help(pygame.sprite.Sprite):
     def __init__(self, *groups: Tuple[pygame.sprite.Group]) -> None:
         """Constructor."""
         super().__init__(*groups)
-        self.rect = pygame.rect.Rect(Settings.WINDOW.topleft, Settings.WINDOW.size)
-        self.image = pygame.surface.Surface(self.rect.size).convert_alpha()
+        self.rect = pygame.Rect(Settings.WINDOW.topleft, Settings.WINDOW.size)
+        self.image = pygame.Surface(self.rect.size).convert_alpha()
         self.image.fill([20, 20, 20, 200])  # transparent gray
         font = pygame.font.Font(pygame.font.get_default_font(), 20)
         text_l = "h\np\nESC\n\nF2\nk\nl\nr\n\nUP\nDOWN\nw\ns"
@@ -159,11 +159,11 @@ class Paddle(pygame.sprite.Sprite):
             *groups (Tuple[pygame.sprite.Group]): Optional sprite groups to add the paddle to.
         """
         super().__init__(*groups)
-        self.rect = pygame.rect.FRect(0, 0, 15, Settings.WINDOW.height // 10)
+        self.rect = pygame.FRect(0, 0, 15, Settings.WINDOW.height // 10)
         self.rect.centery = Settings.WINDOW.centery
         self.images = {
-            "byhand": pygame.surface.Surface(self.rect.size).convert(),
-            "byki": pygame.surface.Surface(self.rect.size).convert(),
+            "byhand": pygame.Surface(self.rect.size).convert(),
+            "byki": pygame.Surface(self.rect.size).convert(),
         }
         self.images["byhand"].fill("yellow")
         self.images["byki"].fill("deepskyblue2")
@@ -263,9 +263,9 @@ class Ball(pygame.sprite.Sprite):
         self.sounds["right"] = pygame.mixer.Sound(Settings.get_sound("playerr.mp3"))
         self.sounds["bounce"] = pygame.mixer.Sound(Settings.get_sound("bounce.mp3"))
         self.channel = pygame.mixer.find_channel()
-        self.rect = pygame.rect.FRect(0, 0, 20, 20)
+        self.rect = pygame.FRect(0, 0, 20, 20)
 
-        self.image = pygame.surface.Surface(self.rect.size).convert()
+        self.image = pygame.Surface(self.rect.size).convert()
         self.image.set_colorkey("black")
         pygame.draw.circle(self.image, "green", self.rect.center, self.rect.width // 2)
         self.speed = Settings.WINDOW.width // 3
@@ -347,8 +347,8 @@ class Score(pygame.sprite.Sprite):
     Attributes:
         _font (pygame.font.Font): The font used for rendering the score.
         _score (dict): A dictionary storing the scores of the players.
-        image (pygame.surface.Surface): The rendered image of the score.
-        rect (pygame.rect.Rect): The rectangle representing the position and size of the score image.
+        image (pygame.Surface): The rendered image of the score.
+        rect (pygame.Rect): The rectangle representing the position and size of the score image.
     """
 
     def __init__(self, *groups: Tuple[pygame.sprite.Group]):
@@ -360,8 +360,8 @@ class Score(pygame.sprite.Sprite):
         super().__init__(*groups)
         self.font = pygame.font.SysFont(None, 30)
         self.score = {1: 0, 2: 0}
-        self.image: pygame.surface.Surface = None
-        self.rect: pygame.rect.Rect = None
+        self.image: pygame.Surface = None
+        self.rect: pygame.Rect = None
         self.render()
 
     def update(self, *args: Any, **kwargs: Any) -> None:

@@ -33,31 +33,13 @@
 % -------------------------------------------------
 % Code Listings
 % -------------------------------------------------
-\usepackage{minted}
+%\usepackage{minted}
 \usepackage{listings}
 \usepackage{verbatim}
 % -------------------------------------------------
 % Enumerations
 % -------------------------------------------------
 \usepackage{enumerate}
-% -------------------------------------------------
-% Hyperlinks & PDF Metadata
-% -------------------------------------------------
-\usepackage[
-	luatex,
-	unicode=true,
-	breaklinks=true,
-	bookmarksnumbered=true,
-	colorlinks,
-	linkcolor=blue,
-	linktocpage,
-	pdfauthor={Ralf Adams},
-	pdftitle={Introduction to Pygame-ce},
-	pdfsubject={Game Development with Python and Pygame-ce},
-	pdfkeywords={Python, Pygame, Game Development, Programming},
-	pdfcreator={LuaLaTeX},
-	pdfproducer={LaTeX}
-]{hyperref}
 % -------------------------------------------------
 % Tables
 % -------------------------------------------------
@@ -118,12 +100,31 @@
 \makeindex
 \makeglossaries
 
+% -------------------------------------------------
+% Hyperlinks & PDF Metadata
+% -------------------------------------------------
+\usepackage[
+luatex,
+unicode=true,
+breaklinks=true,
+bookmarksnumbered=true,
+colorlinks,
+linkcolor=blue,
+linktocpage,
+pdfauthor={Ralf Adams},
+pdftitle={Introduction to Pygame-ce},
+pdfsubject={Game Development with Python and Pygame-ce},
+pdfkeywords={Python, Pygame, Game Development, Programming},
+pdfcreator={LuaLaTeX},
+pdfproducer={LuaLaTeX}
+]{hyperref}
+
 
 \begin{document}
 
   \title{Introduction to \\ Pygame-ce\\2D Game Programming}
   \author{Ralf Adams}
-  \date{Version 1.1 (\today)}
+  \date{Version 1.2 (\today)}
 %  \maketitle
   
 \begin{titlepage}
@@ -134,7 +135,7 @@
 	{\Large 2D Game Programming\par}
 	\vfill
 	{\large Ralf Adams\par}
-	{\large Version 1.1 (\today)\par}
+	{\large Version 1.2 (\today)\par}
 \end{titlepage}
   
   

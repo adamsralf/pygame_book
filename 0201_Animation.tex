@@ -20,7 +20,7 @@ At first the \texttt{config.py}:
 
 The source code in \srcref[vref]{srcAnimation00b} differs from the chapter above (see \secref[vref]{secClassTimer} by only one feature. The \texttt{Timer} class has been extended by the method \texttt{change\_duration()}. This method makes it possible to change the duration of the time interval at runtime, with a lower limit of~\SI{0}{ms}. We will use this feature shortly to manually adjust the animation speed.
 
-\lstsource{SRC/01 Techniques/01 Animation/animation00.py}{9}{27}{python}{The running cat (1), Version 1.0 --  \texttt{Timer}}{srcAnimation00b} 
+\lstsource{SRC/01 Techniques/01 Animation/animation00.py}{8}{26}{python}{The running cat (1), Version 1.0 --  \texttt{Timer}}{srcAnimation00b} 
 
 If we want to animate something, this animation does not require just a single sprite for display, but several. For this reason, in addition to the \texttt{image} attribute, I~introduced another one: the list \texttt{images}. Using a \forSchleife\ starting at \zeiref{srcAnimation0001}, I~now load all bitmaps of the animation into this list.
 
@@ -28,19 +28,19 @@ We now need an attribute that keeps track of which of the 6~sprites should curre
 
 In the \texttt{update()} method, the \texttt{imageindex} attribute is incremented by~1 depending on the \texttt{Timer} object, and the corresponding bitmap is then assigned to the \texttt{image} attribute so that the familiar \texttt{Sprite} features can be used. The method \texttt{change\_animation\_time()} simply forwards its parameter to the \texttt{Timer} object. With this, all preparatory steps are essentially complete.
 
-\lstsource{SRC/01 Techniques/01 Animation/animation00.py}{30}{56}{python}{The running cat (2), Version 1.0 --  \texttt{Cat}}{srcAnimation00c} 
+\lstsource{SRC/01 Techniques/01 Animation/animation00.py}{29}{55}{python}{The running cat (2), Version 1.0 --  \texttt{Cat}}{srcAnimation00c} 
 
 The \texttt{CatAnimation} class is merely the usual encapsulation of the main program. In \zeiref{srcAnimation0002}, the \texttt{Cat} object is created and placed into a \texttt{GroupSingle}.
 
-\lstsource{SRC/01 Techniques/01 Animation/animation00.py}{59}{82}{python}{The running cat (3), Version 1.0 --  Constructor and \texttt{run()}}{srcAnimation00d} 
+\lstsource{SRC/01 Techniques/01 Animation/animation00.py}{58}{81}{python}{The running cat (3), Version 1.0 --  Constructor and \texttt{run()}}{srcAnimation00d} 
 
 In \texttt{watch\_for\_events()}, the only noteworthy aspect is that \keys{{+}} and the \keys{-} key are used to manipulate the animation speed. To increase the animation speed, the time interval of the \texttt{Timer} object has to be reduced, hence~\texttt{-10}. To slow down the animation, the time interval of the \texttt{Timer} object has to be increased, hence~\texttt{+10}.
 
-\lstsource{SRC/01 Techniques/01 Animation/animation00.py}{84}{94}{python}{The running cat (4), Version 1.0 --  \texttt{watch\_for\_events()}}{srcAnimation00e} 
+\lstsource{SRC/01 Techniques/01 Animation/animation00.py}{83}{93}{python}{The running cat (4), Version 1.0 --  \texttt{watch\_for\_events()}}{srcAnimation00e} 
 
 The remaining source code (\srcref[vref]{srcAnimation00f}) should be self-explanatory. When you start the program, an animated cat movement will be displayed. Feel free to try changing the animation speed.
 
-\lstsource{SRC/01 Techniques/01 Animation/animation00.py}{96}{107}{python}{The running cat (5), Version 1.0 -- \texttt{update()} and \texttt{draw()}}{srcAnimation00f} 
+\lstsource{SRC/01 Techniques/01 Animation/animation00.py}{97}{106}{python}{The running cat (5), Version 1.0 -- \texttt{update()} and \texttt{draw()}}{srcAnimation00f} 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{The Class Animation}
@@ -70,12 +70,12 @@ In the \texttt{next()} method, the next \texttt{imageindex} is calculated and th
 
 A feature that is often needed has been implemented in the \texttt{is\_ended()} method. Frequently, the code that triggered the animation needs to know whether the animation has finished. We will make use of this later on.
 
-\lstsource{SRC/01 Techniques/01 Animation/animation01.py}{10}{38}{python}{The running cat (6), Version 1.1 -- \texttt{Animation}}{srcAnimation01a} 
+\lstsource{SRC/01 Techniques/01 Animation/animation01.py}{9}{37}{python}{The running cat (6), Version 1.1 -- \texttt{Animation}}{srcAnimation01a} 
 
 This simplifies the \texttt{Cat} class, allowing it to focus again on its -- admittedly still non-existent -- game logic. The \texttt{Animation} object is created here in \zeiref{srcAnimation0102}. The file names can be generated very easily, since they are numbered consecutively. The cat is supposed to run endlessly, with a time interval of \SI{100}{ms} between the sprites. In \texttt{update()}, the \texttt{next()} method is then simply called.
 
 
-\lstsource{SRC/01 Techniques/01 Animation/animation01.py}{62}{78}{python}{The running cat (7), Version 1.1 -- \texttt{Cat}}{srcAnimation01b} 
+\lstsource{SRC/01 Techniques/01 Animation/animation01.py}{61}{77}{python}{The running cat (7), Version 1.1 -- \texttt{Cat}}{srcAnimation01b} 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{The Exploding Rock}
@@ -93,14 +93,14 @@ What is the purpose of the three lines starting at \zeiref{srcAnimation0204}? Th
 Finally, it is checked whether the animation has finished. If so, the sprite is no longer needed and can be removed from the sprite group using \texttt{kill()}\randnotiz{kill()}\myindex{pyg}{\texttt{sprite}!\texttt{Sprite}!\texttt{kill()}}.
 
 
-\lstsource{SRC/01 Techniques/01 Animation/animation02.py}{63}{85}{python}{The exploding rock (1) -- \texttt{Rock}}{srcAnimation02a} 
+\lstsource{SRC/01 Techniques/01 Animation/animation02.py}{62}{84}{python}{The exploding rock (1) -- \texttt{Rock}}{srcAnimation02a} 
 
 \myebild{animation01.png}{0.8}{The exploding rock: frame sprites}{picAnimation01}
 
 The \texttt{ExplosionAnimation} class should no longer pose any difficulty for you. There are only a few places that I~would like to briefly address. In \zeiref{srcAnimation0205}, a \texttt{Timer} object is created that is supposed to spawn two rocks per second, and in \zeiref{srcAnimation0206} this timer is checked.
 
 \newpage
-\lstsource{SRC/01 Techniques/01 Animation/animation02.py}{88}{129}{python}{The exploding rock (2) -- \texttt{ExplosionAnimation}}{srcAnimation02b} 
+\lstsource{SRC/01 Techniques/01 Animation/animation02.py}{87}{128}{python}{The exploding rock (2) -- \texttt{ExplosionAnimation}}{srcAnimation02b} 
 
 \begin{hintbox}[Hint]
 	There is also the source file \texttt{animation03.py}. In this variant, the rocks move and explode when they collide with each other. Take a look!

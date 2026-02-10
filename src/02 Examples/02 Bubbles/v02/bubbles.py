@@ -25,7 +25,7 @@ class Background(pygame.sprite.Sprite):
     def __init__(self) -> None:
         super().__init__()
         imagename = cfg.get_image("aquarium.png")
-        self.image: pygame.surface.Surface = pygame.image.load(imagename).convert()
+        self.image: pygame.Surface = pygame.image.load(imagename).convert()
         self.image = pygame.transform.scale(self.image, cfg.WINDOW.size)
         self.rect = self.image.get_rect()
 
@@ -35,9 +35,9 @@ class Bubble(pygame.sprite.Sprite):
         super().__init__()
         self.radius = cfg.RADIUS["min"]
         imagename = cfg.get_image("bubble1.png")
-        self.image: pygame.surface.Surface = pygame.image.load(imagename).convert_alpha()
+        self.image: pygame.Surface = pygame.image.load(imagename).convert_alpha()
         self.image = pygame.transform.scale(self.image, (cfg.RADIUS["min"], cfg.RADIUS["min"]))
-        self.rect: pygame.rect.Rect = self.image.get_rect()
+        self.rect: pygame.Rect = self.image.get_rect()
 
     def update(self, *args: Any, **kwargs: Any) -> None:
         pass

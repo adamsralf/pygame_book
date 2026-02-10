@@ -226,6 +226,8 @@ __marimo__/
 *.lol
 *.fls
 *.fdb_latexmk
+*.synctex
+*.synctex(busy)
 *.synctex.gz
 *.synctex.gz(busy)
 *.bbl

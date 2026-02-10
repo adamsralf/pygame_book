@@ -1,4 +1,3 @@
-
 import config as cfg
 import pygame
 from pygame.constants import K_ESCAPE, KEYDOWN, QUIT

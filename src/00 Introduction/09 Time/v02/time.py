@@ -1,9 +1,8 @@
 from time import time
 from typing import Any, Tuple
 
-import pygame
-
 import config as cfg
+import pygame
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -11,7 +10,7 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self, filename: str) -> None:
         super().__init__()
         self.image = pygame.image.load(cfg.imagepath(filename)).convert_alpha()
-        self.rect = pygame.rect.FRect(self.image.get_rect())
+        self.rect = pygame.FRect(self.image.get_rect())
         self.rect.topleft = (10, 10)
         self.direction = 1
         self.speed = pygame.math.Vector2(150, 0)
@@ -29,7 +28,7 @@ class Bullet(pygame.sprite.Sprite):
     def __init__(self, picturefile: str, startpos: Tuple[int, int]) -> None:
         super().__init__()
         self.image = pygame.image.load(cfg.imagepath(picturefile)).convert_alpha()
-        self.rect = pygame.rect.FRect(self.image.get_rect())
+        self.rect = pygame.FRect(self.image.get_rect())
         self.rect.center = startpos
         self.direction = 1
         self.speed = pygame.math.Vector2(0, 100)

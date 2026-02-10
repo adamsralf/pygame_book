@@ -1,4 +1,3 @@
-
 import pygame
 
 
@@ -9,7 +8,7 @@ class Circle:                                       # Very helpful§\label{srcCi
         self.radius = 20
         self.color = "blue"
 
-    def draw(self, screen: pygame.surface.Surface) -> None:
+    def draw(self, screen: pygame.Surface) -> None:
         pygame.draw.circle(screen, self.color, (self.posx, self.posy), self.radius)
 
 

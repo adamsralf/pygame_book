@@ -1,15 +1,14 @@
 from time import time
 
-import pygame
-
 import config as cfg
+import pygame
 
 
 class WindowGame:
 
     def __init__(self) -> None:
         self.window = pygame.Window(size=cfg.TILEMAP_WINDOW.size)
-        self.screen : pygame.surface.Surface = self.window.get_surface()
+        self.screen : pygame.Surface = self.window.get_surface()
         self.spritelib = pygame.image.load("images/forest_tiles.png").convert_alpha()
         self.rect = self.screen.get_frect()
         self.window.title = "Tilemap Example"
@@ -17,7 +16,7 @@ class WindowGame:
 
     def draw(self) -> None:
         self.screen.fill("black")
-        image = self.spritelib.subsurface(pygame.rect.Rect((0, 0), cfg.TILESIZE))
+        image = self.spritelib.subsurface(pygame.Rect((0, 0), cfg.TILESIZE))
         for row in range(cfg.TILEMAP_NOF_ROWS):
             for col in range(cfg.TILEMAP_NOF_COLS):
                 position = col * cfg.TILESIZE.x, row * cfg.TILESIZE.y

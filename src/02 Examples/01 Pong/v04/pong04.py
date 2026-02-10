@@ -6,17 +6,16 @@ import config as cfg
 import pygame
 
 
-
 class Background(pygame.sprite.Sprite):
     def __init__(self, *groups: Tuple[pygame.sprite.Group]) -> None:
         super().__init__(*groups)
-        self.image = pygame.surface.Surface(cfg.WINDOW.size).convert()
+        self.image = pygame.Surface(cfg.WINDOW.size).convert()
         self.rect = self.image.get_rect()
         self.image.fill("darkred")
         self.paint_net()
 
     def paint_net(self) -> None:
-        net_rect = pygame.rect.Rect(0, 0, 0, 0)
+        net_rect = pygame.Rect(0, 0, 0, 0)
         net_rect.centerx = cfg.WINDOW.centerx
         net_rect.top = 50
         net_rect.size = (3, 30)
@@ -31,7 +30,7 @@ class Paddle(pygame.sprite.Sprite):
 
     def __init__(self, player: str, *groups: Tuple[pygame.sprite.Group]) -> None:
         super().__init__(*groups)
-        self.rect = pygame.rect.FRect(0, 0, 15, cfg.WINDOW.height // 10)
+        self.rect = pygame.FRect(0, 0, 15, cfg.WINDOW.height // 10)
         self.rect.centery = cfg.WINDOW.centery
         self.player = player
         if self.player == "left":
@@ -40,7 +39,7 @@ class Paddle(pygame.sprite.Sprite):
             self.rect.right = cfg.WINDOW.right - Paddle.BORDERDISTANCE["horizontal"]
         self.speed = cfg.WINDOW.height // 2
         self.direction = Paddle.DIRECTION["halt"]  
-        self.image = pygame.surface.Surface(self.rect.size)
+        self.image = pygame.Surface(self.rect.size)
         self.image.fill("yellow")
 
     def update(self, *args: Any, **kwargs: Any) -> None:
@@ -63,8 +62,8 @@ class Paddle(pygame.sprite.Sprite):
 class Ball(pygame.sprite.Sprite):
     def __init__(self, *groups: Tuple[pygame.sprite.Group]) -> None:
         super().__init__(*groups)
-        self.rect = pygame.rect.FRect(0, 0, 20, 20)
-        self.image = pygame.surface.Surface(self.rect.size).convert()
+        self.rect = pygame.FRect(0, 0, 20, 20)
+        self.image = pygame.Surface(self.rect.size).convert()
         self.image.set_colorkey("black")
         pygame.draw.circle(self.image, "white", self.rect.center, self.rect.width // 2)
         self.speed = cfg.WINDOW.width // 3
@@ -117,8 +116,8 @@ class Score(pygame.sprite.Sprite):
         super().__init__(*groups)
         self.font = pygame.font.SysFont(None, 30)
         self.score = {1: 0, 2: 0}                   # Not in Settings anymore!§\label{srcPong0405}§
-        self.image: pygame.surface.Surface = None
-        self.rect: pygame.rect.Rect = None
+        self.image: pygame.Surface = None
+        self.rect: pygame.Rect = None
         self.render()
 
     def update(self, *args: Any, **kwargs: Any) -> None:

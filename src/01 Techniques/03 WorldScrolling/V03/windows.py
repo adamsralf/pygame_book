@@ -11,7 +11,7 @@ class WindowPlain:
         self.window = pygame.Window(size=cfg.WINDOW.size)
         self.window.position = (0 * (cfg.WINDOW.width + 60), 
                                 0 * (cfg.WINDOW.height) + 30)
-        self.screen : pygame.surface.Surface = self.window.get_surface()
+        self.screen : pygame.Surface = self.window.get_surface()
         self.rect = self.screen.get_frect()
         self.window.title = f"Plain Window (size={self.rect.size})"
         self.clock = pygame.time.Clock()
@@ -34,7 +34,7 @@ class WindowPlain:
 
 class WindowBirdEyeView:
 
-    def __init__(self, world_screen:pygame.surface.Surface) -> None:
+    def __init__(self, world_screen:pygame.Surface) -> None:
         self.world_screen = world_screen
         zx = cfg.WINDOW.width / cfg.WORLD.width
         zy = cfg.WINDOW.height / cfg.WORLD.height
@@ -42,7 +42,7 @@ class WindowBirdEyeView:
         self.window = pygame.Window(size=cfg.WINDOW.size)
         self.window.position = (1 * (cfg.WINDOW.width + 60), 
                                 0 * (cfg.WINDOW.height) + 30)
-        self.screen : pygame.surface.Surface = self.window.get_surface()
+        self.screen : pygame.Surface = self.window.get_surface()
         self.rect = self.screen.get_frect()
         self.window.title = f"Birdeye (zoom=({self.zoom.x:0.2f}, {self.zoom.y:0.2f})"
 

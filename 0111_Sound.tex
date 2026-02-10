@@ -37,29 +37,29 @@ Playback begins after the volume has been set in \zeiref{srcSound0004} using\ran
 	\item If the music should start quietly and then become louder (\gls{fade}\index{fade}\randnotiz{fade}), this can be achieved using the third parameter \texttt{fade}. Here, you can specify how many milliseconds are available for the fade-in; if nothing is specified, playback starts immediately at the target volume.
 \end{itemize}
 
-\lstsource{SRC/00 Introduction/11 Sound/music/sound.py}{9}{23}{python}{Sound -- Constructor and \texttt{sounds()} of \texttt{Game}}{srcSound00b} 
+\lstsource{SRC/00 Introduction/11 Sound/music/sound.py}{8}{22}{python}{Sound -- Constructor and \texttt{sounds()} of \texttt{Game}}{srcSound00b} 
 
  The \texttt{watch\_for\_events()} method acts purely as a dispatcher. Depending on which key is pressed or which mouse element is used, the corresponding helper methods are called.
 
-\lstsource{SRC/00 Introduction/11 Sound/music/sound.py}{25}{43}{python}{Sound -- \texttt{Game.watch\_for\_events()}}{srcSound00c} 
+\lstsource{SRC/00 Introduction/11 Sound/music/sound.py}{24}{42}{python}{Sound -- \texttt{Game.watch\_for\_events()}}{srcSound00c} 
 
 I~want to start the background music at some times and fade it out at others. This is handled by the helper method \texttt{music\_start\_stop()}. The background music is stopped using \texttt{pygame.mixer.music.fadeout()}\myindex{pyg}{\texttt{mixer}!\texttt{music}!\texttt{fadeout()}|underline}\randnotiz{fadeout()}. Here, you have to specify over how many milliseconds the music should gradually become quieter until it stops -- in our example, this is~\SI{5000}{ms}. The method \texttt{pygame.mixer.music.play()}\myindex{pyg}{\texttt{mixer}!\texttt{music}!\texttt{play()}} used to start the background music has already been explained above.
 
-\lstsource{SRC/00 Introduction/11 Sound/music/sound.py}{46}{50}{python}{Sound -- \texttt{Game.music\_start\_stop()}}{srcSound00e} 
+\lstsource{SRC/00 Introduction/11 Sound/music/sound.py}{45}{49}{python}{Sound -- \texttt{Game.music\_start\_stop()}}{srcSound00e} 
 
 Pressing \keys{p} pauses the background music or resumes playback. The current state is stored in the attribute \texttt{pause}. This attribute then determines which of the two \texttt{music} methods is called in the \texttt{pause\_alter()} method -- either  \texttt{pygame.mixer.music.pause()}\myindex{pyg}{\texttt{mixer}!\texttt{music}!\texttt{pause()}|underline}\randnotiz{pause()} or \texttt{pygame.mixer.music.unpause()}\myindex{pyg}{\texttt{mixer}!\texttt{music}!\texttt{unpause()}|underline}\randnotiz{unpause()}. Finally, in \zeiref{srcSound0007}, the \texttt{pause} flag is toggled.
 
-\lstsource{SRC/00 Introduction/11 Sound/music/sound.py}{52}{57}{python}{Sound -- \texttt{Game.pause\_alter()}}{srcSound00f} 
+\lstsource{SRC/00 Introduction/11 Sound/music/sound.py}{51}{56}{python}{Sound -- \texttt{Game.pause\_alter()}}{srcSound00f} 
 
 As the final feature, volume control is introduced. It is encapsulated in the \texttt{volume\-\_alter()} method. Instead of passing an absolute volume value to this method, a delta value is provided.
 
 First, this value is added to the \texttt{volume} variable. Afterwards, the value is clamped to the interval $[0, 1]$, and finally the new volume is set using \texttt{pygame.mixer.music.set\-\_volume()}\myindex{pyg}{\texttt{mixer}!\texttt{music}!\texttt{set\_volume()}|underline}\randnotiz{set\_volume()}.
 
-\lstsource{SRC/00 Introduction/11 Sound/music/sound.py}{59}{63}{python}{Sound -- \texttt{volume\_alter()} von \texttt{Game}}{srcSound00g} 
+\lstsource{SRC/00 Introduction/11 Sound/music/sound.py}{58}{62}{python}{Sound -- \texttt{volume\_alter()} von \texttt{Game}}{srcSound00g} 
 
 And finally, we deal with the remaining bits.
 
-\lstsource{SRC/00 Introduction/11 Sound/music/sound.py}{65}{85}{python}{Sound -- \texttt{draw()}, \texttt{update()}, \texttt{run()} of \texttt{Game}}{srcSound00h} 
+\lstsource{SRC/00 Introduction/11 Sound/music/sound.py}{64}{84}{python}{Sound -- \texttt{draw()}, \texttt{update()}, \texttt{run()} of \texttt{Game}}{srcSound00h} 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Sound: Events}\index{sound!event}
@@ -69,14 +69,14 @@ And finally, we deal with the remaining bits.
 
 For sound effects\index{sound effects}\randnotiz{sound effects}, a separate \texttt{Sound} object is created in each case (\zeiref{srcSound0101}ff.). The constructor of \texttt{pygame.mixer.Sound}\myindex{pyg}{\texttt{mixer}!\texttt{Sound}|underline} is given the file name including the path. If you already have an open file object, you can pass that instead; in this case, however, you should provide a second parameter specifying the sound encoding, for example \texttt{.\gls{ogg}}\index{ogg} or \texttt{.\gls{mp3}}\index{mp3}. As with background music, loading a sound is not the same as playing it.
 
-\lstsource{SRC/00 Introduction/11 Sound/effects/sound.py}{19}{21}{python}{Sound -- \texttt{Game.sound()}}{srcSound01a} 
+\lstsource{SRC/00 Introduction/11 Sound/effects/sound.py}{17}{19}{python}{Sound -- \texttt{Game.sound()}}{srcSound01a} 
 
 In \zeiref{srcSound0106}, the current volume is first stored in a variable using
 \texttt{pygame\-.mixer\-.Sound\-.get\_\-volume()}\randnotiz{get\_volume()}\myindex{pyg}{\texttt{mixer}!\texttt{Sound}!\texttt{get\_volume()}}. To ensure that both sounds are played at the same volume, this value is modified and then applied to both sounds using
 \texttt{pygame.mixer.Sound.set\_volume()}\randnotiz{set\_volume()}\myindex{pyg}{\texttt{mixer}!\texttt{Sound}!\texttt{set\_volume()}}.
 
 \newpage
-\lstsource{SRC/00 Introduction/11 Sound/effects/sound.py}{40}{45}{python}{Sound -- \texttt{Game.volume\_alter()}}{srcSound01b} 
+\lstsource{SRC/00 Introduction/11 Sound/effects/sound.py}{38}{43}{python}{Sound -- \texttt{Game.volume\_alter()}}{srcSound01b} 
 
 For simplicity, the sounds are played directly in \texttt{watch\_for\_events()} (see \zeiref{srcSound0103} and \zeiref{srcSound0104}). The actual playback is done using \texttt{pygame.mixer.Sound.play()}\myindex{pyg}{\texttt{mixer}!\texttt{Sound}!\texttt{play()}|underline}\randnotiz{play()}. You can see that the \texttt{play()} method is called on the corresponding \texttt{Sound} object.
 
@@ -89,7 +89,7 @@ The \texttt{play()} method provides three optional arguments:
 
 If -- as in this case --no arguments are provided, the sound starts playing immediately and stops automatically after it has finished playing. Any other sounds that are currently being played by other \texttt{Sound} objects are not interrupted. This means that multiple sounds can be played at the same time.
 
-\lstsource{SRC/00 Introduction/11 Sound/effects/sound.py}{23}{38}{python}{Sound -- \texttt{Game.watch\_for\_events()()}}{srcSound01c} 
+\lstsource{SRC/00 Introduction/11 Sound/effects/sound.py}{21}{36}{python}{Sound -- \texttt{Game.watch\_for\_events()()}}{srcSound01c} 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -112,7 +112,7 @@ First, the necessary boilerplate, which should not require any further explanati
 
 \lstsource{SRC/00 Introduction/11 Sound/stereo/config.py}{1}{43}{python}{Sound-Stereo -- \texttt{config.py}}{srcSound01aa} 
 
-\lstsource{SRC/00 Introduction/11 Sound/stereo/sound.py}{12}{23}{python}{Sound-Stereo -- Class \texttt{Ground}}{srcSound01ab} 
+\lstsource{SRC/00 Introduction/11 Sound/stereo/sound.py}{11}{22}{python}{Sound-Stereo -- Class \texttt{Ground}}{srcSound01ab} 
 
 In \zeiref{srcSound0101}, a \texttt{Sound} object\myindex{pyg}{\texttt{mixer}!\texttt{Sound}}\randnotiz{Sound object} is created. This object is played to emphasize the movement of the tank with appropriate sounds. In the following line (\zeiref{srcSound0201}), the helper method \texttt{stereo()} is called (see below), and then the playback of the driving sound starts in an infinite loop (\zeiref{srcSound0203}). 
 
@@ -127,11 +127,11 @@ Playback in \zeiref{srcSound0203} is then no longer started via a method of the 
 This makes it possible to adjust volume and stereo panning dynamically while the sound is playing.
 
 \newpage
-\lstsource{SRC/00 Introduction/11 Sound/stereo/sound.py}{26}{50}{python}{Sound-Stereo -- Constructor of \texttt{Tank}}{srcSound02b} 
+\lstsource{SRC/00 Introduction/11 Sound/stereo/sound.py}{25}{49}{python}{Sound-Stereo -- Constructor of \texttt{Tank}}{srcSound02b} 
 
 The \texttt{update()} method is shown here only for completeness. It does not contain any code related to sound playback.
 
-\lstsource{SRC/00 Introduction/11 Sound/stereo/sound.py}{52}{75}{python}{Sound-Stereo -- \texttt{Tank.update()}}{srcSound02c} 
+\lstsource{SRC/00 Introduction/11 Sound/stereo/sound.py}{51}{74}{python}{Sound-Stereo -- \texttt{Tank.update()}}{srcSound02c} 
 
 The \texttt{stereo()} method is surprisingly simple. The method \texttt{pygame.mixer.Channel\-.set-\_vol\-ume()}\myindex{pyg}{\texttt{mixer}!\texttt{Channel}!\texttt{set\_volume()}|underline}\randnotiz{set\_volume()} provides two parameters: \emph{left} and \emph{right}. Both parameters have a value range of~$[0, 1]$.
 
@@ -143,13 +143,13 @@ Once this value is known, the relative value for the left speaker can be determi
 	The method \texttt{pygame.mixer.Channel\-.set\-\_vol\-ume()} allows different volume levels to be specified for the left and right Pygame channels, whereas the methods \texttt{pygame\-.mix\-er\-.Sound\-.set\-\_vol\-ume()}\myindex{pyg}{\texttt{mixer}!\texttt{Sound}!\texttt{set\_volume()}} and \texttt{pygame.mixer.music\-.set\-\_vol\-ume()}\myindex{pyg}{\texttt{mixer}!\texttt{music}!\texttt{set\_volume()}} do not. 
 \end{hintbox}
  
- \lstsource{SRC/00 Introduction/11 Sound/stereo/sound.py}{77}{80}{python}{Sound-Stereo -- \texttt{Tank.stereo()}}{srcSound02d} 
+ \lstsource{SRC/00 Introduction/11 Sound/stereo/sound.py}{76}{79}{python}{Sound-Stereo -- \texttt{Tank.stereo()}}{srcSound02d} 
 
 What else could this effect be used for? For example, think of two people talking to each other, sound sources in a room, and so on. Whenever audio is meant to make localization easier, or when individual sounds should stand out or be easier to distinguish, different volume levels -- i.e., stereo -- are a good option.
 
 Nothing related to sound output happens in \texttt{turn()} and \texttt{update\_imageindex()}.
 
-\lstsource{SRC/00 Introduction/11 Sound/stereo/sound.py}{82}{89}{python}{Sound-Stereo -- \texttt{Tank.turn()} and \texttt{Tank.update\_imageindex()}}{srcSound02e} 
+\lstsource{SRC/00 Introduction/11 Sound/stereo/sound.py}{81}{88}{python}{Sound-Stereo -- \texttt{Tank.turn()} and \texttt{Tank.update\_imageindex()}}{srcSound02e} 
 
 The sound output of the \texttt{Bullet} could also have been implemented in the \texttt{Tank} class. However, I~find it more natural to place it in \texttt{Bullet}. After all, it might later be extended to include an impact sound or an explosion.
 
@@ -158,11 +158,11 @@ Before the constructor, the static variable \texttt{sound\_fire} is defined in \
 After that, a free channel is searched for, just as with the tank, and the volume of the left and right speakers is determined based on the position.
 Finally, the sound is played based on the horizontal position of the bullet.
 
-\lstsource{SRC/00 Introduction/11 Sound/stereo/sound.py}{92}{126}{python}{Sound-Stereo -- Class \texttt{Bullet}}{srcSound02g} 
+\lstsource{SRC/00 Introduction/11 Sound/stereo/sound.py}{91}{125}{python}{Sound-Stereo -- Class \texttt{Bullet}}{srcSound02g} 
 
 The remaining source code is shown here only for the sake of completeness.
 
-\lstsource{SRC/00 Introduction/11 Sound/stereo/sound.py}{129}{186}{python}{Sound-Stereo -- Rest}{srcSound02h} 
+\lstsource{SRC/00 Introduction/11 Sound/stereo/sound.py}{128}{185}{python}{Sound-Stereo -- Rest}{srcSound02h} 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -8,10 +8,10 @@ def main():
     screen = window.get_surface()                   
     clock = pygame.time.Clock()
 
-    mygrey = pygame.Color(200, 200, 200)                     # Custom color§\label{srcPrimitives01}§
-    myrectangle1 = pygame.rect.Rect(10, 10, 20, 30)          # Rectangle object§\label{srcPrimitives02}§
-    myrectangle2 = pygame.rect.Rect(60, 10, 20, 30)
-    points1 = ((120, 10), (160, 10), (140, 90))              # List of points§\label{srcPrimitives05}§
+    mygrey = pygame.Color(200, 200, 200)                    # Custom color§\label{srcPrimitives01}§
+    myrectangle1 = pygame.Rect(10, 10, 20, 30)              # Rectangle object§\label{srcPrimitives02}§
+    myrectangle2 = pygame.Rect(60, 10, 20, 30)
+    points1 = ((120, 10), (160, 10), (140, 90))             # List of points§\label{srcPrimitives05}§
     points2 = ((180, 10), (220, 10), (200, 90))
 
     running = True
@@ -20,13 +20,13 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
         screen.fill(mygrey)
-        pygame.draw.rect(screen, "red", myrectangle1)               # Filled rectangle§\label{srcPrimitives03}§
-        pygame.draw.rect(screen, "red", myrectangle2, 3, 5)         # Rectangle outline§\label{srcPrimitives04}§
-        pygame.draw.polygon(screen, "green", points1)               # Filled polygon§\label{srcPrimitives06}§
-        pygame.draw.polygon(screen, "green", points2, 1)            # Polygon outline§\label{srcPrimitives07}§
-        pygame.draw.line(screen, "red", (5, 230), (240, 230), 3)    # Line§\label{srcPrimitives08}§
-        pygame.draw.circle(screen, "blue", (40, 150), 30)           # Filled circle§\label{srcPrimitives09}§
-        pygame.draw.circle(screen, "blue", (110, 150), 30, 2)       # Circle outline§\label{srcPrimitives10}§
+        pygame.draw.rect(screen, "red", myrectangle1)                # Filled rectangle§\label{srcPrimitives03}§
+        pygame.draw.rect(screen, "red", myrectangle2, 3, 5)          # Rectangle outline§\label{srcPrimitives04}§
+        pygame.draw.polygon(screen, "green", points1)                # Filled polygon§\label{srcPrimitives06}§
+        pygame.draw.polygon(screen, "green", points2, 1)             # Polygon outline§\label{srcPrimitives07}§
+        pygame.draw.line(screen, "red", (5, 230), (240, 230), 3)     # Line§\label{srcPrimitives08}§
+        pygame.draw.circle(screen, "blue", (40, 150), 30)            # Filled circle§\label{srcPrimitives09}§
+        pygame.draw.circle(screen, "blue", (110, 150), 30, 2)        # Circle outline§\label{srcPrimitives10}§
         pygame.draw.circle(screen, "blue", (180, 150), 30, 5, True)  # Arc segment§\label{srcPrimitives11}§
         for i in range(255):
             for j in range(255):

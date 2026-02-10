@@ -6,22 +6,22 @@ import pygame
 
 
 class Sky:
-    def __init__(self, screen:pygame.surface.Surface) -> None:
+    def __init__(self, screen:pygame.Surface) -> None:
         top = 0 
         left = 0
         width = cfg.WINDOW.width
         height = cfg.WINDOW.height - cfg.HORIZONT
-        self.rect = pygame.rect.Rect(top, left, width, height)
+        self.rect = pygame.Rect(top, left, width, height)
         self.screen = screen
 
     def draw(self) -> None:
         pygame.draw.rect(self.screen, "black", self.rect)
 
 class Moon:
-    def __init__(self, screen: pygame.surface.Surface, layer_count:int=5, peaks: int=35):
+    def __init__(self, screen: pygame.Surface, layer_count:int=5, peaks: int=35):
         self.screen = screen
         top = cfg.WINDOW.height - cfg.HORIZONT
-        self.rect = pygame.rect.Rect(0, top, 
+        self.rect = pygame.Rect(0, top, 
                                      cfg.WINDOW.width, cfg.HORIZONT) 
 
         self._layers = []
@@ -59,13 +59,13 @@ class Moon:
                     poly["points"])
 
 class Earth:
-    def __init__(self, screen:pygame.surface.Surface) -> None:
+    def __init__(self, screen:pygame.Surface) -> None:
         self.radius = 80
         left = cfg.WINDOW.right - 2*self.radius - 30
         top = cfg.WINDOW.top + 15
         width = 2*self.radius
         height = 2*self.radius
-        self.rect = pygame.rect.Rect(left, top, width, height)
+        self.rect = pygame.Rect(left, top, width, height)
         self.screen = screen
 
 

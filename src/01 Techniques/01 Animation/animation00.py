@@ -1,9 +1,8 @@
 from time import time
 from typing import Any
 
-import pygame
-
 import config as cfg
+import pygame
 
 
 class Timer:
@@ -31,14 +30,14 @@ class Cat(pygame.sprite.Sprite):
 
     def __init__(self) -> None:
         super().__init__()
-        self.images: list[pygame.surface.Surface] = []
+        self.images: list[pygame.Surface] = []
         for i in range(6):                          # Load animation sprites§\label{srcAnimation0001}§
             bitmap = pygame.image.load(cfg.imagepath(f"cat{i}.bmp")).convert()
             bitmap.set_colorkey("black")
             self.images.append(bitmap)
         self.imageindex = 0
-        self.image: pygame.surface.Surface = self.images[self.imageindex]
-        self.rect: pygame.rect.Rect = self.image.get_rect()
+        self.image: pygame.Surface = self.images[self.imageindex]
+        self.rect: pygame.Rect = self.image.get_rect()
         self.rect.center = cfg.WINDOW.center
         self.animation_time = Timer(100)
 

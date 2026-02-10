@@ -3,7 +3,7 @@ from typing import Dict
 
 import pygame
 
-WINDOW = pygame.rect.Rect(0, 0, 1220, 1002)
+WINDOW = pygame.Rect(0, 0, 1220, 1002)
 FPS = 60
 DELTATIME = 1.0 / FPS
 PATH: Dict[str, str] = {}

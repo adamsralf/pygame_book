@@ -1,9 +1,8 @@
 from typing import Any
 
+import config as cfg
 import pygame
 from pygame.constants import K_ESCAPE, KEYDOWN, KEYUP, QUIT, K_f, K_j, K_p
-
-import config as cfg
 
 
 class Game:

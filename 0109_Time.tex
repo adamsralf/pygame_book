@@ -25,7 +25,7 @@ Before we take a closer look at time control itself, let us briefly look at the 
 
 The \texttt{Enemy} class does not introduce anything particularly exciting either. With a spacing of \SI{10}{px}, the enemy continuously moves back and forth from left to right and vice versa.
 
-\lstsource{SRC/00 Introduction/09 Time/v01/time.py}{9}{24}{python}{Time-based actions (2), Version 1.0 -- \texttt{Enemy}}{srcTime00b} 
+\lstsource{SRC/00 Introduction/09 Time/v01/time.py}{8}{23}{python}{Time-based actions (2), Version 1.0 -- \texttt{Enemy}}{srcTime00b} 
 
 The \texttt{Bullet} class is also largely a repetition of what we have seen before. What may be more interesting is \zeiref{srcTime0004}. The method \texttt{pygame.sprite.Sprite.kill()}\myindex{pyg}{\texttt{sprite}!\texttt{Sprite}!\texttt{kill()}|underline}\randnotiz{kill()} is not a true self-destruction mechanism. Instead, this method removes the \texttt{Sprite} object from all sprite groups. 
 
@@ -34,21 +34,21 @@ If all references to the object are lost as a result, the object is of course de
 You can see this effect in \abbref[vref]{pictime00}: the fireball disappears about $30~px$ before reaching the bottom edge of the screen.
 
 \newpage
-\lstsource{SRC/00 Introduction/09 Time/v01/time.py}{27}{40}{python}{Time-based actions (3), Version 1.0 -- \texttt{Bullet}}{srcTime00c} 
+\lstsource{SRC/00 Introduction/09 Time/v01/time.py}{26}{39}{python}{Time-based actions (3), Version 1.0 -- \texttt{Bullet}}{srcTime00c} 
 
 In the constructor of the \texttt{Game} class, a sprite group for the fireballs is created, as well as a \texttt{GroupSingle} object for the enemy.  In \texttt{run()}, the usual game loop tasks are carried out by calling the appropriate methods.  
 
 I~would like to briefly draw attention to \zeiref{srcTime0005}ff. By calling \texttt{pygame.time.Clock.tick()}\myindex{pyg}{\texttt{time}!\texttt{Clock}!\texttt{tick()}}\randnotiz{tick()}, the game loop is timed -- in this case to $1/60$ of a second -- and the \emph{delta time}\randnotiz{delta time}\index{delta time} is calculated afterwards.
 
-\lstsource{SRC/00 Introduction/09 Time/v01/time.py}{43}{66}{python}{Time-based actions (4), Version 1.0 -- Constructor and \texttt{run()} of \texttt{Game}}{srcTime00d} 
+\lstsource{SRC/00 Introduction/09 Time/v01/time.py}{42}{65}{python}{Time-based actions (4), Version 1.0 -- Constructor and \texttt{run()} of \texttt{Game}}{srcTime00d} 
 
 The methods \texttt{watch\_for\_events()} and \texttt{draw()} also do not contain anything special.
 
-\lstsource{SRC/00 Introduction/09 Time/v01/time.py}{68}{80}{python}{Time-based actions (5), Version 1.0 --  \texttt{watch\_for\_events()} and \texttt{draw()} of \texttt{Game}}{srcTime00e} 
+\lstsource{SRC/00 Introduction/09 Time/v01/time.py}{67}{79}{python}{Time-based actions (5), Version 1.0 --  \texttt{watch\_for\_events()} and \texttt{draw()} of \texttt{Game}}{srcTime00e} 
 
 The \texttt{update()} method is only worth mentioning with regard to \zeiref{srcTime0006}, because a new fireball is created (dropped) there by calling the \texttt{new\_bullet()} method. The starting position is derived from the current position of the enemy. The horizontal center of the fireball and the enemy should be the same, while the vertical center is shifted slightly downward, which looks better visually.
 
-\lstsource{SRC/00 Introduction/09 Time/v01/time.py}{82}{88}{python}{Time-based actions (6), Version 1.0 -- \texttt{update()} and \texttt{new\_bullet()} of \texttt{Game}}{srcTime00f} 
+\lstsource{SRC/00 Introduction/09 Time/v01/time.py}{87}{87}{python}{Time-based actions (6), Version 1.0 -- \texttt{update()} and \texttt{new\_bullet()} of \texttt{Game}}{srcTime00f} 
 
 
 Back to the actual problem. As we saw above, the application is timed to $1/60$ of a second by \texttt{FPS} and the call to \texttt{tick()} in \zeiref{srcTime0005}. In other words, up to 60~fireballs per second are currently created, which is nonsense.
@@ -61,7 +61,7 @@ A naive idea would be to reduce the frame rate. So, if I~want to create a fireba
 
 In the first step, two attributes are added to the \texttt{Game} class for this purpose (\zeiref{srcTime0101} and \zeiref{srcTime0102}).
 
-\lstsource{SRC/00 Introduction/09 Time/v02/time.py}{52}{55}{python}{Time-based actions (7), Version 1.1 -- Constructor of \texttt{Game}}{srcTime01a} 
+\lstsource{SRC/00 Introduction/09 Time/v02/time.py}{51}{54}{python}{Time-based actions (7), Version 1.1 -- Constructor of \texttt{Game}}{srcTime01a} 
 
 
 In the \texttt{new\_bullet()} method, these two values are now used to control the time interval between two drops. First, the counter is increased by~1 each time the method is called. Since the method is called once per iteration of the main program loop and each iteration is timed, this effectively counts the number of ticks.
@@ -70,7 +70,7 @@ If the counter exceeds its upper limit (30 in our example), half a second has pa
 
 Finally, the counter must be reset to~0, because we now have to wait for the next 30~ticks again. The result can be seen in \abbref[vref]{pictime01}: only two fireballs are visible now.
 
-\lstsource{SRC/00 Introduction/09 Time/v02/time.py}{89}{93}{python}{Time-based actions (8), Version 1.1 -- \texttt{new\_bullet()} of \texttt{Game}}{srcTime01b} 
+\lstsource{SRC/00 Introduction/09 Time/v02/time.py}{88}{92}{python}{Time-based actions (8), Version 1.1 -- \texttt{new\_bullet()} of \texttt{Game}}{srcTime01b} 
 
 \myebild{time01.png}{0.8}{Fireball using counter-based movement}{pictime01}
 
@@ -84,13 +84,14 @@ A better approach is to couple time control to a real time source. The method \t
 
 Now the source code can be reworked. First, in \zeiref{srcTime0201}, the current number of~$ms$ since program start is measured, and in \zeiref{srcTime0202} it is defined how many~$ms$ a time interval should last. We want to drop a fireball every half second, so this value is~500.
 
-\lstsource{SRC/00 Introduction/09 Time/v03/time.py}{51}{55}{python}{Time-based actions (9), Version 1.2 -- Constructor of \texttt{Game}}{srcTime02a} 
+\newpage
+\lstsource{SRC/00 Introduction/09 Time/v03/time.py}{50}{54}{python}{Time-based actions (9), Version 1.2 -- Constructor of \texttt{Game}}{srcTime02a} 
 
  After that, \texttt{new\_bullet()} checks whether the end of the interval has been reached. In \zeiref{srcTime0204}, the current time is measured again using \texttt{pygame.time.get\_ticks()}. If this value is greater than the previous interval start plus the interval duration -- which is the same as the interval end -- then \SI{500}{ms} have passed and a new fireball is dropped.  
 
 Now only the new interval start has to be determined, which is done in \zeiref{srcTime0205}.
 
-\lstsource{SRC/00 Introduction/09 Time/v03/time.py}{89}{92}{python}{Time-based actions (10), Version 1.2 -- \texttt{new\_bullet()} of \texttt{Game}}{srcTime02b} 
+\lstsource{SRC/00 Introduction/09 Time/v03/time.py}{88}{91}{python}{Time-based actions (10), Version 1.2 -- \texttt{new\_bullet()} of \texttt{Game}}{srcTime02b} 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -114,16 +115,16 @@ What does this mean for our example? If \texttt{with\_start} is set to \true, th
 
 In \texttt{is\_next\_stop\_reached()}, it is checked whether the end of the interval has been reached, and, if necessary, a new interval end is calculated. The method returns \true\ if the interval end has been reached or exceeded; otherwise, it returns \false.
 
-\lstsource{SRC/00 Introduction/09 Time/v04/time.py}{9}{22}{python}{Time-based actions (11), Version 1.3 -- Class \texttt{Timer}}{srcTime03a} 
+\lstsource{SRC/00 Introduction/09 Time/v04/time.py}{8}{21}{python}{Time-based actions (11), Version 1.3 -- Class \texttt{Timer}}{srcTime03a} 
 
 How is this timer used now?  First, an appropriate object is created in the constructor (\zeiref{srcTime0301}); the two variables used previously are no longer needed.
 
-\lstsource{SRC/00 Introduction/09 Time/v04/time.py}{68}{70}{python}{Time-based actions (12), Version 1.3 -- creating a \texttt{Timer} object}{srcTime03b} 
+\lstsource{SRC/00 Introduction/09 Time/v04/time.py}{67}{69}{python}{Time-based actions (12), Version 1.3 -- creating a \texttt{Timer} object}{srcTime03b} 
 
 The \texttt{new\_bullet()} method has now become simpler, since it no longer has to take care of the internal timer logic. It only checks in \zeiref{srcTime0302} whether the interval end has been reached -- and that’s it!
 
 
-\lstsource{SRC/00 Introduction/09 Time/v04/time.py}{104}{106}{python}{Time-based actions (13), Version 1.3 -- Using a \texttt{Timer} object verwenden}{srcTime03c} 
+\lstsource{SRC/00 Introduction/09 Time/v04/time.py}{103}{105}{python}{Time-based actions (13), Version 1.3 -- Using a \texttt{Timer} object verwenden}{srcTime03c} 
 
 For the sake of comparability -- which may have been a bit confusing just now -- I~have placed the four workflows side by side in \abbref[vref]{picTimeVergleich01}.
 

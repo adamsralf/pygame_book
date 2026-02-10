@@ -1,9 +1,8 @@
 import csv
 from time import time
 
-import pygame
-
 import config as cfg
+import pygame
 
 
 class WindowTilemap:
@@ -14,7 +13,7 @@ class WindowTilemap:
         left = pos[0] * (cfg.TARGET_WINDOW.width + 5)
         top = 70 + pos[1] * (cfg.TARGET_WINDOW.height + 30)
         self.window.position = left, top
-        self.screen : pygame.surface.Surface = self.window.get_surface()
+        self.screen : pygame.Surface = self.window.get_surface()
         self.image = pygame.image.load(self.filename).convert_alpha()
         self.rect = self.screen.get_frect()
         self.window.title = f"Tilemap (size={cfg.TILESIZE})"
@@ -46,7 +45,7 @@ class WindowTilemap:
         if cfg.TILENUMBER > -1:
             tile_x = (cfg.TILENUMBER % cfg.TILEMAP_NOF_COLS) * cfg.TILESIZE.x
             tile_y = (cfg.TILENUMBER // cfg.TILEMAP_NOF_COLS) * cfg.TILESIZE.y
-            tile_rect = pygame.rect.FRect((tile_x, tile_y), cfg.TILESIZE)
+            tile_rect = pygame.FRect((tile_x, tile_y), cfg.TILESIZE)
             pygame.draw.rect(self.screen, "yellow", tile_rect, 3)
 
         self.window.flip()
@@ -68,7 +67,7 @@ class WindowTarget:
         left = pos[0] * (cfg.TARGET_WINDOW.width + 5)
         top = 70 + pos[1] * (cfg.TARGET_WINDOW.height + 30)
         self.window.position = left, top
-        self.screen : pygame.surface.Surface = self.window.get_surface()
+        self.screen : pygame.Surface = self.window.get_surface()
         self.rect = self.screen.get_rect()
         self.window.title = f"Target: Level {level}"
         self.grid = True
@@ -87,7 +86,7 @@ class WindowTarget:
                     self.tile_number = self.level_data[row][col]
                     tile_x = (self.tile_number % cfg.TILEMAP_NOF_COLS) * cfg.TILESIZE.x
                     tile_y = (self.tile_number // cfg.TILEMAP_NOF_COLS) * cfg.TILESIZE.y
-                    tile_rect = pygame.rect.FRect((tile_x, tile_y), cfg.TILESIZE)
+                    tile_rect = pygame.FRect((tile_x, tile_y), cfg.TILESIZE)
                     dest_x = col * cfg.TILESIZE.x
                     dest_y = row * cfg.TILESIZE.y
                     self.screen.blit(self.spritelib, (dest_x, dest_y), tile_rect)
@@ -124,7 +123,7 @@ class WindowResult:
         left = pos[0] * (cfg.TARGET_WINDOW.width + 5)
         top = 70 + pos[1] * (cfg.TARGET_WINDOW.height + 30)
         self.window.position = left, top
-        self.screen : pygame.surface.Surface = self.window.get_surface()
+        self.screen : pygame.Surface = self.window.get_surface()
         self.rect = self.screen.get_rect()
         self.window.title = "Result"
         self.filename = f"images/{filename}"
@@ -142,7 +141,7 @@ class WindowResult:
                         self.tile_number = self.level_data[level][row][col]
                         tile_x = (self.tile_number % cfg.TILEMAP_NOF_COLS) * cfg.TILESIZE.x
                         tile_y = (self.tile_number // cfg.TILEMAP_NOF_COLS) * cfg.TILESIZE.y
-                        tile_rect = pygame.rect.FRect((tile_x, tile_y), cfg.TILESIZE)
+                        tile_rect = pygame.FRect((tile_x, tile_y), cfg.TILESIZE)
                         dest_x = col * cfg.TILESIZE.x
                         dest_y = row * cfg.TILESIZE.y
                         self.screen.blit(self.spritelib, (dest_x, dest_y), tile_rect)

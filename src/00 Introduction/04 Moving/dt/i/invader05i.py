@@ -1,8 +1,7 @@
 from time import time
 
-import pygame
-
 import config as cfg
+import pygame
 
 
 def main():
@@ -13,7 +12,7 @@ def main():
 
     defender_image = pygame.image.load("images/defender01.png").convert_alpha()
     defender_image = pygame.transform.scale(defender_image, (30, 30))
-    defender_rect = pygame.rect.FRect(defender_image.get_rect())
+    defender_rect = pygame.FRect(defender_image.get_rect())
     defender_rect.centerx = cfg.WINDOW.centerx
     defender_rect.bottom = cfg.WINDOW.height - 5
     defender_speed = 600

@@ -15,7 +15,7 @@ import pygame
 
 
 class Settings:
-    WINDOW = pygame.rect.Rect(0, 0, 1220, 1002)
+    WINDOW = pygame.Rect(0, 0, 1220, 1002)
     FPS = 60
     DELTATIME = 1.0 / FPS
     PATH: Dict[str, str] = {}
@@ -25,9 +25,9 @@ class Settings:
     CAPTION = 'Bubbles'
     RADIUS = {"min": 15, "max": 240}
     DISTANCE = 50
-    PLAYGROUND = pygame.rect.Rect(90, 90, 1055, 615)
+    PLAYGROUND = pygame.Rect(90, 90, 1055, 615)
     MAX_BUBBLES = PLAYGROUND.height * PLAYGROUND.width // 10000
-    BOX = pygame.rect.Rect(90, 770, 1055, 1300)
+    BOX = pygame.Rect(90, 770, 1055, 1300)
     POINTS = 0
 
     @staticmethod
@@ -77,17 +77,17 @@ class BubbleContainer:
             filename (str): Filename of the bubble picture file
         """
         imagename = Settings.get_image(filename)
-        image: pygame.surface.Surface = pygame.image.load(imagename).convert_alpha()
+        image: pygame.Surface = pygame.image.load(imagename).convert_alpha()
         self.images = {i: pygame.transform.scale(image, (i * 2, i * 2)) for i in range(Settings.RADIUS["min"], Settings.RADIUS["max"] + 1)}
 
-    def get(self, radius: int) -> pygame.surface.Surface:
+    def get(self, radius: int) -> pygame.Surface:
         """Gets the bubble image with the radius <radius>.
 
         Args:
             radius (int): radius of the bubble
 
         Returns:
-            pygame.surface.Surface: Scaled image of the bubble
+            pygame.Surface: Scaled image of the bubble
         """
         radius = max(Settings.RADIUS["min"], radius)
         radius = min(Settings.RADIUS["max"], radius)
@@ -129,7 +129,7 @@ class Background(pygame.sprite.Sprite):
         """Constructor."""
         super().__init__()
         imagename = Settings.get_image("aquarium.png")
-        self.image: pygame.surface.Surface = pygame.image.load(imagename).convert()
+        self.image: pygame.Surface = pygame.image.load(imagename).convert()
         self.image = pygame.transform.scale(self.image, Settings.WINDOW.size)
         self.rect = self.image.get_rect()
 
@@ -140,7 +140,7 @@ class Message(pygame.sprite.Sprite):
     def __init__(self, filename: str) -> None:
         super().__init__()
         imagename = Settings.get_image(filename)
-        self.image: pygame.surface.Surface = pygame.image.load(imagename).convert_alpha()
+        self.image: pygame.Surface = pygame.image.load(imagename).convert_alpha()
         self.rect = self.image.get_rect()
 
 
@@ -153,7 +153,7 @@ class Bubble(pygame.sprite.Sprite):
         self.mode = "blue"
         self.radius = Settings.RADIUS["min"]
         self.image = Game.BUBBLE_CONTAINER[self.mode].get(self.radius)
-        self.rect: pygame.rect.Rect = self.image.get_rect()
+        self.rect: pygame.Rect = self.image.get_rect()
         self.fradius = float(self.radius)
         self.speed = speed
 

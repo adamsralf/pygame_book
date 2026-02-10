@@ -1,16 +1,15 @@
 from time import time
 from typing import Any
 
+import config as cfg
 import pygame
 from pygame.constants import K_ESCAPE, K_KP_MINUS, K_KP_PLUS, KEYDOWN, QUIT
-
-import config as cfg
 
 
 class Animation:
 
     def __init__(self, namelist: list[str], endless: bool, animationtime: int, colorkey: tuple[int, int, int] | None = None) -> None:
-        self.images: list[pygame.surface.Surface] = []
+        self.images: list[pygame.Surface] = []
         self.endless = endless
         self.timer = Timer(animationtime)
         for filename in namelist:
@@ -22,7 +21,7 @@ class Animation:
             self.images.append(bitmap)
         self.imageindex = -1
 
-    def next(self) -> pygame.surface.Surface:
+    def next(self) -> pygame.Surface:
         if self.timer.is_next_stop_reached():
             self.imageindex += 1
             if self.imageindex >= len(self.images):
@@ -64,8 +63,8 @@ class Cat(pygame.sprite.Sprite):
     def __init__(self) -> None:
         super().__init__()
         self.animation = Animation([f"cat{i}.bmp" for i in range(6)], True, 100, (0, 0, 0))  # §\label{srcAnimation0102}§
-        self.image: pygame.surface.Surface = self.animation.next()
-        self.rect: pygame.rect.Rect = self.image.get_rect()
+        self.image: pygame.Surface = self.animation.next()
+        self.rect: pygame.Rect = self.image.get_rect()
         self.rect.center = cfg.WINDOW.center
 
     def update(self, *args: Any, **kwargs: Any) -> None:
