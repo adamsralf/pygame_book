@@ -10,7 +10,7 @@
 {
 	name={Pygame-ce},
 	text={Pygame-ce},
-	description={A free and open-source library written in Python for developing 2D~games and multimedia applications. Pygame-ce is based on the C library SDL and provides functions for graphics rendering, event handling, audio playback, and input control via keyboard, mouse, and game controllers. Pygame was originally created by Pete Shinners in the year~2000 and for many years was the standard framework for Python-based game development. However, since the original project did not receive updates	for a long period of time, a fork called Pygame Community Edition (pygame-ce) was created in 2020. This version is actively developed by a community in order to support modern Python versions, improved graphics features (for example, alpha blending and better transformations),	and higher performance}
+	description={A free and open-source library written in Python for developing 2D~games and multimedia applications. Pygame-ce is based on the C library SDL and provides functions for graphics rendering, event handling, audio playback, and input control via keyboard, mouse, and game controllers. Pygame was originally created by Pete Shinners in the year~2000 and for many years was the standard framework for Python-based game development. However, since the original project did not receive updates	for a long period of time, a fork called Pygame Community Edition (pygame-ce) was created in 2023. This version is actively developed by a community in order to support modern Python versions, improved graphics features (for example, alpha blending and better transformations),	and higher performance}
 }
 
 \newglossaryentry{constant}
@@ -667,6 +667,14 @@
 	description={Wayland is a modern display server protocol for Linux and other Unix-like systems. It defines how graphical applications (clients) communicate with the display server (the compositor) to draw windows, handle input devices like keyboard and mouse, and manage screen updates. Unlike the older X11 system, Wayland is designed to be simpler, more secure, and more efficient. Many tasks that were previously handled by a separate window manager are integrated directly into the compositor, reducing complexity and latency.	In practice, Wayland often results in smoother graphics, better support for modern hardware, and improved security, since applications cannot freely access or manipulate each other’s windows. Popular desktop environments such as GNOME and KDE increasingly use Wayland as their default display system}
 }
 \label{GRENZE}
+
+
+\newdualentry{sdl} % label
+{SDL}            % abbreviation
+{Simple Direct Media Layer}  % long form
+{SDL is a cross-platform multimedia library written in C. It provides low-level access to graphics, sound, input devices (keyboard, mouse, game controllers), and window management. 
+	SDL is widely used in game development and serves as the underlying technology for many frameworks and engines. In the context of Pygame-ce, SDL handles the communication with the operating system, while Pygame provides a more convenient Python interface on top of it.
+	In short: SDL does the heavy lifting in the background, and Pygame makes it easy to use from Python} % description
 % ------------------------------------------------------------------------------------
 
 
@@ -780,12 +788,6 @@
 }
 
 
-
-
-\newdualentry{sdl} % label
-{SDL}            % abbreviation
-{Simple Direct Media Layer}  % long form
-{Eine plattformunabhängige API für die Programmierung von Grafiken, Sounds und Eingabegräte} % description
 
 
 

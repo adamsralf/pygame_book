@@ -5,8 +5,13 @@ from typing import Any, Tuple
 import config as cfg
 import pygame
 from config import MyEvents
-from pygame.constants import (K_ESCAPE, KEYDOWN, MOUSEBUTTONDOWN, QUIT,
-                              WINDOWPOS_CENTERED)
+from pygame.constants import (
+    K_ESCAPE,
+    KEYDOWN,
+    MOUSEBUTTONDOWN,
+    QUIT,
+    WINDOWPOS_CENTERED,
+)
 
 
 class Button(pygame.sprite.Sprite):
@@ -145,7 +150,7 @@ class Game:
             elif event.type == MyEvents.OVERFLOW:
                 if event.index < cfg.NOFBOXES - 1:
                     self.all_boxes.sprites()[event.index + 1].update(counter="inc")
-            elif event.type == MyEvents.NEWPARTICLES:  # Periodisches Event §\label{srcEvent0202}§
+            elif event.type == MyEvents.NEWPARTICLES:  # Periodic Event §\label{srcEvent0202}§
                 self.generate_particles(cfg.NEWNOFPARTICLES)
 
     def update(self):

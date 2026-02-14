@@ -49,7 +49,7 @@ Let us now turn to the actual handling of keyboard input: Pressing a key can tri
 
 Let us start with the boss key. In \zeiref{srcTastatur0004}, the constant \texttt{K\_ESCAPE}\myindex{pyg}{\texttt{K\_ESCAPE}}\randnotiz{K\_ESCAPE} is used to check whether the pressed key is the \keys{\esc}. As with clicking the window’s close button, the flag of the main program loop is then simply set to \false. Try it out!
 
-After that, the four arrow keys are handled starting at \zeiref{srcTastatur0005}ff. Using \randnotiz{K\_LEFT K\_RIGHT K\_UP K\_DOWN}\texttt{K\_LEFT}, \texttt{K\_RIGHT}, \texttt{K\_UP}, and \texttt{K\_DOWN}\myindex{pyg}{\texttt{K\_LEFT}}\myindex{pyg}{\texttt{K\_RIGHT}}\myindex{pyg}{\texttt{K\_UP}}\myindex{pyg}{\texttt{K\_DOWN}}, the corresponding arrow key is checked and the appropriate message is sent to the defender.
+After that, the four arrow keys are handled starting at \zeiref{srcTastatur0005}\,ff. Using \randnotiz{K\_LEFT K\_RIGHT K\_UP K\_DOWN}\texttt{K\_LEFT}, \texttt{K\_RIGHT}, \texttt{K\_UP}, and \texttt{K\_DOWN}\myindex{pyg}{\texttt{K\_LEFT}}\myindex{pyg}{\texttt{K\_RIGHT}}\myindex{pyg}{\texttt{K\_UP}}\myindex{pyg}{\texttt{K\_DOWN}}, the corresponding arrow key is checked and the appropriate message is sent to the defender.
 
 If one of the arrow keys is released (\texttt{pygame.KEYUP}\myindex{pyg}{\texttt{KEYUP}} in \zeiref{srcTastatur0006}), the spaceship is stopped.
 

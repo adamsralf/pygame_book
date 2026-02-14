@@ -7,7 +7,7 @@ def main():
         title="My first Pygame program",            # via function parameter
         position=(10, 50))  
     screen = window.get_surface()
-    clock = pygame.time.Clock()                     # Clock objekt§\label{srcStart0101}§
+    clock = pygame.time.Clock()                     # Clock object§\label{srcStart0101}§
  
     running = True
     while running:
