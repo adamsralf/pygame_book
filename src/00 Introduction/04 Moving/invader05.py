@@ -14,7 +14,7 @@ def main():
 
     defender_image = pygame.image.load("images/defender01.png").convert_alpha()
     defender_image = pygame.transform.scale(defender_image, (30, 30))
-    defender_rect = defender_image.get_rect()           # Rect-Objekt§\label{srcInvader0501}§
+    defender_rect = defender_image.get_rect()           # Rect-object§\label{srcInvader0501}§
     defender_rect.centerx = cfg.WINDOW.centerx          # Not only using left§\label{srcInvader0502}§
     defender_rect.bottom = cfg.WINDOW.height - 5        # Not only using top§\label{srcInvader0503}§
 

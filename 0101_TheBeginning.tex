@@ -22,7 +22,7 @@ When you start the application now, you will see a nicely designed window with a
 In order to use Pygame, the module \texttt{pygame} must be imported into the program (\zeiref{srcStart0001}). This makes the \glspl{constant}, \glspl{function}, \glspl{event}, and \glspl{class} of the \gls{namespace} available.
 
 
-Pygame is not just about calling functions or creating objects; a hole subsystems must be initialized explicitly. In this example, this is done using the static function
+Pygame is not just about calling functions or creating objects; a whole subsystems must be initialized explicitly. In this example, this is done using the static function
 \texttt{pygame.init()}. Pygame is now connected to parts of the \Gls{os} system, to deliver and receive required information and actions. In \zeiref{srcStart0003} the Pygame engine is started by calling \texttt{init()}\myindex{pyg}{\texttt{init()}|underline}\randnotiz{init()}. It ist also possible to start only parts of the engine e.g. the sound subsystem by \texttt{pygame.mixer.init()}\myindex{pyg}{\texttt{mixer}!\texttt{init()}}.
 
 For our games, we need a \emph{playfield}/a window in which everything takes place. The class \texttt{pygame.Window}\myindex{pyg}{\texttt{Window}}\randnotiz{Window}
