@@ -11,7 +11,7 @@ def main():
     clock = pygame.time.Clock()
     all_sprites = pygame.sprite.Group()
 
-    font = pygame.font.Font(pygame.font.get_default_font(), 24)     # Using default font§\label{textoutput00a}§
+    font = pygame.font.SysFont(None, 24)                             # None -> default font§\label{textoutput00c}§
     text = "This is an example of printing text using a font"
 
     running = True
