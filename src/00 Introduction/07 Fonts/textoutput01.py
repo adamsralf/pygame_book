@@ -31,7 +31,7 @@ class TextSprite(pygame.sprite.Sprite):
 
     def fontsize_update(self, step: int = 1) -> None:
         self.fontsize += step
-        self.font = pygame.font.Font(pygame.font.get_default_font(), self.fontsize)  # §\label{srcTextoutputSimple01}§
+        self.font = pygame.font.SysFont(None, self.fontsize)  # §\label{srcTextoutputSimple01}§
         self.dirty = True
 
     def fontcolor_update(self, delta: Tuple[int, int, int]) -> None:

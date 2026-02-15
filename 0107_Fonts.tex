@@ -15,12 +15,22 @@ The basic idea is simple: first, a \texttt{Font} object is created (see \zeiref{
 
 \lstsource{SRC/00 Introduction/07 Fonts/textoutput00.py}{7}{35}{python}{Simple text output using fonts}{srcFonts00aa} 
 
-But how does the contructor of \texttt{Font} know, which font I want? In \zeiref{textoutput00a} we use the predefined default font. The method \texttt{pygame.font.get\_default\_font()}\randnotiz{get\_default\_font()}\myindex{pyg}{\texttt{font}!\texttt{get\_default\_font()}} returns a unique string -- the internal name of the font. You can find in \secref[vref]{secFontInstalled} a program, which shows you all installed fonts and there internal names.
+But how does the contructor of \texttt{Font} know, which font I want? In \zeiref{textoutput00a} we use the predefined default font. \texttt{pygame.font.SysFont()}\randnotiz{SysFont()}\myindex{pyg}{\texttt{font}!\texttt{SysFont()}} 
+takes either the name of a font or \texttt{None} as the first argument. In the latter case, the default font is used. Since Pygame always ships with a default font, this call will always return a valid font object. However, there is no guarantee that it will always be the same font, as the default font itself could change.
+
+The method \texttt{pygame.font.get\_default\_font()}\randnotiz{get\_default\_font()}\myindex{pyg}{\texttt{font}!\texttt{get\_default\_font()}} returns a unique string -- the internal name of the font. You can find in \secref[vref]{secFontInstalled} a program, which shows you all installed fonts and there internal names.
 
 If you want to use a specific font, you can get all required information with \texttt{pygame\-.font\-.match\_font()}\randnotiz{match\_font()}\myindex{pyg}{\texttt{font}!\texttt{match\_font()}}:
 \lstset{firstnumber=14}
 \begin{lstlisting}
     font = pygame.font.Font(pygame.font.match_font("arial"), 24)
+\end{lstlisting}
+
+or 
+
+\lstset{firstnumber=14}
+\begin{lstlisting}
+    font = pygame.font.SysFont("Arial", 24)
 \end{lstlisting}
 
 \begin{warningbox}[Don't wast computing time]
@@ -121,6 +131,7 @@ When using local fonts, it is important to pay attention to licensing. Not every
 
 In \abbref[vref]{picFont03} you can admire the result ;-)
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Text output}
 \begin{diskbox}
@@ -138,15 +149,17 @@ Text output is often not done via fonts, but via a \gls{spritelib}. Such a libra
 
 The idea is to \emph{punch out} the individual letters from the spritelib and store them in a suitable data structure. Whenever text needs to be displayed, the string is split into its characters, and the corresponding letter sprites are blitted from the data structure onto a target bitmap -- for example onto the screen. 
 
+\clearpage
+\myezweivbild{1945}{0.5}{Example of a spritelib}{picSpritelib01}%
+{textbitmaps00}{0.5}{Text output using bitmaps}{picTextbitmaps01}
+\clearpage
+
 I will demonstrate this with a simple example. Our starting point is a spritelib that contains a character set in five different colors (see \abbref[vref]{picTextbitmaps01}).
 
 The first part of \srcref[vref]{srcTextbitmaps00a} should look familiar and is only extended by a few convenience features. The file paths are now determined via the functions \texttt{filepath()} and \texttt{imagepath()}.
 
 \lstsource{SRC/00 Introduction/07 Fonts/textbitmaps/config.py}{1}{99}{python}{Textbitmaps (1), \texttt{config.py}}{srcTextbitmaps00a} 
-\clearpage
-\myezweivbild{1945}{0.5}{Example of a spritelib}{picSpritelib01}%
-			 {textbitmaps00}{0.5}{Text output using bitmaps}{picTextbitmaps01}
-\clearpage
+
 
 The class \texttt{Spritelib} is mainly used as a container. It loads the spritelib containing the letters and symbols and stores several parameters that are needed to extract individual letters or symbols precisely from the bitmap:
 
@@ -246,7 +259,7 @@ Starting at \zeiref{srcTextbitmaps0002}, a nested \forSchleife{} begins. The out
 
 Height and width in \zeiref{srcTextbitmaps0005} are straightforward, since all sprites always have the same dimensions. After that, the \texttt{Rect} object is created and used to cut out the bitmap with the help of \texttt{subsurface()}\myindex{pyg}{\texttt{Surface}!\texttt{subsurface()}}. This extracted bitmap is then stored in the dictionary under its symbol name.
 
-\newpage
+%\newpage
 \lstinputlisting[caption={Textbitmaps (4): \texttt{create\_letter\_bitmap()} von \texttt{Letters}},label={srcTextbitmaps00d},firstline={29},lastline={85},linerange={29-33,66-86}, consecutivenumbers=false]{SRC/00 Introduction/07 Fonts/textbitmaps/textbitmaps.py}
 
 
@@ -269,7 +282,6 @@ The actual main program is encapsulated in the class \texttt{TextBitmaps}. Since
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newpage
 \subsection{What was new?}
 \begin{hintbox}
 	\begin{itemize}
@@ -287,6 +299,9 @@ The actual main program is encapsulated in the class \texttt{TextBitmaps}. Since
 	\item \texttt{pygame.font.Font}:
 	\myindex{pyg}{\texttt{font}!\texttt{Font}}\\ \url{https://pyga.me/docs/ref/font.html}
 	
+	\item \texttt{pygame.font.Font.render()}:
+	\myindex{pyg}{\texttt{font}!\texttt{Font}!\texttt{render()}}\\ \url{https://pyga.me/docs/ref/font.html#pygame.font.Font.render}
+
 	\item \texttt{pygame.font.get\_default\_font()}:
 	\myindex{pyg}{\texttt{font}!\texttt{get\_default\_font()}}\\ \url{https://pyga.me/docs/ref/font.html#pygame.font.get_default_font}
 	
@@ -297,9 +312,9 @@ The actual main program is encapsulated in the class \texttt{TextBitmaps}. Since
 	\myindex{pyg}{\texttt{font}!\texttt{match\_font()}}\\
 	\url{https://pyga.me/docs/ref/font.html#pygame.font.match_font}
 	
-	\item \texttt{pygame.font.Font.render()}:
-	\myindex{pyg}{\texttt{font}!\texttt{Font}!\texttt{render()}}\\ \url{https://pyga.me/docs/ref/font.html#pygame.font.Font.render}
-	
+	\item \texttt{pygame.font.SysFont()}:
+	\myindex{pyg}{\texttt{font}!\texttt{SysFont()}}\\ \url{https://pyga.me/docs/ref/font.html#pygame.font.SysFont}
+
 	\texttt{pygame.Surface.subsurface()}:
 	\myindex{pyg}{\texttt{Surface}!\texttt{subsurface()}}\\ \url{https://pyga.me/docs/ref/surface.html#pygame.Surface.subsurface}
 	
@@ -310,7 +325,7 @@ The actual main program is encapsulated in the class \texttt{TextBitmaps}. Since
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newpage
+
 \subsection{Homework}
 
 \begin{wrapfigure}[13]{r}{6.5cm}%
