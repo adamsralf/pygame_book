@@ -1,4 +1,4 @@
-import pygame  # Pygame-Modul (also for pygame-ce!)
+import pygame  # Pygame Module (also for pygame-ce!)
 
 
 def main():

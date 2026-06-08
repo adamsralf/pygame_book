@@ -1,4 +1,4 @@
-import pygame  # Pygame-Modul (also for pygame-ce!)§\label{srcStart0001}§
+import pygame  # Pygame Module (also for pygame-ce!)§\label{srcStart0001}§
 
 
 def main():
