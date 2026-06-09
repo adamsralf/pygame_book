@@ -1,0 +1,81 @@
+\newpage
+%\newcommand{\SI}[2]{#1\,\unit{#2}}
+
+\section{4-Gewinnt}\index{4gewinnt}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Ein weiteres Beispiel soll hier das Spiel 4-gewinnt sein. Fast jeder kennt es und es ist von den Regeln relativ leicht zu verstehen. Wir werden das Spiel gemeinsam Schritt für Schritt aufbauen und es bleiben genügend Anknüpfungspunkte für eigene Erweiterungen/Anpassungen.
+
+Ein wesentlicher Schwerpunkt dieses Beispiels soll die Verwendung des Design Patterns \Gls{statemachine} sein\randnotiz{State Machine}. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\Reqref{reqFourConnectScreen}: Bildschirmaufbau}
+
+\br{Bildschirmaufbau}{reqFourConnectScreen}
+\begin{enumerate}
+    \item Die oberste Zeile ist eine Titelzeile und soll den Namen des Spieles und seinen Copyright-Vermerk enthalten.\label{reqFourConnectScreen01}
+    \item Die Spielmünzen haben einen Radius von \SI{50}{px}.\label{reqFourConnectScreen02}
+    \item Das Spielfeld besteht aus \SI{7}{Spalten} und \SI{6}{Zeilen}. Die Spalten haben die gleiche Breite wie eine Münze und die Zeilen haben die gleiche Höhe wie ein Münze.\label{reqFourConnectScreen03}
+    \item Das Spielfeld wird am Zeilen-/Spaltenschnittpunkt von einem Loch durchbrochen. Dieses Loch hat einen um \SI{5}{px} verkleinerten Radius relativ zur Münze.\label{reqFourConnectScreen04}
+    \item Zwischen der obersten Zeile und dem Spielfeld ist ein Höhenabstand, der \SI{10}{px} größer ist als der Durchmesser der Münze.\label{reqFourConnectScreen05}
+    \item Unterhalb der Spielfläche stehen die Buchstaben der Spalten von links mit~\texttt{A} beginnend. Sie haben einen Abstand von \texttt{MARGIN} hohen Abstand zur Spielfläche.\label{reqFourConnectScreen06}
+    \item Den unteren Abschluss bildet die Statusleiste.\label{reqFourConnectScreen07}
+    \item Alle Oberflächenelemente folgen einem ein zentral festgelegtem Farbkonzept.\label{reqFourConnectScreen08}
+\end{enumerate}
+\er
+
+Diese Requirements müssen schon in der \texttt{config.py} angelegt werden. 
+
+\begin{itemize}
+	\item[Req. \ref{reqFourConnectScreen}.\ref{reqFourConnectScreen02}] In der \zeiref{srcV01Config01} wird der Radius einer Münze definiert. Dies geschieht als erstes, da weitere Höhen und Breiten von der Münzgröße hergeleitet werden.
+
+	\item[Req. \ref{reqFourConnectScreen}.\ref{reqFourConnectScreen03}] \zeiref{srcV01Config02} und~\ref{srcV01Config03} legen die entsprechenden Größen fest.
+
+	\item[Req. \ref{reqFourConnectScreen}.\ref{reqFourConnectScreen01}] Als erster Vorschlag wird in \zeiref{srcV01Config05} eine Höhe von \SI{50}{px} definiert. Wir werden später nochmal überprüfen, ob diese Höhe ausreicht oder zu groß ist.
+
+	\item[Req. \ref{reqFourConnectScreen}.\ref{reqFourConnectScreen04}] Die eigentliche Spielfläche errechnet sich nun fast von selbst (siehe \zeiref{srcV01Config05}). Die Startposition wird im \texttt{MARGIN} nach innen gezogen, um eine etwas schönere Optik zu erhalten. 
+	
+	\item[Req. \ref{reqFourConnectScreen}.\ref{reqFourConnectScreen05}] Auch dieses Requirement wird in \zeiref{srcV01Config05} durch \verb+2 * MARGIN+ abgebildet.  
+
+	\item[Req. \ref{reqFourConnectScreen}.\ref{reqFourConnectScreen06}] Die Buchstabenreihe steht unmittelbar unterhalb des Spielfeldes (siehe \zeiref{srcV01Config06}).  
+	
+	\item[Req. \ref{reqFourConnectScreen}.\ref{reqFourConnectScreen07}] Eine Statusleiste -- eigentlich ein eher ein Statusfeld -- schließt die Oberfläche nach unten ab (siehe \zeiref{srcV01Config07}).  
+	
+	\item[Req. \ref{reqFourConnectScreen}.\ref{reqFourConnectScreen08}] Ab \zeiref{srcV01Config09} werden alle Farben in einem Dictionary abgelegt. Dies macht es einfacher, ein anderen Farbkonzept umzusetzten, da alle Angaben an einem Ort sind, und nicht auf verschiedenen Klassen verteilt definiert werden.
+\end{itemize}
+
+Aus all diesen Angaben lässt sich in \zeiref{srcV01Config08} die Gesamtgröße des Fensters errechnen. 
+
+\lstsource{SRC/02 Examples/04 FourConnect/v01/config.py}{1}{99}{python}{Four Connect -- \texttt{config.py}}{srcV01Config}
+
+Bauen wir uns nun die erste Klasse: \texttt{Title}. Diese Klasse ist das erste Beispiel für eine Reihe sehr einfacher Klassen, welche eine Funktion auf der Oberfläche ausüben. Ich persönlich neige dazu, sehr schnell Klassen zu bilden, dass muss nicht immer richtig sein. Hier aber denke ich, dass diese Klassen im Laufe des Projektes sehr gut ausgebaut werden können und dann ist es besser die Architektur von Anfang an zu modularisieren anstatt später viel Rework zu investieren.
+
+Jetzt aber, zunächst wird ein Image mit der in \texttt{config.py} festgelegten Größe erzeugt. Mit Hilfe von \texttt{pygame.SRCALPHA}\randnotiz{SRCALPHA}\myindex{pyg}{SRCALPHA} sorge ich dafür, dass später die abgerundeten Ecken den Hintergrund durchscheinen lassen. Danach zeichne ich ein Rechteck mit abrundeten Ecken 
+
+Verbleibt der Schriftzug. Zuerst erzeuge ich einen Arial-Font und rendere den Text zu einem Image. Dieses Image wird nun exakt mittig in das Rechteck platziert. 
+
+Zum Abschluss lege anschließend Position der Titelzeile fest, indem ich die Werte aus \texttt{config.py} übernehme.
+
+\lstsource{SRC/02 Examples/04 FourConnect/v01/scenes/titlebar.py}{1}{99}{python}{Four Connect -- class \texttt{Title}}{srcV01Title}
+
+Die Klasse \texttt{Playground} geht völlig analog vor (die ersten Zeilen spare ich mir aus Platzgründen). Innerhalb der verschachtelten \forSchleife\ werden die \emph{Löcher} mithilfe der Farbe \texttt{HOLE} gezeichnet. Das einzig interessante hier ist die Berechnung des Zentrums vom Loch; aber diese Herleitung möchte hier dem geneigten Leser überlassen ;-)
+
+\lstsource{SRC/02 Examples/04 FourConnect/v01/scenes/playground.py}{6}{99}{python}{Four Connect -- class \texttt{Playground}}{srcV01Playground}
+
+Auch \texttt{Letters} orientiert sich an der gleichen Struktur. Das einzig andere ist das Eindrucken der Buchstaben~\texttt{A} bis~\texttt{G}. Dazu wird für jede Spaltennummer~\texttt{col} mit~0 beginnend der Buchstabe durch \texttt{chr(65 + col)}\index{\texttt{chr()}}\randnotiz{chr()} ermittelt. Dazu muss man wissen, dass~65 die \Gls{ascii} Nummer für den Buchstaben~\texttt{A} ist.
+
+\lstsource{SRC/02 Examples/04 FourConnect/v01/scenes/letters.py}{6}{99}{python}{Four Connect -- class \texttt{Letters}}{srcV01Letters}
+
+Als letztes Oberflächenelement verbleibt die Statuszeile. Diese ist nun denkbar simpel und wird sicherlich noch mit Informationen zu füllen sein.
+
+\lstsource{SRC/02 Examples/04 FourConnect/v01/scenes/status.py}{6}{99}{python}{Four Connect -- class \texttt{StatusBar}}{srcV01Status}
+
+Das ganze wird nun in einer ersten Version des Hauptprogramms zusammengeführt und sollte wie in \abbref[vref]{picFourconnect01} aussehen.
+
+\lstsource{SRC/02 Examples/04 FourConnect/v01/fourconnect.py}{1}{99}{python}{Four Connect -- class \texttt{Game}}{srcV01fourconnect}
+
+\myebild{fourconnect01}{0.8}{Four Connect -- first impression}{picFourconnect01}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\Reqref{reqFourConnectScreen}: Bildschirmaufbau}
+

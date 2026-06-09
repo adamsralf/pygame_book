@@ -6,6 +6,6 @@ DELTATIME = 1.0 / FPS
 KI = {"left": False, "right": False}            # Flag computer player§\label{srcPong0602}§
 
 class MyEvents:
-    POINT_FOR = pygame.USEREVENT
+    POINT_FOR = pygame.event.custom_type()
     MYEVENT = pygame.event.Event(POINT_FOR, player=0)
 

@@ -38,7 +38,7 @@ class Sky:
             pygame.draw.circle(self.screen, (255,255,star["color"]), star["pos"], star["size"])
 
 class Moon:
-    def __init__(self, screen: pygame.Surface, layer_count:int=5, peaks: int=35):
+    def __init__(self, screen: pygame.Surface, layer_count:int=5, peaks: int=35): 
         self.screen = screen
         self.surface = pygame.Surface((cfg.WINDOW.width, 
                                                 cfg.HORIZONT + layer_count*30),
@@ -124,7 +124,7 @@ class Lander:
         self.rect.top = self.rect.height       
         self.create_lander()                   
         self.thrusting = False                 
-        self.velocity = 0                      
+        self.velocity = 0                   # §\label{moonlander0402}§       
 
     def create_lander(self) -> None:
         # A few abbreviations

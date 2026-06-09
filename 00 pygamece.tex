@@ -46,6 +46,24 @@
 \usepackage{longtable}
 \usepackage{booktabs}
 % -------------------------------------------------
+% Hyperlinks & PDF Metadata
+% -------------------------------------------------
+\usepackage[
+luatex,
+unicode=true,
+breaklinks=true,
+bookmarksnumbered=true,
+colorlinks,
+linkcolor=blue,
+linktocpage,
+pdfauthor={Ralf Adams},
+pdftitle={Introduction to Pygame-ce},
+pdfsubject={Game Development with Python and Pygame-ce},
+pdfkeywords={Python, Pygame, Game Development, Programming},
+pdfcreator={LuaLaTeX},
+pdfproducer={LuaLaTeX}
+]{hyperref}
+% -------------------------------------------------
 % Boxen
 % -------------------------------------------------
 \usepackage[most]{tcolorbox}
@@ -60,6 +78,9 @@
 \usepackage{lastpage}
 \usepackage[acronym]{glossaries}
 \usepackage{xparse}
+
+\usepackage{comment}
+
 \usepackage{tikz}
 \usepackage{tkz-euclide}
 \usetikzlibrary{arrows.meta}
@@ -100,24 +121,6 @@
 \makeindex
 \makeglossaries
 
-% -------------------------------------------------
-% Hyperlinks & PDF Metadata
-% -------------------------------------------------
-\usepackage[
-luatex,
-unicode=true,
-breaklinks=true,
-bookmarksnumbered=true,
-colorlinks,
-linkcolor=blue,
-linktocpage,
-pdfauthor={Ralf Adams},
-pdftitle={Introduction to Pygame-ce},
-pdfsubject={Game Development with Python and Pygame-ce},
-pdfkeywords={Python, Pygame, Game Development, Programming},
-pdfcreator={LuaLaTeX},
-pdfproducer={LuaLaTeX}
-]{hyperref}
 
 
 \begin{document}
@@ -135,7 +138,7 @@ pdfproducer={LuaLaTeX}
 	{\Large 2D Game Programming\par}
 	\vfill
 	{\large Ralf Adams\par}
-	{\large Version 1.2.2 (\today)\par}
+	{\large Version 1.3 (\today)\par}
 \end{titlepage}
   
   
@@ -196,12 +199,13 @@ pdfproducer={LuaLaTeX}
 	\input{0201_Animation}
 	\input{0202_TileMaps}
 	\input{0203_WorldScrolling}
-	%TODO: Zustandautomaten
-	%TODO: Vorbeiziehende Gebirge (Hintergründe) mit 3D-Optik
+	\input{0204_StateMachine}
+%	%TODO: Vorbeiziehende Gebirge (Hintergründe) mit 3D-Optik
 \chapter{Examples}\label{secExamples}
 	\input{0301_Pong}
 	\input{0302_Bubbles}
 	\input{0303_Moonlander}
+%	\input{0304_FourConnect}
 \listoffigures
 \listoftables
 %\lstlistoflistings

@@ -61,7 +61,7 @@ class Settings:
 class MyEvents:
     """A static class in order to access event infos easily"""
 
-    POINT_FOR = pygame.USEREVENT
+    POINT_FOR = pygame.event.custom_type()
     MYEVENT = pygame.event.Event(POINT_FOR, player=0)
 
 
