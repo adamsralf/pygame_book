@@ -49,12 +49,12 @@ As an additional feature, a kind of counter is implemented. The boxes in the cen
 
 When the rightmost box reaches the value~10, it generates an overflow to the next digit to its left and resets itself to~0. This process continues from right to left. In this way, the boxes display the total number of particles that have already been absorbed.
 
-Now let us look at the whole setup in detail. In the console output above (see page~\pageref{srcConsole00a}), a unique number can be seen for each event, which can be used to identify the event. 
+Now let us look at the whole setup in detail. In the console output above (see page~\pageref{srcConsole00a}), a unique number can be seen for each event, which can be used to identify the event. \randnotiz{custom\_type()}
 
 \begin{hintbox}
 	Pygame reserves a range of numbers for user-defined events between the constants \texttt{pygame.USEREVENT}\myindex{pyg}{\texttt{USEREVENT}|underline} and \texttt{pygame.NUMEVENTS~-~1}\myindex{pyg}{\texttt{NUMEVENTS}|underline}. 
 \end{hintbox}
-For each user-defined event, such a unique number must be assigned. The simplest approach is to define these centrally using \texttt{USEREVENT~+~}$n$. You can find corresponding examples in \zeiref{srcEvent0101} and \zeiref{srcEvent0102}.  
+For each user-defined event, such a unique number must be assigned. The simplest approach is to call \texttt{pygame.event.custom\_type()}. You can find corresponding examples in \zeiref{srcEvent0101} and \zeiref{srcEvent0102}.\myindex{pyg}{\texttt{event}!\texttt{custom\_type()}|underline}
 
 I encapsulate these definitions in a static class for no other reason than that it allows me to make good use of the editor’s auto-completion (\zeiref{srcEvent0100}). 
 
@@ -175,11 +175,11 @@ This is actually quite simple. The previous example is extended so that new part
 
 In the constructor of \texttt{Game}, a periodic timer is set in \zeiref{srcEvent0201} using \texttt{pygame.time.set\-\_timer()}\randnotiz{set\_timer()}\myindex{pyg}{\texttt{time}!\texttt{set\_timer()}|underline}. This timer fires the corresponding event ID every~\SI{500}{ms}.
 
-\lstsource{SRC/00 Introduction/12 Events/event02/events.py}{117}{119}{python}{Events (3) -- \texttt{Timer} in the constructor of \texttt{Game}}{srcEvent02b}
+\lstsource{SRC/00 Introduction/12 Events/event02/events.py}{122}{124}{python}{Events (3) -- \texttt{Timer} in the constructor of \texttt{Game}}{srcEvent02b}
 
 Like the other events, this one is caught in \texttt{watch\_for\_event()} (\zeiref{srcEvent0202}) and processed. In this case, this is done by calling the method \texttt{generate\_particles()}.
 
-\lstsource{SRC/00 Introduction/12 Events/event02/events.py}{148}{149}{python}{Events (3) -- Catching a periodical event}{srcEvent02c}
+\lstsource{SRC/00 Introduction/12 Events/event02/events.py}{153}{154}{python}{Events (3) -- Catching a periodical event}{srcEvent02c}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -260,14 +260,30 @@ Use clear, descriptive keys (e.g. action, index, pos) and stick to a consistent 
 \subsubsection{Managing User-Defined Event IDs}
 
 \begin{hintbox}[Best practice]
-	Define all custom event IDs centrally, for example in a configuration file.
+	Define all custom event IDs centrally, for example in a configuration file.\myindex{pyg}{\texttt{event}!\texttt{custom\_type()}}
 \end{hintbox}
 
 \lstset{firstnumber=1}
 \begin{lstlisting}
-BUTTON_EVENT   = pygame.USEREVENT + 1
-OVERFLOW_EVENT = pygame.USEREVENT + 2
-NEWPARTICLES   = pygame.USEREVENT + 3
+BUTTON_EVENT   = pygame.event.custom_type()
+OVERFLOW_EVENT = pygame.event.custom_type()
+NEWPARTICLES   = pygame.event.custom_type()
+\end{lstlisting}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Avoid Manually Set Event IDs}
+
+\begin{warningbox}[Bad practice]
+	If you use the method shown below, event IDs may be assigned multiple times when they are defined across different source files. It is therefore preferable to use \texttt{pygame.event.custom\_type()} instead.\myindex{pyg}{\texttt{USEREVENT}}
+
+\end{warningbox}
+
+\lstset{firstnumber=1}
+\begin{lstlisting}
+	BUTTON_EVENT   = pygame.USEREVENT + 1
+	OVERFLOW_EVENT = pygame.USEREVENT + 2
+	NEWPARTICLES   = pygame.USEREVENT + 3
 \end{lstlisting}
 
 
@@ -374,10 +390,14 @@ In particular, clicking on the buttons can be implemented very easily using even
     \myindex{pyg}{\texttt{NUMEVENTS}}:\\
     \url{https://pyga.me/docs/ref/event.html#pygame.event}
 
+	\item \texttt{pygame.event.custom\_type()}:
+	\myindex{pyg}{\texttt{event}!\texttt{custom\_type()}}\\
+	\url{https://pyga.me/docs/ref/event.html#pygame.event.custom_type}
+	
 	\item \texttt{pygame.event.Event}:
 	\myindex{pyg}{\texttt{event}!\texttt{Event}}\\
 	\url{https://pyga.me/docs/ref/event.html#pygame.event.Event}
-	
+
 	\item \texttt{pygame.event.get()}
     \myindex{pyg}{\texttt{event}!\texttt{get()}}:\\
     \url{https://pyga.me/docs/ref/event.html#pygame.event.get}

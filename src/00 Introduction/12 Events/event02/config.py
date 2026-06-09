@@ -2,9 +2,9 @@ import pygame
 
 
 class MyEvents:
-    BUTTONPRESSED = pygame.USEREVENT + 0
-    OVERFLOW = pygame.USEREVENT + 1
-    NEWPARTICLES = pygame.USEREVENT + 2
+    BUTTONPRESSED = pygame.event.custom_type()
+    OVERFLOW = pygame.event.custom_type()
+    NEWPARTICLES = pygame.event.custom_type()
 
 
 WINDOW = pygame.Rect((0, 0), (600, 150))

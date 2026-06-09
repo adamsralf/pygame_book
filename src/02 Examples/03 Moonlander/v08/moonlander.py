@@ -8,8 +8,8 @@ from continent_polygons import continent_polygons
 
 
 class MyEvents:                                 # Custom event types§\label{moonlander0801}§
-    LANDED = pygame.USEREVENT + 1
-    CRASHED = pygame.USEREVENT + 2
+    LANDED = pygame.event.custom_type()
+    CRASHED = pygame.event.custom_type()
 
 
 

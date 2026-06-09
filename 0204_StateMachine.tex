@@ -1,0 +1,709 @@
+% !TeX spellcheck = en_US
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{State Machine and Scenes}\label{secStateMachine}\index{State Machine}\index{Scenes}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{A Simple Example: Tic-Tac-Toe}
+
+\subsubsection{Start Screen}
+
+\begin{wrapfigure}[11]{r}{5.0cm}%
+	\begin{center}%
+		\vspace{-2em}%
+		\myfigure{ttt01.png}{0.35}{Tic-Tac-Toe -- Start}{picTtt01}%
+	\end{center}%
+\end{wrapfigure}%
+Before we dive into the abstract concept of a state machine, let's look at a simple example that illustrates the problem it is designed to solve. In this case, using a state machine is a bit like using a sledgehammer to crack a nut -- but our goal here is simply to understand the underlying idea.
+
+Our example will be \Gls{tictactoe} -- everyone knows it. Since both the game logic and the \Gls{ui} are very simple, we can focus on the architectural challenges rather than the details of the game itself.
+
+So, let's start building the game. The first thing we need is a start screen.
+ 
+
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/05%20TicTacToe/v01}
+\end{diskbox}
+
+\br{Standard functionality}{reqTicTacToeStart}
+\begin{enumerate}
+	\item The window has a size of $640\times \SI{480}{px}$.\label{reqTicTacToeStartSize}
+	\item A welcome message and a help screen are displayed.\label{reqTicTacToeStartText}
+	\item The game can be exited using \keys{\esc} or by clicking the red~X.\label{reqTicTacToeStartQuit}
+\end{enumerate}
+\er
+
+
+Let's start by defining some basic settings in \texttt{config.py}, following the requirements in \reqref[vref]{reqTicTacToeStart}.
+
+\lstsource{src/01 Techniques/05 State Machine/v01/config.py}{1}{99}{python}{TicTacToe (\reqref{reqTicTacToeStart}) -- \texttt{config.py}}{srcTicTacToeConfig01}
+
+The start screen should display the game title and a short help text. This can be implemented quickly using the techniques we already know. In the \texttt{Game} class, the methods \texttt{run()}, \texttt{watch\_for\_events()}, \texttt{update()}, and \texttt{draw()} are implemented in a straightforward way without any surprises.
+
+One small detail is worth mentioning: the fonts are stored in a static variable, namely the \texttt{FONTS} dictionary. Of course, there are other ways to organize this, but for a small project like this, the approach works well and keeps the code simple. The result is shown in \abbref[vref]{picTtt01}.
+
+\lstsource{src/01 Techniques/05 State Machine/v01/tictactoe.py}{1}{999}{python}{TicTacToe (\reqref{reqTicTacToeStart}) -- \texttt{tictactoe.py}}{srcTicTacToe01}
+
+%\myebild{ttt01.png}{0.35}{Tic-Tac-Toe -- Start Screen}{picTtt01}
+
+
+\subsubsection{The Playground}
+
+Next, we want to create the playground.
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/05%20TicTacToe/v02}
+\end{diskbox}
+
+\br{Playground}{reqTicTacToePlayground}
+\begin{enumerate}
+	\item After pressing \keys{SPACE}, the playground is displayed.\label{reqTicTacToePlaygroundStart}
+	
+	\item It has a size of $420\times \SI{420}{px}$.\label{reqTicTacToePlaygroundSize}
+	
+	\item The playground is divided into nine equally sized squares by two vertical and two horizontal lines.\label{reqTicTacToePlaygroundGrid}
+	
+	\item The active player is shown below the playground.\label{reqTicTacToePlaygroundActivPlayer}
+	
+	\item When the player clicks on an empty square with the left mouse button, player~1 places an~\texttt{X} and player~2 places an~\texttt{O}. A click on an occupied square is ignored.\label{reqTicTacToePlaygroundMove}
+	
+	\item For now: If no square is left empty, the game ends.\label{reqTicTacToePlaygroundFull}
+\end{enumerate}
+\er
+
+To begin, we add a few basic definitions to \texttt{config.py}. The playground is defined as a rectangle whose center is positioned at the center of the window. Furthermore, the \texttt{COLORS} dictionary is extended with colors for the new game elements.
+
+\lstsource{src/01 Techniques/05 State Machine/v02/config.py}{1}{20}{python}{TicTacToe (\reqref{reqTicTacToePlayground}) -- \texttt{config.py}}{srcTicTacToeConfig02}
+
+Similar to \texttt{FONTS}, several additional static variables are defined in \texttt{Game}. The variable \texttt{STATUS} stores the current state of the game. Depending on this status, event handling in \texttt{watch\_for\_events()}, game updates in \texttt{update()}, and screen rendering in \texttt{draw()} can be performed differently.
+
+The variable \texttt{PLAYER} keeps track of the currently active player. The variable \texttt{BOARD} is a two-dimensional array that stores the state of each cell: either empty (\texttt{None}), occupied by player~1 (\texttt{X}), or occupied by player~2 (\texttt{O}).
+
+Finally, \texttt{SYMBOLS} stores the two \texttt{Surface} objects that are used to display an \texttt{X} or an \texttt{O} on the playing field.
+
+\lstsource{src/01 Techniques/05 State Machine/v02/tictactoe.py}{6}{11}{python}{TicTacToe (\reqref{reqTicTacToePlayground}) -- static data container in \texttt{Game}}{srcTicTacToe02a}
+
+Starting at \zeiref{srcTictactoe0201}, the constructor of \texttt{Game} is extended to initialize the \texttt{SYMBOLS} dictionary. The variable \texttt{padding} defines the distance between a player symbol and the border of its cell, while \texttt{linewidth} specifies the thickness of the lines and the circle outline in pixels. The size of a cell is determined by dividing the playing field into three rows and three columns.
+
+In \zeiref{srcTictactoe0202}, a \texttt{Surface} object with a transparent background is created. Afterwards, two lines are drawn: first from the upper-left corner to the lower-right corner, and then from the upper-right corner to the lower-left corner, forming the symbol for player~1.
+
+Similarly, in \zeiref{srcTictactoe0203}, the \texttt{Surface} object for player~2 is created. A circle is then drawn in its center using the appropriate radius.
+
+\lstsource{src/01 Techniques/05 State Machine/v02/tictactoe.py}{13}{38}{python}{TicTacToe (\reqref{reqTicTacToePlayground}) -- \texttt{Game.init()}}{srcTicTacToe02b}
+
+The variable \texttt{STATUS} is now used in \texttt{watch\_for\_events()}. Starting at \zeiref{srcTictactoe0204}, keyboard and mouse events are handled differently depending on the current state of the game.
+
+Only when the game is in the \emph{start} state does pressing \keys{SPACE} switch the game to play mode. When the game is already in the \emph{play} state, the key press is ignored.
+
+The left mouse button is handled in a similar way. Mouse clicks are processed only when the game is in the \emph{play} state. In this case, \texttt{update()} is called with the information that a player symbol should be placed. The target cell can then be determined from the mouse position stored in \texttt{event.pos}.
+
+\lstsource{src/01 Techniques/05 State Machine/v02/tictactoe.py}{48}{62}{python}{TicTacToe (\reqref{reqTicTacToePlayground}) -- \texttt{Game.watch\_for\_events()}}{srcTicTacToe02c}
+
+\begin{wrapfigure}[10]{r}{5.5cm}%
+	\begin{center}%
+		\vspace{-2em}%
+		\myfigure{ttt02.png}{0.35}{Tic-Tac-Toe -- Playground}{picTtt02}%
+	\end{center}%
+\end{wrapfigure}%
+In \texttt{update()}, while the game is in the \emph{play} state, we first check whether the mouse click was inside the playground. If this is the case, the row and column numbers are calculated.
+
+Let us think this through together using a few concrete numerical examples. Starting from the mouse position, why do these two lines (\zeiref{srcTictactoe0205} and \zeiref{srcTictactoe0206}) return values between~0 and~2? 
+
+To see this more clearly, please take a closer look at \tabref[vref]{tabRowNumber} and \tabref[vref]{tabColNumber}.
+
+
+\begin{longtable}{rrrcrcrr}
+	\caption{Computation of the row number (\zeiref{srcTictactoe0205} in \lstref{srcTicTacToe02d})}\label{tabRowNumber}\\
+	\toprule
+	\textbf{pos[1]} & \textbf{top} & \textbf{height} & \multicolumn{4}{c}{\textbf{computation}} & \textbf{row}\\
+	\midrule
+	\endfirsthead
+	
+	\toprule
+	\textbf{pos[1]} & \textbf{top} & \textbf{height} & \multicolumn{4}{c}{\textbf{computation}} & \textbf{row}\\
+	\midrule
+	\endhead
+	
+	\midrule
+	\multicolumn{8}{r}{\emph{continued on next page}} \\
+	\endfoot
+	
+	\bottomrule
+	\endlastfoot
+	
+	120 & 40 & 400 & $\:\rightarrow\:$ & $(120 - 40) // (400 // 3)$ & $\:=\:$ & $80 // 133$  & $\:=0$ \\
+	250 & 40 & 400 & $\:\rightarrow\:$ & $(250 - 40) // (400 // 3)$ & $\:=\:$ & $210 // 133$ & $\:=1$ \\
+	420 & 40 & 400 & $\:\rightarrow\:$ & $(420 - 40) // (400 // 3)$ & $\:=\:$ & $380 // 133$ & $\:=2$ \\
+	318 & 40 & 400 & $\:\rightarrow\:$ & $(318 - 40) // (400 // 3)$ & $\:=\:$ & $278 // 133$ & $\:=2$ \\
+	241 & 40 & 400 & $\:\rightarrow\:$ & $(241 - 40) // (400 // 3)$ & $\:=\:$ & $201 // 133$ & $\:=1$ \\
+	74  & 40 & 400 & $\:\rightarrow\:$ & $(74 - 40) // (400 // 3)$  & $\:=\:$ & $34 // 133$  & $\:=0$ \\
+	71  & 40 & 400 & $\:\rightarrow\:$ & $(71 - 40) // (400 // 3)$  & $\:=\:$ & $31 // 133$  & $\:=0$ \\
+	227 & 40 & 400 & $\:\rightarrow\:$ & $(227 - 40) // (400 // 3)$ & $\:=\:$ & $187 // 133$ & $\:=1$ \\
+	423 & 40 & 400 & $\:\rightarrow\:$ & $(423 - 40) // (400 // 3)$ & $\:=\:$ & $383 // 133$ & $\:=2$ \\
+\end{longtable}
+
+\begin{longtable}{rrrcrcrr}
+	\caption{Computation of the col number (\zeiref{srcTictactoe0206} in \lstref{srcTicTacToe02d})}\label{tabColNumber}\\
+	\toprule
+	\textbf{pos[0]} & \textbf{left} & \textbf{width} & \multicolumn{4}{c}{\textbf{computation}} & \textbf{col}\\
+	\midrule
+	\endfirsthead
+	
+	\toprule
+	\textbf{pos[0]} & \textbf{left} & \textbf{width} & \multicolumn{4}{c}{\textbf{computation}} & \textbf{col}\\
+	\midrule
+	\endhead
+	
+	\midrule
+	\multicolumn{7}{r}{\emph{continued on next page}} \\
+	\endfoot
+	
+	\bottomrule
+	\endlastfoot
+	
+	101 & 40 & 400 & $\:\rightarrow\:$ & $(101 - 40) // (400 // 3)$ & $\:=\:$ & $61  // 133$ & $\:=0$ \\
+	50  & 40 & 400 & $\:\rightarrow\:$ & $(50 - 40)  // (400 // 3)$ & $\:=\:$ & $10  // 133$ & $\:=0$ \\
+	163 & 40 & 400 & $\:\rightarrow\:$ & $(163 - 40) // (400 // 3)$ & $\:=\:$ & $123 // 133$ & $\:=0$ \\
+	189 & 40 & 400 & $\:\rightarrow\:$ & $(189 - 40) // (400 // 3)$ & $\:=\:$ & $149 // 133$ & $\:=1$ \\
+	247 & 40 & 400 & $\:\rightarrow\:$ & $(247 - 40) // (400 // 3)$ & $\:=\:$ & $207 // 133$ & $\:=1$ \\
+	281 & 40 & 400 & $\:\rightarrow\:$ & $(281 - 40) // (400 // 3)$ & $\:=\:$ & $241 // 133$ & $\:=1$ \\
+	338 & 40 & 400 & $\:\rightarrow\:$ & $(338 - 40) // (400 // 3)$ & $\:=\:$ & $298 // 133$ & $\:=2$ \\
+	357 & 40 & 400 & $\:\rightarrow\:$ & $(357 - 40) // (400 // 3)$ & $\:=\:$ & $317 // 133$ & $\:=2$ \\
+	418 & 40 & 400 & $\:\rightarrow\:$ & $(418 - 40) // (400 // 3)$ & $\:=\:$ & $378 // 133$ & $\:=2$ \\
+\end{longtable}
+
+Once the row and column numbers have been calculated, the current player's symbol can be stored in the corresponding cell of \texttt{BOARD}. Afterwards, \texttt{check\_ending()} is called to determine whether there are any empty cells left. If the board is full, the game is terminated.
+
+
+\lstsource{src/01 Techniques/05 State Machine/v02/tictactoe.py}{64}{77}{python}{TicTacToe (\reqref{reqTicTacToePlayground}) -- \texttt{Game.update()}}{srcTicTacToe02d}
+
+In \texttt{check\_ending()}, we simply check whether there is still a cell whose value is \texttt{None}. If such a cell exists, the method returns \false{}. Otherwise, it returns \true{}.
+
+
+\lstsource{src/01 Techniques/05 State Machine/v02/tictactoe.py}{78}{83}{python}{TicTacToe (\reqref{reqTicTacToePlayground}) -- \texttt{Game.check\_ending()}}{srcTicTacToe02e}
+
+
+
+\subsubsection{Do we have a winner?}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/05%20TicTacToe/v03}
+\end{diskbox}
+
+\br{Win or Draw?}{reqTicTacToeWinOrDraw}
+\begin{enumerate}
+	\item After each move, it is checked whether the active player has won the game.\label{reqTicTacToeWinOrDrawWin}
+
+	\item If nobody has won and the board is full, the game ends in a draw.\label{reqTicTacToeWinOrDrawDraw}
+\end{enumerate}
+\er
+
+To support these new requirements, \texttt{update()} has to be modified. Previously, the method only checked whether the board was full. Now the logic is slightly different.
+
+First, in \zeiref{srcTictactoe0301}, the game checks whether the active player has won. If so, the status is changed to \texttt{win}. This allows the rest of the program to determine whether the game is still running or whether a winner is currently being celebrated.
+
+If the player has not won, the active player is switched.
+
+Only afterwards does the game check whether the board is full and therefore a draw has been reached. In that case, the status is set to \texttt{draw}.
+
+
+\lstsource{src/01 Techniques/05 State Machine/v03/tictactoe.py}{62}{77}{python}{TicTacToe (\reqref{reqTicTacToeWinOrDraw}) -- \texttt{Game.update()}}{srcTicTacToe03a}
+
+The method \texttt{change\_player()} simply contains the logic for switching the active player. It has been moved into a separate method to keep the code in \texttt{update()} shorter and easier to read.
+
+\lstsource{src/01 Techniques/05 State Machine/v03/tictactoe.py}{102}{103}{python}{TicTacToe (\reqref{reqTicTacToeWinOrDraw}) -- \texttt{Game.change\_player()}}{srcTicTacToe03b}
+
+Checking for a winning position in Tic-Tac-Toe is extremely simple—although it can certainly be implemented in much more complicated ways. The easiest approach is to test all possible winning combinations one by one. This is exactly what the method \texttt{check\_winning()} does.
+
+\lstsource{src/01 Techniques/05 State Machine/v03/tictactoe.py}{86}{100}{python}{TicTacToe (\reqref{reqTicTacToeWinOrDraw}) -- \texttt{Game.check\_winning()}}{srcTicTacToe03c}
+
+Up to this point, everything has been fairly straightforward. But let's take a closer look at \texttt{draw()}. You will probably notice that the current implementation works perfectly fine -- it displays the correct screen depending on the current game state.
+
+However, is this approach really a good long-term strategy when additional game states or scenes are added? At some point, the growing chains of \texttt{if} decisions become difficult to read, maintain, and extend.
+
+In fact, we have already seen the first signs of this problem in \texttt{update()} and \texttt{watch\_for\-\_events()}. There, too, the program had to decide whether certain actions should be performed based on the current status of the game. As more states are introduced, this logic quickly becomes more and more complex.
+
+\lstsource{src/01 Techniques/05 State Machine/v03/tictactoe.py}{105}{115}{python}{TicTacToe (\reqref{reqTicTacToeWinOrDraw}) -- \texttt{Game.draw()}}{srcTicTacToe03d}
+
+We will come back to this issue later.
+
+\begin{warningbox}[\hspace{1cm}Avoid building program logic with \texttt{if} mountains]
+	
+	Representing complex program logic through large chains or deeply nested structures of \texttt{if} decisions leads to code that is difficult to maintain and prone to errors.
+	
+\end{warningbox}
+
+For the sake of completeness, we also add the methods \texttt{draw\_win()} and \texttt{draw\_draw()}.
+
+\lstsource{src/01 Techniques/05 State Machine/v03/tictactoe.py}{164}{168}{python}{TicTacToe (\reqref{reqTicTacToeWinOrDraw}) -- \texttt{Game.draw\_win()} und \texttt{Game.draw\_draw()}}{srcTicTacToe03e}
+
+
+\subsubsection{Restart}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/05%20TicTacToe/v04}
+\end{diskbox}
+
+\br{Win or Draw?}{reqTicTacToeRestart}
+\begin{enumerate}
+	\item After the game has ended, the player is asked whether to restart the game or quit.\label{reqTicTacToeRestartRestart}
+	
+	\item The game displays which player has won.\label{reqTicTacToeRestartWin}
+	
+	\item The game displays that the match ended in a draw.\label{reqTicTacToeRestartDraw}
+\end{enumerate}
+\er
+
+
+Before we solve the problem from the previous section, we first add a small extension and a few visual improvements.
+
+Because of \reqref{reqTicTacToeRestartWin} and~\ref{reqTicTacToeRestartDraw}, we need a method that displays messages on the screen. Each message should also be able to have a headline. We solve this task in \texttt{draw\_message()}. In the first three lines, a semi-transparent \texttt{Surface} is created, which is later placed on top of the game screen. Because of the transparency, the last board state remains visible in the background. After that, the headline and the individual text lines are blitted onto this \texttt{Surface} object. Finally, the whole \texttt{Surface} object is drawn onto the screen.
+
+\lstsource{src/01 Techniques/05 State Machine/v04/tictactoe.py}{178}{191}{python}{TicTacToe (\reqref{reqTicTacToeRestart}) -- \texttt{Game.draw\_message()}}{srcTicTacToe04a}
+
+\begin{warningbox}[\hspace{1cm}Performance issues caused by unnecessary graphics creation]
+	
+	The method \texttt{draw\_message()} creates the \texttt{Surface} object from scratch every time it is called. In addition, the unchanged text is rendered again and again for every frame, even though it does not change. Since the game runs at around 60 frames per second, this work is repeated approximately 60 times each second.
+	
+	A possible solution is left as an exercise for the interested reader~:-)
+\end{warningbox}
+
+
+All that remains is to provide the appropriate parameter values and call the method.
+
+\lstsource{src/01 Techniques/05 State Machine/v04/tictactoe.py}{144}{176}{python}{TicTacToe (\reqref{reqTicTacToeRestart}) -- \texttt{draw\_start(), draw\_win() und \texttt{draw\_draw()}}}{srcTicTacToe04b}
+
+\myezweihbild{ttt98.png}{0.35}{You've won}{picTtt1}{ttt99.png}{0.35}{It's a draw}{picTtt2}
+
+But how do we react to the user's answer? First, \texttt{watch\_for\_events()} has to be extended. Starting at \zeiref{srcTictactoe0402}, the input is handled depending on the current status of the game.
+
+\newpage
+\lstsource{src/01 Techniques/05 State Machine/v04/tictactoe.py}{46}{66}{python}{TicTacToe (\reqref{reqTicTacToeRestart}) -- \texttt{watch\_for\_events()}}{srcTicTacToe04c}
+
+Finally, \texttt{reset()} restores all variables to their initial values.
+
+\lstsource{src/01 Techniques/05 State Machine/v04/tictactoe.py}{194}{197}{python}{TicTacToe (\reqref{reqTicTacToeRestart}) -- \texttt{reset()}}{srcTicTacToe04d}
+
+\subsubsection{Separating Strings from the Code}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/05%20TicTacToe/v05}
+\end{diskbox}
+
+For the sake of readability and to simplify the adaptation to other languages, string constants should be stored in separate files. In our example, moving them to \texttt{config.py} is sufficient.
+
+\br{Externalize String Constants}{reqTicTacToeStrings}
+	String constants are stored in a separate file.
+\er
+
+In our implementation, we store the messages in the dictionary \texttt{MSGSTRINGS}.
+
+\newpage
+\lstsource{src/01 Techniques/05 State Machine/v05/config.py}{20}{56}{python}{TicTacToe (\reqref{reqTicTacToeStrings}) -- \texttt{MSGSTRING} in \texttt{config.py}}{srcTicTacToe05a}
+
+As a consequence, the code in \texttt{tictactoe.py} becomes much cleaner and easier to understand.
+
+\lstsource{src/01 Techniques/05 State Machine/v05/tictactoe.py}{144}{166}{python}{TicTacToe (\reqref{reqTicTacToeStrings}) -- Verwendung von \texttt{MSGSTRING} in \texttt{Game}}{srcTicTacToe05b}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Introduction of State Machines}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Refactoring Scenes}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/05%20TicTacToe/v06}
+\end{diskbox}
+
+Let us take look at the advantages and disadvantages of the current architecture in \tabref[vref]{tabStatusApproach}.
+
+
+\begin{longtable}{clp{7.7cm}}
+	\caption{Evaluation of the \texttt{STATUS} approach}\label{tabStatusApproach}\\
+	\toprule
+%	\textbf{pos[1]} & \textbf{top} & \textbf{height} & \multicolumn{4}{c}{\textbf{computation}} & \textbf{row}\\
+	%\midrule
+	\endfirsthead
+	
+	\toprule
+%	\textbf{pos[1]} & \textbf{top} & \textbf{height} & \multicolumn{4}{c}{\textbf{computation}} & \textbf{row}\\
+	%\midrule
+	\endhead
+	
+	\midrule
+	\multicolumn{3}{r}{\emph{continued on next page}} \\
+	\endfoot
+	
+	\bottomrule
+	\endlastfoot
+	
+	\rowcolor{green!20}+ & organic growth & The source code reflects the developer's thought process during development quite well. \\ \midrule
+	\rowcolor{green!20}+ & quick and dirty & For smaller projects, this approach can be both effective and appropriate. \\ \midrule
+	\rowcolor{red!20}- & many \texttt{if self.STATUS == } chains & Poor readability. \\ \midrule
+	\rowcolor{red!20}- & complex decision structures & Difficult to extend and highly error-prone. \\  \midrule
+	\rowcolor{red!20}- & everything in a single source file & Collaborative development often leads to numerous merge conflicts. \\
+\end{longtable}
+
+
+Up to this point, we have moved around quite a lot of source code without actually talking much about state machines. In computer science, a state machine is a way of modeling software, just like class diagrams or sequence diagrams. A state machine describes how the state of a program changes in response to events.
+
+\begin{hintbox}[State Machine]\index{State machine}
+	A state machine consists of a finite set of states and well-defined transitions between them. At any point in time, the program behavior depends on its current state.
+\end{hintbox}
+
+For our example, the corresponding UML state machine diagram is shown in \abbref[vref]{picUMLStateMachine01}.
+
+
+\begin{figure}[htb]
+\begin{tikzpicture}[scale=0.8, transform shape,
+	state/.style={
+		rectangle,
+		rounded corners,
+		draw,
+		thick,
+		minimum width=3.5cm,
+		minimum height=1cm,
+		align=center,
+		fill=blue!8
+	},
+	final/.style={
+		circle,
+		draw,
+		thick,
+		minimum size=0.8cm,
+		fill=black
+	},
+	transition/.style={
+		-{Latex[length=3mm]},
+		thick
+	}
+	]
+	% Grid for positioning
+	%\draw[help lines, step=1cm, gray!40] (0,0) grid (15,-20);
+	%\foreach \x in {0,1,...,15}
+	%	\node[gray] at (\x,-0.5) {\x};
+	%\foreach \y in {0,-1,...,-20}
+	%	\node[gray] at (-0.5,\y) {\y};
+	
+	% States
+	\node[final] (create) at (0.5,-0.5) {};
+	\node[state] (start) at (8,-0.5) {\textbf{StartState}};
+	\node[state] (play)  at (8,-5.5) {\textbf{PlayState}};
+	\node[state] (win)   at (4,-10.5) {\textbf{WinState}};
+	\node[state] (draw)  at (12,-10.5) {\textbf{DrawState}};
+	\node[final] (end)   at (8,-16) {};
+	
+	% Initial transition
+	\draw[transition] (create) -- node[above] {create game} (start);
+	
+	% from (start) to 
+	\draw[transition] (start) -- node[above] {\keys{SPACE}} (play);
+	
+	% from (play) to
+	\draw[transition] (play) -- node[left] {winner found} (win);
+	\draw[transition] (play) -- node[right] {board full} (draw);
+	\draw[transition] (play) -- node[pos=0.2, above] {\keys{ESC}, \keys{Q}, quit} (end);
+	
+	% from (win) to
+	\draw[transition] (win.west) .. controls (1,-9) and (1.5, -3) .. node[left] {\keys{Y}} (start.west);
+	\draw[transition] (win) -- node[left] {\keys{N}, \keys{ESC}, \keys{Q}, quit} (end);
+
+	% from (draw) to
+	\draw[transition] (draw.east) .. controls (15,-9) and (14.5, -3) .. node[right] {\keys{Y}} (start.east);
+	\draw[transition] (draw) -- node[right] {\keys{N}, \keys{ESC}, \keys{Q}, quit} (end);
+
+	
+\end{tikzpicture}
+\caption{Tic-Tac-Toe -- UML state machine diagram}\label{picUMLStateMachine01}
+\end{figure}
+
+In our example, the initial \emph{start} state is left when the player presses \keys{SPACE}, causing the application to enter the \emph{play} state. Throughout the program, chains of \texttt{if} statements are then used to determine the current state and decide how the program should react.
+
+The idea behind using a state machine in game development is to treat each state as if it were a separate program within the program. For every state (or status), a dedicated variant of \texttt{Game} is implemented in such a way that it is responsible for handling only that single state. This dramatically reduces the complexity of the overall program and, following the principle of \gls{divideetimpera}, distributes the complexity among the individual state implementations.
+
+If we take a look at the latest version of our game, we can identify the following states:
+
+\begin{itemize}
+	\item \emph{start}: The start screen is displayed.
+	\item \emph{play}: Xs and Os are placed on the playing field.
+	\item \emph{win}: The active player has won the game.
+	\item \emph{draw}: Neither player has won.
+\end{itemize}
+
+We can also identify the methods in which these game states are currently checked:
+
+\begin{itemize}
+	\item \texttt{watch\_for\_events()}
+	\item \texttt{update()} 
+	\item \texttt{draw()}
+\end{itemize}
+
+As a consequence, we need to provide a separate implementation of these three methods for each game state. A class hierarchy is a convenient way to achieve this.
+
+Let us therefore define a base class called \texttt{State}. To keep the project structure organized, this class is placed in the \texttt{scenes} subdirectory (\secref[vref]{secProjStruct}).
+
+\lstsource{src/01 Techniques/05 State Machine/v06/scenes/state.py}{1}{999}{python}{TicTacToe --  \texttt{State}}{srcState06a}
+
+Now the relevant parts of the methods \texttt{watch\_for\_events()}, \texttt{update()}, and \texttt{draw()} are distributed among the classes \texttt{StartState}, \texttt{PlayState}, \texttt{WinState}, and \texttt{DrawState}. As a result, each class contains only the source code that is actually needed for its particular \emph{scene}. You can use the class diagram in \abbref[vref]{picStateMachine01} as a guide.
+
+As a first example, let us look at the class \texttt{StartState}. Since the game starts in this scene, an object of this class is created inside \texttt{Game} (see \zeiref{srcTictactoe0601}).
+
+\lstsource{src/01 Techniques/05 State Machine/v06/tictactoe.py}{12}{37}{python}{TicTacToe --  \texttt{Game.\_\_init\_\_()}}{srcTicTacToe0601}
+
+\begin{figure}[htb]
+	\begin{tikzpicture}[scale=0.8, transform shape]
+		% Grid for positioning
+		%\draw[help lines, step=1cm, gray!40] (0,0) grid (18,-20);
+		%\foreach \x in {0,1,...,18}
+		%	\node[gray] at (\x,0.5) {\x};
+		%\foreach \y in {0,-1,...,-20}
+		%	\node[gray] at (-0.5,\y) {\y};
+		
+		\begin{class}[text width=6.5cm]{Game}{3.5,-4}
+			\attribute{+ FONTS : dict}
+			\attribute{+ PLAYER : str}
+			\attribute{+ BOARD : list}
+			\attribute{+ SYMBOLS : dict}
+			
+			\attribute{+ window}
+			\attribute{+ screen}
+			\attribute{+ clock}
+			\attribute{+ running : bool}
+			\attribute{+ state : State}
+			
+			\operation{+ \_\_init\_\_()}
+			\operation{+ run() : None}
+			\operation{+ watch\_for\_events() : None}
+			\operation{+ update() : None}
+			\operation{+ draw() : None}
+			\operation{+ draw\_message(message) : None}
+			\operation{+ reset() : None}
+		\end{class}
+		
+		\begin{abstractclass}[text width=5.2cm]{State}{13,-6.5}
+			\attribute{+ game}
+			\operation{+ \_\_init\_\_()}
+			\operation[0]{+ watch\_for\_events()}
+			\operation[0]{+ update(**kwargs)}
+			\operation[0]{+ draw()}
+		\end{abstractclass}
+		
+		\begin{class}[text width=4.8cm]{StartState}{15.5,-14}
+			\implement{State}
+			\operation{+ \_\_init\_\_(game)}
+			\operation{+ watch\_for\_events()}
+			\operation{+ update(**kwargs)}
+			\operation{+ draw()}
+		\end{class}
+		
+		\begin{class}[text width=5.4cm]{PlayState}{15.3,0}
+			\implement{State}
+			\operation{+ \_\_init\_\_(game)}
+			\operation{+ watch\_for\_events()}
+			\operation{+ update(**kwargs)}
+			\operation{+ draw()}
+			\operation{+ check\_winning() : bool}
+			\operation{+ change\_player() : None}
+			\operation{+ check\_ending() : bool}
+		\end{class}
+		
+		\begin{class}[text width=4.8cm]{WinState}{9.5,-14}
+			\implement{State}
+			\operation{+ \_\_init\_\_(game)}
+			\operation{+ watch\_for\_events()}
+			\operation{+ update(**kwargs)}
+			\operation{+ draw()}
+		\end{class}
+		
+		\begin{class}[text width=4.8cm]{DrawState}{9,0}
+			\implement{State}
+			\operation{+ \_\_init\_\_(game)}
+			\operation{+ watch\_for\_events()}
+			\operation{+ update(**kwargs)}
+			\operation{+ draw()}
+		\end{class}
+		
+		\composition{Game}{}{1..1}{State}
+	\end{tikzpicture}
+	\caption{Example of a simple State Machine}\label{picStateMachine01}
+\end{figure}
+
+The methods \texttt{watch\_for\_events()}, \texttt{update()}, and \texttt{draw()} are now greatly simplified. They no longer contain any state-specific logic themselves. Instead, they simply delegate their work to the corresponding methods of the currently active state object.
+
+\lstsource{src/01 Techniques/05 State Machine/v06/tictactoe.py}{47}{56}{python}{TicTacToe --  \texttt{watch\_for\_events()}, \texttt{update()}, and \texttt{draw()}}{srcTicTacToe06b}
+
+Within \texttt{StartState} itself, we only need to check for the keys used to quit the game and whether \keys{SPACE} has been pressed. If \keys{SPACE} is pressed, the next scene is created in \zeiref{srcStartState0601} and assigned to the attribute \texttt{Game.state}. Consequently, in the next frame, \texttt{Game} delegates the calls to \texttt{watch\_for\_events()}, \texttt{update()}, and \texttt{draw()} to \texttt{PlayState}.
+
+\lstsource{src/01 Techniques/05 State Machine/v06/scenes/startstate.py}{7}{999}{python}{TicTacToe --  \texttt{StartState}}{srcStartState06}
+
+Things work almost exactly the same way in \texttt{WinState} and \texttt{DrawState}. The only additional task is to ask the player whether another round should be played. Pressing \emph{N}o immediately quits the game, whereas pressing \emph{Y}es calls \texttt{Game.reset()} and assigns \texttt{StartState} to \texttt{Game.state} again in order to restart the game.
+
+\lstsource{src/01 Techniques/05 State Machine/v06/scenes/winstate.py}{7}{999}{python}{TicTacToe --  \texttt{WinState}}{srcWinState06}
+
+\lstsource{src/01 Techniques/05 State Machine/v06/scenes/drawstate.py}{7}{999}{python}{TicTacToe --  \texttt{DrawState}}{srcDrawState06}
+
+\texttt{PlayState} is slightly more complex because it contains more game logic. However, its overall structure is exactly the same as that of the other states -- so don't let that confuse you~{;-)}
+
+What happens inside the individual methods has already been explained in detail when we introduced the Tic-Tac-Toe example earlier in this chapter. The important point here is that the game remains in the \texttt{PlayState} scene until either a player wins the game (\zeiref{srcPlayState0601}) or the game ends in a draw (\zeiref{srcPlayState0602}).
+
+\newpage
+\lstsource{src/01 Techniques/05 State Machine/v06/scenes/playstate.py}{7}{999}{python}{TicTacToe --  \texttt{PlayState}}{srcPlayState06}
+
+The elegance of this approach becomes apparent rather quickly. The individual scenes, or game states, can be implemented largely independently of one another. As a result, debugging, maintenance, and collaborative development become much easier.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Using Events}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/05%20TicTacToe/v07}
+\end{diskbox}
+
+What I really do not like is that objects of the state classes are created inside other state classes. What do I mean by that? In \texttt{StartState}, after pressing \keys{SPACE}, an object of \texttt{PlayState} is created and assigned to \texttt{Game.state}. \emph{Brr}. I even had to use local \texttt{import} statements to avoid circular dependencies.
+
+A much cleaner solution would be for the state objects to merely notify \texttt{Game} that the state, or scene, should change. Then \texttt{watch\_for\_events()} would be responsible for performing the actual transition. \texttt{StartState} and the other state classes would no longer need to know about each other. In other words, we decouple these source files from one another.
+
+\begin{hintbox}
+	The first implementation demonstrates the basic idea of encapsulating scenes into separate classes. The event-based version refines this design by reducing coupling between these classes.
+\end{hintbox}
+
+
+To do this, we first define the appropriate events in \texttt{Game}.
+
+\lstsource{src/01 Techniques/05 State Machine/v07/tictactoe.py}{1}{17}{python}{TicTacToe --  User defined events}{srcTicTacToe07a}
+
+And in \texttt{\_\_init\_\_()}, see \zeiref{srcTictactoe0701}, we no longer assign a \texttt{StartState} object directly. Instead, the corresponding event is triggered.
+
+\lstsource{src/01 Techniques/05 State Machine/v07/tictactoe.py}{18}{43}{python}{TicTacToe -- Using START event}{srcTicTacToe07b}
+
+This event is now processed in \texttt{watch\_for\_events()}, just like all other events. The first step is to handle immediate termination of the game triggered by keyboard input. As a consequence, this logic can now be removed from the individual \texttt{State} classes. After that
+
+After that, the user defined events are processed, and the corresponding \texttt{State} object is created if necessary. When handling the events for restarting the game, \texttt{reset()} is now called at this point, which appears to be a more natural place from a design perspective.
+
+\lstsource{src/01 Techniques/05 State Machine/v07/tictactoe.py}{53}{72}{python}{TicTacToe -- \texttt{watch\_for\_events()}}{srcTicTacToe07c}
+
+The responsibilities of the \texttt{State} classes are now much more focused. Each class processes only the logic that is relevant to its particular scene. For instance, \texttt{StartState} merely checks whether \keys{SPACE} has been pressed and, if so, triggers the appropriate event.
+
+\lstsource{src/01 Techniques/05 State Machine/v07/scenes/startstate.py}{9}{23}{python}{TicTacToe -- \texttt{StartState}}{srcStartState07}
+
+Things work in much the same way in \texttt{WinState} and \texttt{DrawState}. Each of these classes focuses solely on the behavior required for its own scene.
+
+\lstsource{src/01 Techniques/05 State Machine/v07/scenes/winstate.py}{13}{19}{python}{TicTacToe -- \texttt{WinState}}{srcWinState07}
+
+\newpage
+\lstsource{src/01 Techniques/05 State Machine/v07/scenes/drawstate.py}{13}{19}{python}{TicTacToe -- \texttt{DrawState}}{srcDrawState07}
+
+\begin{warningbox}[Game ending scene is missing]
+	It is worth noting that the game is still terminated directly by setting \texttt{running = False} within the \texttt{State} classes. This approach is now outdated and represents a break in the overall design.
+	
+	Extend the game by introducing a new class called \texttt{StateEnd} and modify the program accordingly at all relevant points.
+\end{warningbox}
+
+This leaves only the necessary adjustments to \texttt{PlayState}.
+
+\lstsource{src/01 Techniques/05 State Machine/v07/scenes/playstate.py}{13}{34}{python}{TicTacToe -- \texttt{PlayState}}{srcPlayState07}
+
+\begin{hintbox}[Summary]
+	In this chapter, we used the simple example of Tic-Tac-Toe to motivate the use of state machines in game development. Initially, the game logic was implemented using a status variable and increasingly large chains of \texttt{if} chains. While this approach works for small examples, it quickly becomes difficult to read, maintain, and extend as additional scenes and game states are introduced.
+	
+	To address this problem, we introduced the concept of a state machine. Each scene of the game was represented by its own class derived from the abstract base class \texttt{State}. Responsibilities such as event handling, updating the game logic, and rendering the screen were distributed among these state classes. As a consequence, each class focused only on the behavior relevant to its particular scene.
+	
+	We further improved the design by decoupling the state classes from one another. Instead of directly creating other state objects, the states now communicate desired transitions through user-defined events, while \texttt{Game} remains responsible for performing the actual state changes.
+	
+	The resulting architecture follows the principle of \emph{divide et impera}: a complex problem is decomposed into smaller, more manageable parts. This leads to source code that is easier to understand, debug, maintain, and extend. Although the Tic-Tac-Toe example is intentionally simple, the same architectural ideas can be applied successfully to much larger game projects.
+\end{hintbox}
+
+\begin{warningbox}[Using a sledgehammer to crack a nut]
+	For small projects, a simple status variable may be entirely sufficient. State machines become particularly valuable when the number of scenes and transitions increases.
+\end{warningbox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Stacked States / Pushdown Automaton}\index{Stack states}\index{Pushdown Automaton}
+
+There are situations in which one state should not replace another but merely overlay it. Consider, for example, the still missing scenes \emph{PauseState} and \emph{HelpState}. Both of these scenes should display the current game state in the background, visible through a translucent overlay.
+
+Up to this point, our implementation assumed that exactly one state is active at a time. However, some scenes such as pause menus, help screens, or inventory windows do not replace the underlying game. Instead, they temporarily overlay it while preserving the previous state.
+
+One possible approach is to organize the states in a \gls{stack}. However, this also means that additional methods are required to support this extended functionality, since sometimes a state needs to be replaced, while at other times a new state should simply be pushed onto the stack.
+
+Before we turn our attention to this problem, a few preparations are in order. Let us begin by defining two new events: one for entering the help screen and another for leaving it.
+
+\newpage
+\lstsource{src/01 Techniques/05 State Machine/v08/tictactoe.py}{12}{20}{python}{TicTacToe -- help events}{srcTictactoe08a}
+
+We also need to add an appropriate help message to \texttt{config.py}.
+
+\lstsource{src/01 Techniques/05 State Machine/v08/config.py}{54}{69}{python}{TicTacToe -- help text}{srcConfig08a}
+
+We also need to implement the \texttt{HelpState} class. Keep in mind that pressing \keys{H} in this state should close the help screen again. Therefore, the event \texttt{UNHELP} must be triggered.
+
+\lstsource{src/01 Techniques/05 State Machine/v08/scenes/helpstate.py}{9}{23}{python}{TicTacToe -- \texttt{HelpState}}{srcHelpState08a}
+
+\texttt{PlayState} now needs to be extended to process the \keys{H} key, since this is used to open the help screen. The method \texttt{watch\_for\_events()} is adapted accordingly.
+
+\newpage
+\lstsource{src/01 Techniques/05 State Machine/v08/scenes/playstate.py}{13}{20}{python}{TicTacToe -- \texttt{PlayState}}{srcPlayState08a}
+
+And now, finally, we arrive at the functional extensions to \texttt{Game}. The first step is to replace the single \texttt{state} attribute with \texttt{stack\_state}.
+
+\lstsource{src/01 Techniques/05 State Machine/v08/tictactoe.py}{47}{47}{python}{TicTacToe -- \texttt{stack\_state}}{srcTictactoe08b}
+
+To simplify working with the stack, we introduce a few helper methods:
+
+\begin{itemize}
+	\item \texttt{push\_state()} appends a new state to the top of the stack (at the end of the Python list).
+	
+	\item \texttt{pop\_state()} removes the state currently on top of the stack. Before doing so, it checks whether the stack is already empty. If no states remain, this can reasonably be interpreted as the end of the game, since there is no longer a playable state available.
+	
+	\item \texttt{replace\_state()} discards the entire existing stack and initializes a new one containing only the state passed as an argument.
+	
+	\item \texttt{current\_state} is simply a convenience attribute that returns the state currently on top of the stack.
+\end{itemize}
+
+\lstsource{src/01 Techniques/05 State Machine/v08/tictactoe.py}{111}{125}{python}{TicTacToe -- \texttt{push\_state()}, \texttt{pop\_state()}, \texttt{replace\_state()}, \texttt{current\_state}}{srcTictactoe08c}
+
+With these helper methods in place, \texttt{watch\_for\_events()} can now be rewritten. Whenever a new state is intended to completely replace the current one, \texttt{replace\_state()} is used. This applies to the transitions triggered by \texttt{START} and \texttt{PLAY}.
+
+In contrast, the states associated with \texttt{WIN}, \texttt{DRAW}, and \texttt{HELP} are added to the stack using \texttt{push\_state()}. This makes it possible to access both \texttt{PlayState} and, for example, \texttt{HelpState}, rather than being limited to a single active state.
+
+When the event \texttt{UNHELP} occurs, only the help state should disappear again. Therefore, \texttt{pop\_state()} is used.
+
+\begin{hintbox}
+	Finally, the current events are forwarded only to the most recently added \texttt{State} object -- that is, the state currently on top of the stack -- and not to all states. This is the main difference to a \gls{broadcastsystem}.\index{Broadcast system}
+\end{hintbox}
+
+\lstsource{src/01 Techniques/05 State Machine/v08/tictactoe.py}{57}{79}{python}{TicTacToe -- \texttt{watch\_for\_events()}}{srcTictactoe08d}
+
+For \texttt{update()}, a design decision has to be made: should \texttt{update()} be executed for every state on the stack, or only for the state currently on top of it?
+
+In the first case, moving game elements would continue to update even while an overlay state is active. In the second case, they would effectively freeze. Since we want the background to remain static, we forward the \texttt{update()} call only to the current state on top of the stack.
+
+In contrast, \texttt{draw()} behaves quite differently. Here, all states stored in the stack -- in our example, there are at most two -- should render their graphics. This allows the game state in the background to remain visible through the overlay. As a result, the player can still inspect, for example, the winning position that led to the end of the game.
+
+Rendering policies vary depending on the desired behavior. In our example, the underlying \texttt{PlayState} is drawn first, followed by the overlay state. Therefore, \texttt{draw()} traverses the stack from bottom to top, while event processing only targets the state on top.
+
+\lstsource{src/01 Techniques/05 State Machine/v08/tictactoe.py}{85}{89}{python}{TicTacToe -- \texttt{draw()}}{srcTictactoe08f}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{I'm confused!}
+
+Over the course of this chapter, we explored several ways of organizing game states, ranging from a simple status variable to stacked states. Each approach has its strengths and weaknesses, and the \emph{right} choice depends on the requirements of the project. The following table provides a small rule of thumb for deciding which technique may be most appropriate in a given situation.
+
+\begin{longtable}{ll}
+	\caption{Decision table for designing scene handling}\label{tabSceneHandling}\\
+	\toprule
+	\textbf{If \dots} & \textbf{Use \dots}\\
+	\midrule
+	\endfirsthead
+	
+	\toprule
+	\textbf{If \dots} & \textbf{Use \dots}\\
+	\midrule
+	\endhead
+	
+	\midrule
+	\multicolumn{2}{r}{\emph{continued on next page}} \\
+	\endfoot
+	
+	\bottomrule
+	\endlastfoot
+	
+	there are only a few scenes                   & a status variable \\ 
+	many scenes replace each other                & a state machine \\ 
+	states should not know each other directly    & events \\ 
+	scenes temporarily overlay other scenes       & a state stack \\ 
+\end{longtable}

@@ -8,8 +8,8 @@ NOFBOXES = 3
 BOXWIDTH = 50
 
 class MyEvents:                                     # Only for autocompletion (convenience)§\label{srcEvent0100}§
-    BUTTONPRESSED = pygame.USEREVENT + 0            # Event id for button presses§\label{srcEvent0101}§
-    OVERFLOW = pygame.USEREVENT + 1                 # Event id for overflow§\label{srcEvent0102}§
+    BUTTONPRESSED = pygame.event.custom_type()      # Event id for button presses§\label{srcEvent0101}§
+    OVERFLOW = pygame.event.custom_type()           # Event id for overflow§\label{srcEvent0102}§
 
 
 

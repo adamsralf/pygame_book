@@ -48,7 +48,7 @@ The methods \texttt{watch\_for\_events()} and \texttt{draw()} also do not contai
 
 The \texttt{update()} method is only worth mentioning with regard to \zeiref{srcTime0006}, because a new fireball is created (dropped) there by calling the \texttt{new\_bullet()} method. The starting position is derived from the current position of the enemy. The horizontal center of the fireball and the enemy should be the same, while the vertical center is shifted slightly downward, which looks better visually.
 
-\lstsource{SRC/00 Introduction/09 Time/v01/time.py}{87}{87}{python}{Time-based actions (6), Version 1.0 -- \texttt{update()} and \texttt{new\_bullet()} of \texttt{Game}}{srcTime00f} 
+\lstsource{SRC/00 Introduction/09 Time/v01/time.py}{81}{87}{python}{Time-based actions (6), Version 1.0 -- \texttt{update()} and \texttt{new\_bullet()} of \texttt{Game}}{srcTime00f} 
 
 
 Back to the actual problem. As we saw above, the application is timed to $1/60$ of a second by \texttt{FPS} and the call to \texttt{tick()} in \zeiref{srcTime0005}. In other words, up to 60~fireballs per second are currently created, which is nonsense.

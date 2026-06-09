@@ -13,7 +13,7 @@ In many games, information is not shown only in a symbolic way on the playfield 
 
 The basic idea is simple: first, a \texttt{Font} object is created (see \zeiref{textoutput00a}). Then this font is used to generate a Surface object that contains the text -- the text is \glslink{render}{rendered}\randnotiz{render} onto a \texttt{Surface} object (see \zeiref{textoutput00b}). Once rendered, the text behaves like any other bitmap and can be blitted onto the screen.
 
-\lstsource{SRC/00 Introduction/07 Fonts/textoutput00.py}{7}{35}{python}{Simple text output using fonts}{srcFonts00aa} 
+\lstsource{SRC/00 Introduction/07 Fonts/textoutput00.py}{5}{31}{python}{Simple text output using fonts}{srcFonts00aa} 
 
 But how does the contructor of \texttt{Font} know, which font I want? In \zeiref{textoutput00a} we use the predefined default font. \texttt{pygame.font.SysFont()}\randnotiz{SysFont()}\myindex{pyg}{\texttt{font}!\texttt{SysFont()}} 
 takes either the name of a font or \texttt{None} as the first argument. In the latter case, the default font is used. Since Pygame always ships with a default font, this call will always return a valid font object. However, there is no guarantee that it will always be the same font, as the default font itself could change.

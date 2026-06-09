@@ -1,12 +1,12 @@
 % !TeX spellcheck = en_US
-\section{Pong}\index{Pong}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Pong}\index{Pong}
 
 The ultimate beginner classic. This game has been played in countless variations since 1972.  Because the rules are simple and easy to understand, it is perfectly suited as a first programming project.
 
 We will develop this game step by step in a systematic way, assuming that the techniques from \kapref{secBasics} are already familiar. I will deliberately omit docstring comments in the source code, since everything is explained in the text and including them here would only make the listings unnecessarily long.  They are, of course, included in the final version.
 
-Note: At the very beginning, I once asked \glslink{chatgpt}{ChatGPT} to generate a Pong game for me. It was quite impressive to see that it produced a fully working game.
+%Note: At the very beginning, I once asked \glslink{chatgpt}{ChatGPT} to generate a Pong game for me. It was quite impressive to see that it produced a fully working game.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -256,7 +256,7 @@ Now the \texttt{Ball} class only has to trigger the appropriate event, and \text
 
 Now all that remains is to catch the user-defined event inside \texttt{watch\_for\_events()} (starting at \zeiref{srcPong0404}).
 
-\lstsource{SRC/02 Examples/01 Pong/v04/pong04.py}{190}{191}{python}{Pong (\Reqref{req0201Punkte}) -- \texttt{Ball.watch\_for\_events()}}{srcPong04h}
+\lstsource{SRC/02 Examples/01 Pong/v04/pong04.py}{189}{190}{python}{Pong (\Reqref{req0201Punkte}) -- \texttt{Ball.watch\_for\_events()}}{srcPong04h}
 
 \begin{hintbox}[Why is a user-defined event more elegant than direct access?]
 \begin{itemize}

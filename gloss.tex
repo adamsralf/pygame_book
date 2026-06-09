@@ -666,6 +666,50 @@
 	text={wayland},
 	description={Wayland is a modern display server protocol for Linux and other Unix-like systems. It defines how graphical applications (clients) communicate with the display server (the compositor) to draw windows, handle input devices like keyboard and mouse, and manage screen updates. Unlike the older X11 system, Wayland is designed to be simpler, more secure, and more efficient. Many tasks that were previously handled by a separate window manager are integrated directly into the compositor, reducing complexity and latency.	In practice, Wayland often results in smoother graphics, better support for modern hardware, and improved security, since applications cannot freely access or manipulate each other’s windows. Popular desktop environments such as GNOME and KDE increasingly use Wayland as their default display system}
 }
+
+\newdualentry{ascii} % label
+	{ASCII}            % abbreviation
+	{American Standard Code for Information Interchange}         % long form
+	{A 7-bit character encoding standard that maps numbers (0-127) to letters, digits, punctuation, and control characters, enabling consistent text representation across different computer systems} % description
+
+\newglossaryentry{statemachine}{
+	name={State Machine},
+	text={state machine},
+	description={A behavioral design pattern that models the behavior of an object as a finite set of well-defined states and explicit transitions between them. The object can only be in one state at a time, and its behavior changes depending on its current state. State machines are commonly used in game development to manage different phases such as menu screens, gameplay, pause mode, or game over screens, helping to avoid complex conditional logic and improving code structure and maintainability}
+}
+
+\newdualentry{ui} % label
+	{UI}            % abbreviation
+	{User Interface}         % long form
+	{The part of a software application through which users interact with the program. It includes visual elements such as buttons, menus, icons, and text, as well as input methods like keyboard and mouse controls} % description
+
+
+\newglossaryentry{tictactoe}
+{
+	name={Tic-Tac-Toe},
+	text={Tic-Tac-Toe},
+	description={A classic two-player game in which players alternate placing X and O symbols on a 3×3 board. The objective is to place three of one's own symbols in a horizontal, vertical, or diagonal row before the opponent}
+}
+
+\newglossaryentry{divideetimpera}
+{
+	name={divide et impera},
+	description={A Latin expression meaning \emph{divide and conquer}. The principle describes the strategy of decomposing a large and complicated problem into several smaller parts that can be handled independently. In the context of state machines, each state is responsible only for its own behavior, reducing the need for large conditional structures and improving readability and maintainability of the code}
+}
+
+\newglossaryentry{stack}
+{
+	name={Stack},
+	text={stack},
+	description={A linear data structure that stores elements in a last-in, first-out (LIFO) order. Items are added with \textit{push} and removed with \textit{pop}}
+}
+
+\newglossaryentry{broadcastsystem}{
+	name={Broadcast System},
+	name={broadcast system},
+	description={An event distribution mechanism in which incoming events are forwarded to all interested components. In games, this allows multiple systems to react to the same event. Unlike a state stack, where only the active state processes user input, a broadcast system delivers events to every registered listener}
+}
+
 \label{GRENZE}
 
 
