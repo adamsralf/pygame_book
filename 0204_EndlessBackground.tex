@@ -1,0 +1,264 @@
+% !TeX spellcheck = en_US
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Endless Scrolling Background}\label{secEndlessScrolling}\index{Endless Background}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{What Do I Want?}
+
+In \secref{secLargeWorld}, the player moved through a large but \emph{finite} world. In this chapter, we take a different approach: instead of moving through a world, we create the illusion of an infinite one.
+
+In some games, the background seems to go on forever. There are several ways to create this effect:
+
+\begin{enumerate}
+	\item The right edge is connected to the left edge, and vice versa. The same can apply to the top and bottom edges. In other words, leaving the screen on one side makes the player reappear on the opposite side.
+	
+	\item One or more background images are repeatedly placed next to each other in the direction of movement, creating the illusion of an endless background.
+	
+	\item The background is generated dynamically while the game is running. For example, the player may explore a maze. Whenever an unexplored area of the maze is reached, a new section is generated on the fly and added to the world.
+	
+\end{enumerate}
+
+In the following sections, we will only consider the second approach.
+
+\subsection{A Simple Showcase}
+
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/04%20Endless%20Background/v01}
+\end{diskbox}
+
+
+\begin{wrapfigure}[12]{r}{5.0cm}%
+	\begin{center}%
+		\vspace{-2.5em}%
+		\myfigure{backgroundtile.png}{0.35}{Background Tile}{picBackgroundTile01}%
+	\end{center}%
+\end{wrapfigure}%
+As an example, I could not think of anything simpler than a tile with a color gradient. This tile can be repeated on the left and right side, creating the effect of one seamless surface. To make the effect easier to see, the border of the tile can be turned on or off.
+
+The player is represented by a circle in the center of the screen. The circle always remains in the center and therefore uses the player-centered camera approach described in \secref[vref]{secPlayerCenteredCamera}. A small triangle indicates the direction the player is facing.
+
+The player is controlled using the left and right arrow keys.
+
+
+\br{Standard functionality}{reqEndlessStart}
+\begin{enumerate}
+	\item The game window has a size of $400\times \SI{400}{px}$. \label{reqEndlessStartSize}
+	
+	\item The player is represented by a simple red dot positioned at the center of the screen. \label{reqEndlessStartPlayer}
+	
+	\item The player always remains in the center of the screen. \label{reqEndlessStartCentered}
+	
+	\item Pressing \keys{\arrowkeyleft} or \keys{\arrowkeyright} scrolls the background, creating the illusion of movement. \label{reqEndlessStartDirection}
+	
+	\item The current movement direction is indicated by red arrows. \label{reqEndlessStartArrows}
+	
+	\item Pressing \keys{F} toggles the visibility of the frame around the tile. \label{reqEndlessStartFrame}
+	
+	\item The game can be closed by pressing \keys{\esc} or by clicking the red~X button. \label{reqEndlessStartQuit}
+\end{enumerate}
+\er
+
+As usual, we begin with the \texttt{config.py} file. Besides the usual constants, it also contains the functions \texttt{world2camera()} and \texttt{camera2world()}. The idea behind these functions is explained in \secref[vref]{secPlayerCenteredCamera}.
+
+At first glance, these functions have nothing to do with the endless background itself. Their purpose is simply to keep the player centered on the screen while the background moves instead.
+
+\lstsource{src/01 Techniques/04 Endless Background/v01/config.py}{1}{99}{python}{Endless Background (\reqref{reqEndlessStart}) -- \texttt{config.py}}{srcEndlessConfig01}
+
+And now we can continue with the \texttt{Player} class. This class is responsible for both the appearance of the player and updating its position. The player occupies an area of \SI{80}{px} by \SI{80}{px}.
+
+To save a little processing time, the bitmaps for the three possible states -- standing still (\texttt{stop}), moving left (\texttt{left}), and moving right (\texttt{right}) -- are created only once. Therefore, three \texttt{Surface} objects are needed and stored in a dictionary.
+
+The next three lines should be self-explanatory. After that, four helper variables are introduced. They reduce the amount of typing required and make the source code easier to read.
+
+A red circle with a radius of \SI{20}{px} is then drawn in the center of the surface. This represents the player when standing still (\abbref[vref]{picPlayerStop01}).
+
+To create the bitmap for a player moving to the left, the image of the standing player is first copied onto an empty surface. Next, a polygon -- in this case a triangle -- is added, with its tip pointing to the left (\abbref[vref]{picPlayerLeft01}).
+
+The bitmap for a player moving to the right is created in exactly the same way, except that the triangle points to the right (\abbref[vref]{picPlayerRight01}).
+
+The initial velocity is set to $(0,0)$, since the player starts in a stationary state.
+
+In \texttt{update()}, the horizontal velocity is adjusted according to the command that was passed to the method. If the command is neither \texttt{left} nor \texttt{right}, the player stops moving. Finally, the appropriate bitmap is assigned to \texttt{image}, and the player's new position is calculated.
+
+\lstsource{src/01 Techniques/04 Endless Background/v01/endless.py}{38}{68}{python}{Endless Background (\reqref{reqEndlessStart}) -- Class \texttt{Player}}{srcEndless01}
+
+The \texttt{Landscape} class is probably more elaborate than necessary for this example. Its main purpose is to encapsulate the tile bitmap in a \texttt{Sprite} class and to provide the frame functionality required by \reqref{reqEndlessStartFrame}.
+
+\lstsource{src/01 Techniques/04 Endless Background/v01/endless.py}{71}{89}{python}{Endless Background (\reqref{reqEndlessStart}) -- Class \texttt{Landscape}}{srcEndless02}
+
+Now we come to the heart of the application: the \texttt{EndlessBackground} class. The constructor receives two parameters: the player object \texttt{player} and the background tile \texttt{bgimage}. Since both the player and the background start in the center, the \texttt{offset} is initialized to~$(0,0)$ as well.
+
+Because the background can change its position as the player moves, it is rendered onto its own surface. For this purpose, \texttt{image} is created with the same dimensions as the game window.
+
+In \texttt{update()}, the commands sent to the background are processed. The command \texttt{toggle\_frame} turns the visibility of the tile border on or off. Whenever the background needs to be repositioned because of player movement, \texttt{update()} receives the command \texttt{scroll}. In this case, the helper method \texttt{scroll()} is called first. It calculates the new position of the background tile relative to the window and then redraws the tile at its new location.
+
+The \texttt{scroll()} method follows the player-centered camera approach described in \secref[vref]{secPlayerCenteredCamera}. Finally, the \texttt{save()} method is only included for the purposes of this book, as it allows me to generate screenshots for the figures.
+
+\newpage
+\lstsource{src/01 Techniques/04 Endless Background/v01/endless.py}{9}{35}{python}{Endless Background (\reqref{reqEndlessStart}) -- Class \texttt{EndlessBackground}}{srcEndless03}
+
+
+\begin{figure}[hbtp]%
+	\centering%
+	\begin{minipage}[b]{4.5cm}%
+		\centering%
+		\includegraphics[scale=0.3]{player_left_01.png}%
+		\caption{Player -- left}\label{picPlayerLeft01}%
+	\end{minipage}%
+	\hfil%
+	\begin{minipage}[b]{4.5cm}%
+		\centering%
+		\includegraphics[scale=0.3]{player_stop_01.png}%
+		\caption{Player -- stop}\label{picPlayerStop01}%
+	\end{minipage}%
+	\hfil%
+	\begin{minipage}[b]{4.5cm}%
+		\centering%
+		\includegraphics[scale=0.3]{player_right_01.png}%
+		\caption{Player -- right}\label{picPlayerRight01}%
+	\end{minipage}%
+\end{figure}%
+
+For the sake of completeness, here is the \texttt{Game} class. There is nothing particularly new in it, so most of the code should be familiar by now.
+
+\lstsource{src/01 Techniques/04 Endless Background/v01/endless.py}{92}{151}{python}{Endless Background (\reqref{reqEndlessStart}) -- Class \texttt{Game}}{srcEndless04}
+
+When you start the application, a window similar to the one shown in \abbref[vref]{picPlayerStop01} appears. The background tile completely fills the window, and the player is positioned in the center. In addition, the border of the tile is highlighted by a thin blue line.
+
+\Abbref[vref]{picPlayerLeft01} shows the window contents after holding down \keys{\arrowkeyleft} for a short time. First, the arrow points to the left, indicating that the player was still moving when the screenshot was taken. Second, the tile has shifted to the right, revealing part of the gray background. Because the background tile moves to the right, the stationary player appears to be moving to the left.
+
+\Abbref[vref]{picPlayerRight01} can be interpreted in exactly the same way. In this case, the background tile moves to the left, creating the impression that the player is walking to the right.
+
+
+\subsection{An Endless Strip}
+
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/04%20Endless%20Background/v02}
+\end{diskbox}
+
+\br{Horizontal Strip}{reqEndlessHorizontal}
+	When moving horizontally, the background tile should always stay visible and create the impression of movement.
+\er
+
+\begin{warningbox}
+	The world is not actually infinite.	Only the visible background tiles are recycled and drawn at new positions.
+\end{warningbox}
+
+The required changes are surprisingly small and are limited to the \texttt{update()} method of \texttt{EndlessBackground}.
+
+Let us start with \zeiref{srcEndless0202}. As soon as the background tile ($tile_1$) moves to the right -- that is, whenever its left position becomes greater than~0 -- a gray area appears on the left side of the screen (see \abbref[vref]{picPlayerLeft01}). To avoid this, we draw the background tile a second time ($tile_2$), placing the right edge of $tile_2$ directly against the left edge of $tile_1$. Note that we are not dealing with two separate tiles or sprites. Instead, the same tile is rendered at two different positions.
+
+To achieve this, the position of $tile_1$ is first copied. This prevents any changes made to the position of $tile_2$ from affecting the original position of $tile_1$. In the next line, the right edge of $tile_2$ is aligned with the left edge of $tile_1$. The tile is then drawn again at this new position.
+
+Starting at \zeiref{srcEndless0203}, the same idea is applied to the right edge of the screen.
+
+This leaves \zeiref{srcEndless0201}: why is the modulo operation applied to the left position of $tile_1$? Whenever the left edge of $tile_1$ moves beyond the right edge of the tile width -- in other words, when \texttt{pos\_tile1.left} exceeds \texttt{bgimage.rect.width} -- the modulo operation effectively subtracts the tile width until the position falls back into the valid range.
+
+For example, assume the tile width is \SI{80}{px} and the left position is~82. Then
+
+\[82 \bmod 80 = 2.\]
+
+As a result, the new left position of $tile_1$ becomes~2. The tile, which has effectively moved off the screen to the right, now reappears on the left side. Any position smaller than~80 remains unchanged by the modulo operation.
+
+Without this line, $tile_1$ would continue moving endlessly to the right. What would happen then? While moving the player to the left, $tile_2$ would initially be attached on the left side, allowing the player to continue walking. However, once the left edge of $tile_2$ is reached, the gray background would become visible again because $tile_1$ would have drifted too far to the right.
+
+In \abbref[vref]{picPlayerLeft02}, you can see the additional tile attached on the left side. Likewise, \abbref{picPlayerRight02} shows the corresponding situation on the right side. You can now move arbitrarily far to the left or right without ever seeing a gray area. If you also press \keys{F} to hide the tile border, the result is the illusion of a single endless strip.
+
+\lstsource{src/01 Techniques/04 Endless Background/v02/endless.py}{18}{36}{python}{Endless Background (\reqref{reqEndlessHorizontal}) -- \texttt{EndlessBackground.update()}}{srcEndless05}
+
+\begin{figure}[hbtp]%
+	\centering%
+	\begin{minipage}[b]{6.5cm}%
+		\centering%
+		\includegraphics[scale=0.5]{player_left_02.png}%
+		\caption{Player -- endless left}\label{picPlayerLeft02}%
+	\end{minipage}%
+	\hfil%
+	\begin{minipage}[b]{6.5cm}%
+		\centering%
+		\includegraphics[scale=0.5]{player_right_02.png}%
+		\caption{Player -- endless right}\label{picPlayerRight02}%
+	\end{minipage}%
+\end{figure}%
+
+
+\subsection{An Endless Plane}
+
+\begin{diskbox}
+	\begin{itemize}
+	\item \url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/04%20Endless%20Background/v03}
+	\item \url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/04%20Endless%20Background/v04}
+\end{itemize}
+\end{diskbox}
+
+But what if we want to move not only left and right, but also up and down?
+
+\br{Horizontal and Vertical Plane}{reqEndlessPlane1}
+	During horizontal or vertical movement, the background tile should always remain visible while creating the illusion of motion.
+\er
+
+Before we can implement this movement, a few changes are required in both \texttt{Game} and \texttt{Player}. First, \keys{\arrowkeyup} and \keys{\arrowkeydown} must be handled by \texttt{Game}. Second, \texttt{Player} must be extended to support movement in the corresponding directions.
+
+Let us start with \texttt{Game}. Beginning at \zeiref{srcEndless0308}, the two additional keyboard events are captured and forwarded to the \texttt{Player} object.
+
+\lstsource{src/01 Techniques/04 Endless Background/v03/endless.py}{148}{169}{python}{Endless Background (\reqref{reqEndlessPlane1}) -- \texttt{Game.watch\_for\_events()}}{srcEndless06}
+
+The constructor of \texttt{Player} also needs to be extended so that it can create the bitmaps for moving up and down. Starting at \zeiref{srcEndless0305}, two additional \texttt{Surface} objects are created for this purpose. A little further down (\zeiref{srcEndless0306}), these surfaces are filled with the appropriate graphics representing upward and downward movement.
+
+\lstsource{src/01 Techniques/04 Endless Background/v03/endless.py}{58}{82}{python}{Endless Background (\reqref{reqEndlessPlane1}) -- \texttt{Player.\_\_init\_\_()}}{srcEndless07}
+
+The next step is to extend \texttt{update()} so that it can also handle vertical movement. To achieve this, the vertical velocity is assigned starting at \zeiref{srcEndless0307}. Depending on the command received, the player either moves up, moves down, or remains stationary in the vertical direction.
+
+\lstsource{src/01 Techniques/04 Endless Background/v03/endless.py}{84}{98}{python}{Endless Background (\reqref{reqEndlessPlane1}) -- \texttt{Player.update()}}{srcEndless07}
+
+If we now explore the world a little, everything seems to work perfectly at first. Eventually, however, you may end up with a screen like the one shown in \abbref{picPlayerStop03}. Out of nowhere, the gray background reappears -- this time in the corners.
+
+\begin{warningbox}
+	When scrolling in two dimensions, not only the horizontal and vertical neighboring tiles must be drawn. The diagonal tiles are required as well, otherwise empty corners become visible while moving diagonally.
+\end{warningbox}
+
+After fixing this problem, the player can wander endlessly in any direction without ever leaving the visible game world.
+
+\begin{figure}[hbtp]%
+	\centering%
+	\begin{minipage}[b]{6.5cm}%
+		\centering%
+		\includegraphics[scale=0.5]{player_stop_03.png}%
+		\caption{Player -- a gap}\label{picPlayerStop03}%
+	\end{minipage}%
+	\hfil%
+	\begin{minipage}[b]{6.5cm}%
+		\centering%
+		\includegraphics[scale=0.5]{player_stop_04.png}%
+		\caption{Player -- no gap}\label{picPlayerStop04}%
+	\end{minipage}%
+\end{figure}%
+
+
+\begin{hintbox}[Endless vs. Tile map + camera]
+\begin{longtable}{rl}
+	\toprule
+	\textbf{Situation} & \textbf{Technique} \\
+	\midrule
+	\endfirsthead
+	
+	\toprule
+	\textbf{Situation} & \textbf{Technique} \\
+	\midrule
+	\endhead
+	
+	\midrule
+	\multicolumn{2}{r}{\emph{continued on next page}} \\
+	\endfoot
+	
+	\bottomrule
+	\endlastfoot
+	
+	Infinite sky & Endless background \\
+	Ocean & Endless background \\
+	Space shooter & Endless background \\
+	Large \Gls{rpg} world & Tile map + camera \\
+	Platformer level & Tile map + camera \\
+	\end{longtable}
+\end{hintbox}
