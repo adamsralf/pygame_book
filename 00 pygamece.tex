@@ -138,7 +138,7 @@ pdfproducer={LuaLaTeX}
 	{\Large 2D Game Programming\par}
 	\vfill
 	{\large Ralf Adams\par}
-	{\large Version 1.3 (\today)\par}
+	{\large Version 1.4 (\today)\par}
 \end{titlepage}
   
   
@@ -179,6 +179,7 @@ pdfproducer={LuaLaTeX}
 	{ö}{{\"o}}1%
 }%
 
+%\begin{comment}
 \chapter{Goals}\label{secGoals}
 	\input{0001_Goals.tex}
 \chapter{Basics}\label{secBasics}
@@ -199,8 +200,10 @@ pdfproducer={LuaLaTeX}
 	\input{0201_Animation}
 	\input{0202_TileMaps}
 	\input{0203_WorldScrolling}
-	\input{0204_StateMachine}
-%	%TODO: Vorbeiziehende Gebirge (Hintergründe) mit 3D-Optik
+%\end{comment}
+	\input{0204_EndlessBackground}
+%\begin{comment}
+	\input{0206_StateMachine}
 \chapter{Examples}\label{secExamples}
 	\input{0301_Pong}
 	\input{0302_Bubbles}
@@ -213,5 +216,6 @@ pdfproducer={LuaLaTeX}
 \printglossaries
 \printindex
 \printindex[pyg][Index of the \texttt{pygame} Namespace]
+%\end{comment}
 
 \end{document}
