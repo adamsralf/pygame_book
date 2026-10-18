@@ -366,9 +366,9 @@ Let us now take a closer look at the corresponding source code. However, I will 
 
 \lstsource{SRC/00 Introduction/08 Collision/v01/config.py}{1}{99}{python}{Collision types (1), \texttt{config.py}}{srcCollision00a} 
 
-Things become more interesting with the \texttt{Obstacle} class. This class is used for the wall, the spaceship, and the monster.  For rectangle-based collision detection, the surrounding rectangle is required. As usual, it is obtained in \zeiref{srcCollision01} using \texttt{pygame.Surface.get\-\_rect()}\myindex{pyg}{\texttt{Surface}!\texttt{get\_rect()}}\randnotiz{get\_rect()} and stored in the attribute \texttt{rect}\index{self.rect}\randnotiz{self.rect}.  
+Things become more interesting with the \texttt{Obstacle} class. This class is used for the wall, the spaceship, and the monster.  For rectangle-based collision detection, the surrounding rectangle is required. As usual, it is obtained in \zeiref{srcCollision01} using \texttt{pygame.Surface.get\-\_rect()}\pygindex{Surface!get\_rect()}\randnotiz{get\_rect()} and stored in the attribute \texttt{rect}\index{self.rect}\randnotiz{self.rect}.  
 
-For sprites with implicit transparency or explicit transparency set via \texttt{set\_colorkey()}\myindex{pyg}{\texttt{Surface}!\texttt{set\_colorkey()}}, the mask can be created very easily using \texttt{pygame.mask.from\_surface()}\myindex{pyg}{\texttt{mask}!\texttt{from\_surface()}}\randnotiz{from\_surface()} (\zeiref{srcCollision02}). In order for the predefined collision detection functions to work, this mask must be stored in the \texttt{Sprite} object using the attribute \texttt{mask}\index{self.mask}\randnotiz{self.mask}.  
+For sprites with implicit transparency or explicit transparency set via \texttt{set\_colorkey()}\pygindex{Surface!set\_colorkey()}, the mask can be created very easily using \texttt{pygame.mask.from\_surface()}\pygindex{mask!from\_surface()}\randnotiz{from\_surface()} (\zeiref{srcCollision02}). In order for the predefined collision detection functions to work, this mask must be stored in the \texttt{Sprite} object using the attribute \texttt{mask}\index{self.mask}\randnotiz{self.mask}.  
 
 In \zeiref{srcCollision03}, the bounding radius is calculated. This is implemented in a somewhat unclean way. Strictly speaking, one should determine the minimum of width and height and divide it by two. 
 
@@ -414,9 +414,9 @@ In the second \forSchleife, the left position of each \texttt{Obstacle} object c
 \lstsource{SRC/00 Introduction/08 Collision/v01/collision.py}{113}{122}{python}{Collision types (7), \texttt{resize()} of \texttt{Game}}{srcCollision00g} 
 
 \begin{hintbox} [Drum roll]
-And now the actual collision detection. Depending on which collision method we have selected, the corresponding collision function is called inside the \forSchleife: \texttt{pygame.sprite.col\-lide\-\_circle()}\myindex{pyg}{\texttt{sprite}!\texttt{collide\_circle()}|underline},  
-\texttt{pygame.sprite.col\-lide\-\_mask()}\myindex{pyg}{\texttt{sprite}!\texttt{collide\_mask()}}, or  
-\texttt{pygame.sprite.col\-lide\-\_rect()}\myindex{pyg}{\texttt{sprite}!\texttt{collide\_rect()}}.  
+And now the actual collision detection. Depending on which collision method we have selected, the corresponding collision function is called inside the \forSchleife: \texttt{pygame.sprite.col\-lide\-\_circle()}\pygindex{sprite!collide\_circle()|underline},  
+\texttt{pygame.sprite.col\-lide\-\_mask()}\pygindex{sprite!collide\_mask()}, or  
+\texttt{pygame.sprite.col\-lide\-\_rect()}\pygindex{sprite!collide\_rect()}.  
 \end{hintbox}
  
 The semantics are actually quite simple. Each of these methods is given two \texttt{Sprite} objects and returns \true\ if a collision is detected; otherwise it returns \false. As already mentioned above, it is important to ensure that the method being used can find the information it requires in the sprite:
@@ -438,7 +438,7 @@ The semantics are actually quite simple. Each of these methods is given two \tex
 	\url{https://github.com/adamsralf/pygame_book/tree/main/src/00%20Introduction/08%20Collision/v03}
 \end{diskbox}
 
-Rectangle-based collision detection between a single sprite and a list of sprites -- that is, checking whether one sprite collides with any sprite in a \texttt{SpriteGroup} -- is used so often that a dedicated method exists for this purpose: \texttt{pygame.sprite.spritecollide()}\myindex{pyg}{\texttt{sprite}!\texttt{spritecollide()}}\randnotiz{spritecollide()}.  
+Rectangle-based collision detection between a single sprite and a list of sprites -- that is, checking whether one sprite collides with any sprite in a \texttt{SpriteGroup} -- is used so often that a dedicated method exists for this purpose: \texttt{pygame.sprite.spritecollide()}\pygindex{sprite!spritecollide()}\randnotiz{spritecollide()}.  
 
 The first parameter is a single \texttt{Sprite} object -- in this case, our fireball. The second parameter is the list of sprites in which a collision should be checked. The third parameter controls whether the colliding objects should be removed from the list. This is very useful, for example, when an obstacle should disappear upon contact.
 
@@ -520,23 +520,23 @@ In order to perform these collision tests, a sprite must provide the required in
 \begin{pygbox}
 \begin{itemize}
 	\item \texttt{pygame.mask.from\_surface()}:
-	\myindex{pyg}{\texttt{mask}!\texttt{from\_surface()}}\\ 
+	\pygindex{mask!from\_surface()}\\ 
     \url{https://pyga.me/docs/ref/mask.html#pygame.mask.from_surface}
 	
 	\item \texttt{pygame.sprite.collide\_circle()}:
-	\myindex{pyg}{\texttt{sprite}!\texttt{collide\_circle()}}\\ 
+	\pygindex{sprite!collide\_circle()}\\ 
     \url{https://pyga.me/docs/ref/sprite.html#pygame.sprite.collide_circle}
 
 	\item \texttt{pygame.sprite.collide\_mask()}:
-	\myindex{pyg}{\texttt{sprite}!\texttt{collide\_mask()}}\\ 
+	\pygindex{sprite!collide\_mask()}\\ 
     \url{https://pyga.me/docs/ref/sprite.html#pygame.sprite.collide_mask}
 
 	\item \texttt{pygame.sprite.collide\_rect()}:
-	\myindex{pyg}{\texttt{sprite}!\texttt{collide\_rect()}}\\ 
+	\pygindex{sprite!collide\_rect()}\\ 
     \url{https://pyga.me/docs/ref/sprite.html#pygame.sprite.collide_rect}
 	
 	\item \texttt{pygame.sprite.spritecollide()}:
-	\myindex{pyg}{\texttt{sprite}!\texttt{spritecollide()}}\\ 
+	\pygindex{sprite!spritecollide()}\\ 
     \url{https://pyga.me/docs/ref/sprite.html#pygame.sprite.spritecollide}
 	
 \end{itemize}

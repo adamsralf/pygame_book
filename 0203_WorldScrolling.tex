@@ -82,7 +82,7 @@ If we take a look at the screen outputs of the current source code in \abbref{pi
 
 If we take a look at the method \texttt{draw()} in \srcref[vref]{srcWindows01}, we see that all tiles and all moving objects are rendered into the target window -- that is, drawn -- even though the vast majority of these objects are not visible within the window at all.
 
-One possible approach is to first check all sprites, or rather their rectangles, to see whether they are actually located inside the output window. The list~\texttt{a} is created by iterating over all sprites in the group and, for each one, using \texttt{colliderect()}\myindex{pyg}{\texttt{FRect}!\texttt{colliderect()}} to check whether it lies within or at least touches the rectangle of the window.
+One possible approach is to first check all sprites, or rather their rectangles, to see whether they are actually located inside the output window. The list~\texttt{a} is created by iterating over all sprites in the group and, for each one, using \texttt{colliderect()}\pygindex{FRect!colliderect()} to check whether it lies within or at least touches the rectangle of the window.
 
 \lstsource{SRC/01 Techniques/03 WorldScrolling/V02/windows.py}{18}{28}{python}{Big World --  \texttt{WindowPlain.draw()} with Visibility culling}{srcWindows02}
 
@@ -100,7 +100,7 @@ Afterwards, I~performed the same performance measurement as before, and the resu
 \end{diskbox}
 First of all, one might want to have a complete overview of the entire world. This is not strictly necessary. It is not uncommon for a game to never allow the player to see the whole world at once. However, many games offer a top-down view (Bird's-Eye View)\index{BirdEyeView}.
 
-A first naive approach would be to scale down the world using \texttt{transform.scale\_by()}\myindex{pyg}{\texttt{transform}!\texttt{scale\_by()}} (see \zeiref{windowsv0301}). 
+A first naive approach would be to scale down the world using \texttt{transform.scale\_by()}\pygindex{transform!scale\_by()} (see \zeiref{windowsv0301}). 
 
 \begin{hintbox}[This approach has the following advantages and disadvantages]
 \begin{itemize}

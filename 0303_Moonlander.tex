@@ -447,7 +447,7 @@ We prepare \reqref{reqEnde}.\ref{reqEndeNeustart} by encapsulating the display o
 
 \lstsource{SRC/02 Examples/03 Moonlander/v08/moonlander.py}{302}{312}{python}{Moonlander (\reqref{reqEnde}) -- \texttt{question}}{srcMoon08a} 
 
-How are quitting or restarting the game actually triggered? There are many possible approaches. In this case, I decided to use \emph{events} created with \texttt{pygame.event.Event()}\myindex{pyg}{\texttt{event}!\texttt{Event}}. The basic idea is that touching the lunar surface triggers an event: \texttt{LANDED} if the descent speed is low enough, otherwise \texttt{CRASHED}.
+How are quitting or restarting the game actually triggered? There are many possible approaches. In this case, I decided to use \emph{events} created with \texttt{pygame.event.Event()}\pygindex{event!Event}. The basic idea is that touching the lunar surface triggers an event: \texttt{LANDED} if the descent speed is low enough, otherwise \texttt{CRASHED}.
 
 \lstsource{SRC/02 Examples/03 Moonlander/v08/moonlander.py}{11}{12}{python}{Moonlander (\reqref{reqEnde}) -- \texttt{MyEvents}}{srcMoon08b} 
 

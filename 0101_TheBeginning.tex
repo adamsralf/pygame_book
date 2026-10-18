@@ -23,17 +23,17 @@ In order to use Pygame, the module \texttt{pygame} must be imported into the pro
 
 
 Pygame is not just about calling functions or creating objects; a whole subsystems must be initialized explicitly. In this example, this is done using the static function
-\texttt{pygame.init()}. Pygame is now connected to parts of the \Gls{os} system, to deliver and receive required information and actions. In \zeiref{srcStart0003} the Pygame engine is started by calling \texttt{init()}\myindex{pyg}{\texttt{init()}|underline}\randnotiz{init()}. It is also possible to start only parts of the engine e.g. the sound subsystem by \texttt{pygame.mixer.init()}\myindex{pyg}{\texttt{mixer}!\texttt{init()}}.
+\texttt{pygame.init()}. Pygame is now connected to parts of the \Gls{os} system, to deliver and receive required information and actions. In \zeiref{srcStart0003} the Pygame engine is started by calling \texttt{init()}\pygindex{init()|underline}\randnotiz{init()}. It is also possible to start only parts of the engine e.g. the sound subsystem by \texttt{pygame.mixer.init()}\pygindex{mixer!init()}.
 
-For our games, we need a \emph{playfield}/a window in which everything takes place. The class \texttt{pygame.Window}\myindex{pyg}{\texttt{Window}}\randnotiz{Window}
+For our games, we need a \emph{playfield}/a window in which everything takes place. The class \texttt{pygame.Window}{Window}\randnotiz{Window}
 represents such a playfield. In \zeiref{srcStart0005}, the constructor receives one argument -- namely the width and the height of the window as the 2-tuple
 \texttt{size}. Our window is therefore \SI{600}{px} wide and \SI{400}{px} high
 (see \Gls{PX}). The method \texttt{get\_surface()}
-\myindex{pyg}{\texttt{Window}!\texttt{get\_surface()}}\randnotiz{get\_surface()}
-in \zeiref{srcStart0012} returns a \texttt{pygame.Surface} object \myindex{pyg}{\texttt{Surface}}, which is roughly something like a \gls{bitmap}.
+\pygindex{Window!get\_surface()}\randnotiz{get\_surface()}
+in \zeiref{srcStart0012} returns a \texttt{pygame.Surface} object \pygindex{Surface}, which is roughly something like a \gls{bitmap}.
 
 In \zeiref{srcStart0012}, I~store this return value in the
-\gls{variable} named \texttt{screen}\index{screen}\randnotiz{screen}. I~can then assign a title to the window using the attribute \texttt{Window.title}\myindex{pyg}{\texttt{Window}!\texttt{title}}\randnotiz{title} (see \zeiref{srcStart0004}) and set the position of the window relative to the desktop using the attribute \texttt{Window.po\-si\-tion}\myindex{pyg}{\texttt{Window}!\texttt{position}} (see \zeiref{srcStart0002}).
+\gls{variable} named \texttt{screen}\index{screen}\randnotiz{screen}. I~can then assign a title to the window using the attribute \texttt{Window.title}\pygindex{Window!title}\randnotiz{title} (see \zeiref{srcStart0004}) and set the position of the window relative to the desktop using the attribute \texttt{Window.po\-si\-tion}\pygindex{Window!position} (see \zeiref{srcStart0002}).
 
 The game itself -- just like all future games -- runs inside a \gls{mainloop}\index{main loop}\index{main loop}\randnotiz{main loop}. The loop starts in \zeiref{srcStart0006} and ends in \zeiref{srcStart0011}. 
 
@@ -43,23 +43,23 @@ The game itself -- just like all future games -- runs inside a \gls{mainloop}\in
 
 	\item Updating the state of the game elements: Based on the events detected above and the current states of the game elements, the new states are determined (the player moves, a projectile bounces off, points increase, etc.). In our case, only the \gls{flag}\index{Flag} \texttt{running} of the main program loop is set to \false.
 	
-	\item Drawing the bitmaps of the game elements:	The game elements have a new position or a new appearance and must therefore be redrawn. In this minimal example, only the background of the playfield is colored in \zeiref{srcStart0009}, and afterwards the \gls{doublebuffer}\index{Doublebuffer} is swapped using \texttt{Window.flip()}\myindex{pyg}{\texttt{Window}!\texttt{flip()}} in \zeiref{srcStart0010}.
+	\item Drawing the bitmaps of the game elements:	The game elements have a new position or a new appearance and must therefore be redrawn. In this minimal example, only the background of the playfield is colored in \zeiref{srcStart0009}, and afterwards the \gls{doublebuffer}\index{Doublebuffer} is swapped using \texttt{Window.flip()}\pygindex{Window!flip()} in \zeiref{srcStart0010}.
 \end{itemize}
 \end{hintbox}
 
 By calling \texttt{py\-game.\-init()}, Pygame places a kind of listener inside the operating system. More precisely, Pygame listens to the \emph{\gls{messagequeue}}. This is where the operating system collects all messages that are triggered by events. These can include \glslink{usb}{USB} connection messages, \glslink{ssd}{SSD} error messages, mouse actions, program starts or crashes, and many others.
 
-Pygame now retrieves from the message queue, using \texttt{pygame.event.get()}\myindex{pyg}{\texttt{event}!\texttt{get()}}\randnotiz{event.get()}, all events that could be relevant to the game. Using a \forSchleife, I~then iterate over these events starting at \zeiref{srcStart0007} and pick out the ones that are relevant to me.
+Pygame now retrieves from the message queue, using \texttt{pygame.event.get()}\pygindex{event!get()}\randnotiz{event.get()}, all events that could be relevant to the game. Using a \forSchleife, I~then iterate over these events starting at \zeiref{srcStart0007} and pick out the ones that are relevant to me.
 
-First, I~check which type of event (\texttt{pygame.event.type}) \myindex{pyg}{\texttt{event}!\texttt{type}}\randnotiz{event.type} is being offered.
-At the moment, only the type \texttt{pygame.QUIT} \randnotiz{QUIT}\myindex{pyg}{\texttt{QUIT}} is important to me. This type is triggered when the operating system sends a \emph{quit} message to the application. If I~receive such a message, I~set the flag \texttt{running} to \false{}, so that the main program loop is terminated.
+First, I~check which type of event (\texttt{pygame.event.type}) \pygindex{event!type}\randnotiz{event.type} is being offered.
+At the moment, only the type \texttt{pygame.QUIT} \randnotiz{QUIT}\pygindex{QUIT} is important to me. This type is triggered when the operating system sends a \emph{quit} message to the application. If I~receive such a message, I~set the flag \texttt{running} to \false{}, so that the main program loop is terminated.
 
-If I~do not receive this signal, the main program loop continues to run happily and fills the entire playfield with a color in \zeiref{srcStart0009} using \texttt{screen.fill()}\myindex{pyg}{\texttt{Surface}!\texttt{fill()}} -- in this case, green. Please note that, similar to \zeiref{srcStart0005}, the function expects
+If I~do not receive this signal, the main program loop continues to run happily and fills the entire playfield with a color in \zeiref{srcStart0009} using \texttt{screen.fill()}\pygindex{Surface!fill()} -- in this case, green. Please note that, similar to \zeiref{srcStart0005}, the function expects
 one argument -- namely a 3-tuple. This 3-tuple encodes the color using \glslink{rgb}{RGB}\randnotiz{RGB} values between~0 and~255. Predefined color names \randnotiz{color names}such as \emph{green} can also be used here.
 
 
 What remains is \zeiref{srcStart0010}: Here, the function \texttt{pygame.quit()}
-\myindex{pyg}{\texttt{quit()}}\randnotiz{quit()} is called. This function is essentially the opposite of \texttt{pygame.init()} in \zeiref{srcStart0003}. All reserved resources are released again, and the Pygame listeners are removed from the system. You should always make sure to call this function at the end of your application; do not simply terminate the game. The difference is similar to just running out of your apartment versus properly turning off the lights and locking the door when leaving.
+\pygindex{quit()}\randnotiz{quit()} is called. This function is essentially the opposite of \texttt{pygame.init()} in \zeiref{srcStart0003}. All reserved resources are released again, and the Pygame listeners are removed from the system. You should always make sure to call this function at the end of your application; do not simply terminate the game. The difference is similar to just running out of your apartment versus properly turning off the lights and locking the door when leaving.
 
 If we take a look at the game in the task manager (see~\abbref[vref]{picTaskManager00}), we might be a bit surprised: around \SI{30}{\%} of the CPU time is being used by this \emph{IAmActuallyDoingNothing} game.
 
@@ -71,11 +71,11 @@ The screen output itself should also not happen arbitrarily fast or too often; i
 
 \lstsource{src/00 Introduction/01 TheBeginning/v02/start.py}{1}{25}{python}{My first \emph{Game}, Version 1.1}{srcStart01}
 
-In \zeiref{srcStart0101}, a \texttt{pygame.time.Clock}\randnotiz{Clock}\myindex{pyg}{\texttt{time}!\texttt{Clock}|underline} object is created for timing control. With the help of this object, various time-related tasks can be handled; for the moment, however, we only need it for timing in \zeiref{srcStart0102}. There, \texttt{pygame.time.Clock.\-tick()}\randnotiz{tick()}\myindex{pyg}{\texttt{time}!\texttt{Clock}!\texttt{tick()}} is called with a frame rate measured in $fps$. This function ensures that the application now runs at a maximum of \SI{60}{fps}. This can be seen in the significantly reduced CPU usage shown in
+In \zeiref{srcStart0101}, a \texttt{pygame.time.Clock}\randnotiz{Clock}\pygindex{time!Clock|underline} object is created for timing control. With the help of this object, various time-related tasks can be handled; for the moment, however, we only need it for timing in \zeiref{srcStart0102}. There, \texttt{pygame.time.Clock.\-tick()}\randnotiz{tick()}\pygindex{time!Clock!tick()} is called with a frame rate measured in $fps$. This function ensures that the application now runs at a maximum of \SI{60}{fps}. This can be seen in the significantly reduced CPU usage shown in
 \abbref[vref]{picTaskManager01}.
 
 \begin{hintbox}[Hint]
-	The Pygame documentation points out that the function \texttt{tick()} is very resource-efficient, but somewhat imprecise. If accuracy is important for timing, the function \texttt{tick\_\_loop()}\myindex{pyg}{\texttt{time}!\texttt{Clock}!\texttt{tick\_busy\_loop()}} is recommended instead. Its disadvantage, however, is that it consumes significantly more processing time than \texttt{tick()}.
+	The Pygame documentation points out that the function \texttt{tick()} is very resource-efficient, but somewhat imprecise. If accuracy is important for timing, the function \texttt{tick\_\_loop()}\pygindex{time!Clock!tick\_busy\_loop()} is recommended instead. Its disadvantage, however, is that it consumes significantly more processing time than \texttt{tick()}.
 \end{hintbox}
 
 \myebild{TaskManager01.png}{0.7}{Resource usage with timing control}{picTaskManager01}
@@ -110,7 +110,7 @@ You can also create multiple windows for a game (see \url{https://pyga.me/docs/r
 	\url{https://github.com/adamsralf/pygame_book/blob/main/src/00%20Introduction/01%20TheBeginning/v04/start.py}
 \end{diskbox}
 
-Sometimes it is necessary to know information about the graphics environment: perhaps to identify performance problems, or perhaps to find out which display features are available. Using the function \texttt{pygame.display.Info()}\myindex{pyg}{\texttt{display}!\texttt{Info()}}\randnotiz{Info()}, various parameters can be queried. On my system, calling this function produced the output shown in \abbref[vref]{picInfo00}.
+Sometimes it is necessary to know information about the graphics environment: perhaps to identify performance problems, or perhaps to find out which display features are available. Using the function \texttt{pygame.display.Info()}\pygindex{display!Info()}\randnotiz{Info()}, various parameters can be queried. On my system, calling this function produced the output shown in \abbref[vref]{picInfo00}.
 
 Please refer to \tabref[vref]{tabDisplayInfo} for the meaning of the values (source: \url{https://pyga.me/docs/ref/display.html#pygame.display.Info}).
 
@@ -201,7 +201,7 @@ Please refer to \tabref[vref]{tabDisplayInfo} for the meaning of the values (sou
 
 Based on feedback from the community, it became clear that there is a need to also show how to create a window using \texttt{pygame.display}. This seems to cause issues especially on Linux systems running \Gls{wayland}.
 
-Creating the window happens like this (or something very close to it) in \zeiref{srcStart0501}. Using \texttt{pygame.dis\-play.set\_mode()}\myindex{pyg}{\texttt{display}!\texttt{set\_mode()}|underline}\randnotiz{set\_mode()}, you pass the window size in pixels as a pair of numbers -- here $\SI{400}{px}\times \SI{600}{px}$. The function returns a \texttt{Surface} object, which we can then use to draw everything we need (or want) onto the screen.
+Creating the window happens like this (or something very close to it) in \zeiref{srcStart0501}. Using \texttt{pygame.dis\-play.set\_mode()}\pygindex{display!set\_mode()|underline}\randnotiz{set\_mode()}, you pass the window size in pixels as a pair of numbers -- here $\SI{400}{px}\times \SI{600}{px}$. The function returns a \texttt{Surface} object, which we can then use to draw everything we need (or want) onto the screen.
 
 \begin{warningbox}[Number pair!]
 	A very common beginner mistake is passing the size as two separate numbers instead of a number pair. So don’t forget the parentheses -- even if they look a bit odd at first!
@@ -212,7 +212,7 @@ Creating the window happens like this (or something very close to it) in \zeiref
 
 The function \texttt{set\_mode()} can take a couple of additional parameters. For example, you can decide whether the window should be resizable (see \tabref[vref]{tabDispMod}) or specify which color depth to use.
 
-The window title is set in \zeiref{srcStart0502} using \texttt{pygame.display.set\_caption()}\myindex{pyg}{\texttt{display}!\texttt{set\_caption()}}\randnotiz{set\_caption()}. Finally, \texttt{pygame\-.dis\-play.flip()}\myindex{pyg}{\texttt{display}!\texttt{flip()}}\randnotiz{flip()} pushes the complete contents of \texttt{screen} to the display in one go.
+The window title is set in \zeiref{srcStart0502} using \texttt{pygame.display.set\_caption()}\pygindex{display!set\_caption()}\randnotiz{set\_caption()}. Finally, \texttt{pygame\-.dis\-play.flip()}\pygindex{display!flip()}\randnotiz{flip()} pushes the complete contents of \texttt{screen} to the display in one go.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{What was new?}
@@ -239,78 +239,79 @@ The window title is set in \zeiref{srcStart0502} using \texttt{pygame.display.se
 	\item \texttt{import pygame}:\\ \url{https://pyga.me/docs/tutorials/en/import-init.html}
 	
 	\item \texttt{pygame.display.flip()}:
-	\myindex{pyg}{\texttt{display}!\texttt{flip()}}\\
+	\pygindex{display!flip()}\\
 	\url{https://pyga.me/docs/ref/display.html#pygame.display.flip}
 	
 	\item \texttt{pygame.display.set\_caption()}:
-	\myindex{pyg}{\texttt{display}!\texttt{set\_caption()}}\\
+	\pygindex{display!set\_caption()}\\
 	\url{https://pyga.me/docs/ref/display.html#pygame.display.set_caption}
 
 	\item \texttt{pygame.display.set\_mode()}:
-	\myindex{pyg}{\texttt{display}!\texttt{set\_mode()}}\\
+	\pygindex{display!set\_mode()}\\
 	\url{https://pyga.me/docs/ref/display.html#pygame.display.set_mode}
 
 	\item \texttt{pygame.init()}:
-	\myindex{pyg}{\texttt{init()}}\\
+	\pygindex{init()}\\
 	\url{https://pyga.me/docs/ref/pygame.html#pygame.init}
 
 	\item \texttt{pygame.quit()}:
-	\myindex{pyg}{\texttt{quit()}}\\
+	\pygindex{quit()}\\
 	\url{https://pyga.me/docs/ref/pygame.html#pygame.quit}
 
 	\item \texttt{pygame.QUIT}:
-	\myindex{pyg}{\texttt{QUIT}}\\
+	\pygindex{QUIT}\\
     \url{https://pyga.me/docs/ref/event.html#pygame.event.EventType.type}
+    
 	\item \texttt{pygame.WINDOWCLOSE}:
-	\myindex{pyg}{\texttt{WINDOWCLOSE}}\\
+	\pygindex{WINDOWCLOSE}\\
 	\url{https://pyga.me/docs/ref/event.html#pygame.event.EventType.type}
 
 	\item \texttt{pygame.event.get()}:
-	\myindex{pyg}{\texttt{event}!\texttt{get()}}\\
+	\pygindex{event!get()}\\
 	\url{https://pyga.me/docs/ref/event.html#pygame.event.get}
 	
 	\item \texttt{pygame.event.type}:
-	\myindex{pyg}{\texttt{event}!\texttt{type}}\\
+	\pygindex{event!type}\\
 	\url{https://pyga.me/docs/ref/event.html#pygame.event.EventType.type}
 
 	\item \texttt{pygame.time.Clock}:
-	\myindex{pyg}{\texttt{time}!\texttt{Clock}}\\
+	\pygindex{time!Clock}\\
 	\url{https://pyga.me/docs/ref/time.html#pygame.time.Clock}
 
 	\item \texttt{pygame.time.Clock.tick()}:
-	\myindex{pyg}{\texttt{time}!\texttt{Clock}!\texttt{tick()}}\\
+	\pygindex{time!Clock!tick()}\\
 	\url{https://pyga.me/docs/ref/time.html#pygame.time.Clock.tick}
 	
 	\item \texttt{pygame.time.Clock.tick\_busy\_loop()}:
-	\myindex{pyg}{\texttt{time}!\texttt{Clock}!\texttt{tick\_busy\_loop()}}\\
+	\pygindex{time!Clock!tick\_busy\_loop()}\\
 	\url{https://pyga.me/docs/ref/time.html#pygame.time.Clock.tick_busy_loop}
 	
 	\item \texttt{pygame.Surface.fill()}:
-	\myindex{pyg}{\texttt{Surface}!\texttt{fill()}}\\
+	\pygindex{Surface!fill()}\\
 	\url{https://pyga.me/docs/ref/surface.html#pygame.Surface.fill}
 
 	\item \texttt{pygame.Window}:
-	\myindex{pyg}{\texttt{Window}}\\
+	\pygindex{Window}\\
 	\url{https://pyga.me/docs/ref/window.html}
 	
 	\item \texttt{pygame.Window.destroy()}:
-	\myindex{pyg}{\texttt{Window}!\texttt{destroy()}}\\
+	\pygindex{Window!destroy()}\\
 	\url{https://pyga.me/docs/ref/window.html#pygame.Window.destroy}
 
 	\item \texttt{pygame.Window.flip()}:
-	\myindex{pyg}{\texttt{Window}!\texttt{flip()}}\\
+	\pygindex{Window!flip()}\\
 	\url{https://pyga.me/docs/ref/window.html#pygame.Window.flip}
 	
 	\item \texttt{pygame.Window.get\_surface()}:
-	\myindex{pyg}{\texttt{Window}!\texttt{get\_surface()}}\\
+	\pygindex{Window!get\_surface()}\\
 	\url{https://pyga.me/docs/ref/window.html#pygame.Window.get_surface}
 	
 	\item \texttt{pygame.Window.title}:
-	\myindex{pyg}{\texttt{Window}!\texttt{title}}\\
+	\pygindex{Window!title}\\
 	\url{https://pyga.me/docs/ref/window.html#pygame.Window.title}
 	
 	\item \texttt{pygame.Window.position}:
-	\myindex{pyg}{\texttt{Window}!\texttt{position}}\\
+	\pygindex{Window!position}\\
 	\url{https://pyga.me/docs/ref/window.html#pygame.Window.position}
 \end{itemize}	
 \end{pygbox}
@@ -338,86 +339,16 @@ The window title is set in \zeiref{srcStart0502} using \texttt{pygame.display.se
 	\bottomrule
 	\endlastfoot
 	% Ab hier kommt der Inhalt der Tabelle
-	\myindex{pyg}{\texttt{FULLSCREEN}}  \texttt{FULLSCREEN}   &  create a fullscreen display\\ 
-	\myindex{pyg}{\texttt{DOUBLEBUF}} 	\texttt{DOUBLEBUF} &  only applicable with OPENGL\\ 
-	\myindex{pyg}{\texttt{HWSURFACE}} 	\texttt{HWSURFACE} &   (obsolete in pygame 2) hardware accelerated, only in FULLSCREEN\\ 
-	\myindex{pyg}{\texttt{OPENGL}}  	\texttt{OPENGL}  &  create an OpenGL-renderable display\\ 
-	\myindex{pyg}{\texttt{RESIZABLE}}  	\texttt{RESIZABLE}  &  display window should be sizeable\\ 
-	\myindex{pyg}{\texttt{NOFRAME}}  	\texttt{NOFRAME}  &  display window will have no border or controls\\ 
-	\myindex{pyg}{\texttt{SCALED}}   	\texttt{SCALED}   &  resolution depends on desktop size and scale graphics\\ 
-	\myindex{pyg}{\texttt{SHOWN}}   	\texttt{SHOWN}   &  window is opened in visible mode (default)\\ 
-	\myindex{pyg}{\texttt{HIDDEN}}   	\texttt{HIDDEN}   &   window is opened in hidden mode 
+	\pygindex{FULLSCREEN}  	\texttt{FULLSCREEN}   	&  create a fullscreen display\\ 
+	\pygindex{DOUBLEBUF} 	\texttt{DOUBLEBUF} 		&  only applicable with OPENGL\\ 
+	\pygindex{HWSURFACE} 	\texttt{HWSURFACE} 		&  (obsolete in pygame 2) hardware accelerated, only in FULLSCREEN\\ 
+	\pygindex{OPENGL}  		\texttt{OPENGL}  		&  create an OpenGL-renderable display\\ 
+	\pygindex{RESIZABLE}  	\texttt{RESIZABLE}  	&  display window should be sizeable\\ 
+	\pygindex{NOFRAME}  	\texttt{NOFRAME}  		&  display window will have no border or controls\\ 
+	\pygindex{SCALED}   	\texttt{SCALED}   		&  resolution depends on desktop size and scale graphics\\ 
+	\pygindex{SHOWN}  		\texttt{SHOWN}   		&  window is opened in visible mode (default)\\ 
+	\pygindex{HIDDEN}   	\texttt{HIDDEN}   		&  window is opened in hidden mode 
 \end{longtable} 
-%\begin{pygbox}[The following Pygame elements were introduced]
-%\tcbsubtitle{import pygame}
-%\url{https://pyga.me/docs/tutorials/en/import-init.html}
-%
-%\tcbsubtitle{pygame.init()}
-%\myindex{pyg}{\texttt{init()}}
-%\url{https://pyga.me/docs/ref/pygame.html#pygame.init}
-%	
-%\tcbsubtitle{pygame.quit()}
-%\myindex{pyg}{\texttt{quit()}}
-%\url{https://pyga.me/docs/ref/pygame.html#pygame.quit}
-%
-%\tcbsubtitle{pygame.QUIT}
-%\myindex{pyg}{\texttt{QUIT}}
-%\url{https://pyga.me/docs/ref/event.html#pygame.event.EventType.type}
-%
-%\tcbsubtitle{pygame.WINDOWCLOSE}
-%\myindex{pyg}{\texttt{WINDOWCLOSE}}
-%\url{https://pyga.me/docs/ref/event.html#pygame.event.EventType.type}
-%
-%\tcbsubtitle{pygame.event.get()}
-%\myindex{pyg}{\texttt{event}!\texttt{get()}}
-%\url{https://pyga.me/docs/ref/event.html#pygame.event.get}
-%
-%\tcbsubtitle{pygame.event.type}
-%\myindex{pyg}{\texttt{event}!\texttt{type}}
-%\url{https://pyga.me/docs/ref/event.html#pygame.event.EventType.type}
-%
-%\tcbsubtitle{pygame.time.Clock}
-%\myindex{pyg}{\texttt{time}!\texttt{Clock}}
-%\url{https://pyga.me/docs/ref/time.html#pygame.time.Clock}
-%
-%\tcbsubtitle{pygame.time.Clock.tick()}
-%\myindex{pyg}{\texttt{time}!\texttt{Clock}!\texttt{tick()}}
-%\url{https://pyga.me/docs/ref/time.html#pygame.time.Clock.tick}
-%
-%\tcbsubtitle{pygame.time.Clock.tick\_busy\_loop()}
-%\myindex{pyg}{\texttt{time}!\texttt{Clock}!\texttt{tick\_busy\_loop()}}
-%\url{https://pyga.me/docs/ref/time.html#pygame.time.Clock.tick_busy_loop}
-%
-%\tcbsubtitle{pygame.Surface.fill()}
-%\myindex{pyg}{\texttt{Surface}!\texttt{fill()}}
-%\url{https://pyga.me/docs/ref/surface.html#pygame.Surface.fill}
-%
-%\tcbsubtitle{pygame.Window}
-%\myindex{pyg}{\texttt{Window}}
-%\url{https://pyga.me/docs/ref/window.html}
-%
-%\tcbsubtitle{pygame.Window.destroy()}
-%\myindex{pyg}{\texttt{Window}!\texttt{destroy()}}
-%\url{https://pyga.me/docs/ref/window.html#pygame.Window.destroy}
-%
-%\tcbsubtitle{pygame.Window.flip()}
-%\myindex{pyg}{\texttt{Window}!\texttt{flip()}}
-%\url{https://pyga.me/docs/ref/window.html#pygame.Window.flip}
-%
-%\tcbsubtitle{pygame.Window.get\_surface()}
-%\myindex{pyg}{\texttt{Window}!\texttt{get\_surface()}}
-%\url{https://pyga.me/docs/ref/window.html#pygame.Window.get_surface}
-%
-%\tcbsubtitle{pygame.Window.title}
-%\myindex{pyg}{\texttt{Window}!\texttt{title}}
-%\url{https://pyga.me/docs/ref/window.html#pygame.Window.title}
-%
-%\tcbsubtitle{pygame.Window.position}
-%\myindex{pyg}{\texttt{Window}!\texttt{position}}
-%\url{https://pyga.me/docs/ref/window.html#pygame.Window.position}
-%	
-%\end{pygbox}
-
 
 \subsection{Homework}
 Please have a look at \url{https://pyga.me/docs/ref/window.html} and then try to solve the following small exercises: 
@@ -431,10 +362,10 @@ Please have a look at \url{https://pyga.me/docs/ref/window.html} and then try to
 	
 	\item Change the position of the window. Use position values and also try
 	\texttt{WINDOWPOS\-\_CENTERED}
-	\randnotiz{WINDOWPOS\_CENTERED}\myindex{pyg}{\texttt{WINDOWPOS\_CENTERED}}
+	\randnotiz{WINDOWPOS\_CENTERED}\pygindex{WINDOWPOS\_CENTERED}
 	and
 	\texttt{WINDOWPOS\-\_UNDEFINED}
-	\randnotiz{WINDOWPOS\_UNDEFINED}\myindex{pyg}{\texttt{WINDOWPOS\_UNDEFINED}}.
+	\randnotiz{WINDOWPOS\_UNDEFINED}\pygindex{WINDOWPOS\_UNDEFINED}.
 	
 	\item Create the window as a resizable window and try to resize it.
 	
@@ -451,6 +382,4 @@ Please have a look at \url{https://pyga.me/docs/ref/window.html} and then try to
 	\item Try a fullscreen window.
 	
 	\item Try to arrange three windows in a row. Compute the x-position of the second and third window based on the window size and a useful gap between them. 
-	
-	
 \end{enumerate}

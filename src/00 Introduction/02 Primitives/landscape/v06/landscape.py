@@ -81,6 +81,7 @@ def main():
     pygame.init()
     window = pygame.Window( size=size, title = "A Peaceful Day")         
     clock = pygame.time.Clock()
+    screen = window.get_surface()
     horizon = 250
     meadow = Meadow(window, horizon)                
     sky = Sky(window, horizon)                      

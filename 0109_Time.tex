@@ -27,7 +27,7 @@ The \texttt{Enemy} class does not introduce anything particularly exciting eithe
 
 \lstsource{SRC/00 Introduction/09 Time/v01/time.py}{8}{23}{python}{Time-based actions (2), Version 1.0 -- \texttt{Enemy}}{srcTime00b} 
 
-The \texttt{Bullet} class is also largely a repetition of what we have seen before. What may be more interesting is \zeiref{srcTime0004}. The method \texttt{pygame.sprite.Sprite.kill()}\myindex{pyg}{\texttt{sprite}!\texttt{Sprite}!\texttt{kill()}|underline}\randnotiz{kill()} is not a true self-destruction mechanism. Instead, this method removes the \texttt{Sprite} object from all sprite groups. 
+The \texttt{Bullet} class is also largely a repetition of what we have seen before. What may be more interesting is \zeiref{srcTime0004}. The method \texttt{pygame.sprite.Sprite.kill()}\pygindex{sprite!Sprite!kill()|underline}\randnotiz{kill()} is not a true self-destruction mechanism. Instead, this method removes the \texttt{Sprite} object from all sprite groups. 
 
 If all references to the object are lost as a result, the object is of course destroyed. However, if a reference still exists somewhere, the object will remain alive. In practice, \texttt{Sprite} objects are usually managed in groups (that is, in \texttt{pygame.sprite.Group} objects) and are therefore effectively destroyed by calling \texttt{kill()}.  
 
@@ -38,7 +38,7 @@ You can see this effect in \abbref[vref]{pictime00}: the fireball disappears abo
 
 In the constructor of the \texttt{Game} class, a sprite group for the fireballs is created, as well as a \texttt{GroupSingle} object for the enemy.  In \texttt{run()}, the usual game loop tasks are carried out by calling the appropriate methods.  
 
-I~would like to briefly draw attention to \zeiref{srcTime0005}ff. By calling \texttt{pygame.time.Clock.tick()}\myindex{pyg}{\texttt{time}!\texttt{Clock}!\texttt{tick()}}\randnotiz{tick()}, the game loop is timed -- in this case to $1/60$ of a second -- and the \emph{delta time}\randnotiz{delta time}\index{delta time} is calculated afterwards.
+I~would like to briefly draw attention to \zeiref{srcTime0005}ff. By calling \texttt{pygame.time.Clock.tick()}\pygindex{time!Clock!tick()}\randnotiz{tick()}, the game loop is timed -- in this case to $1/60$ of a second -- and the \emph{delta time}\randnotiz{delta time}\index{delta time} is calculated afterwards.
 
 \lstsource{SRC/00 Introduction/09 Time/v01/time.py}{42}{65}{python}{Time-based actions (4), Version 1.0 -- Constructor and \texttt{run()} of \texttt{Game}}{srcTime00d} 
 
@@ -80,7 +80,7 @@ The advantages of this approach are clear: it is easy to implement, and the spee
 	However, there is a decisive disadvantage: this approach only works if the tick rate does not change and always behaves as expected. In reality, this is not guaranteed. As we remember, calling \texttt{tick()} ensures that the loop is executed \emph{at most} 60~times per second. Under heavy load, it may run less often. In addition, many games determine the number of \emph{frames per second} dynamically in order to adapt to different hardware performance. Therefore, coupling time control to the tick rate is not a truly stable solution.
 \end{warningbox}
 
-A better approach is to couple time control to a real time source. The method \texttt{pygame\-.time\-.get\_ticks()}\myindex{pyg}{\texttt{time}!\texttt{get\_ticks()}}\randnotiz{get\_ticks()} is very helpful here. This method returns the amount of time since the start of the game in \gls{ms}, and this value is independent of the performance of the hardware or the program.
+A better approach is to couple time control to a real time source. The method \texttt{pygame\-.time\-.get\_ticks()}\pygindex{time!get\_ticks()}\randnotiz{get\_ticks()} is very helpful here. This method returns the amount of time since the start of the game in \gls{ms}, and this value is independent of the performance of the hardware or the program.
 
 Now the source code can be reworked. First, in \zeiref{srcTime0201}, the current number of~$ms$ since program start is measured, and in \zeiref{srcTime0202} it is defined how many~$ms$ a time interval should last. We want to drop a fireball every half second, so this value is~500.
 
@@ -280,11 +280,11 @@ If you want to let a certain amount of time pass between two actions -- for exam
 \begin{pygbox}
 \begin{itemize}
 	\item \texttt{pygame.time.get\_ticks()}:
-	\myindex{pyg}{\texttt{time}!\texttt{get\_ticks()}}\\ 
+	\pygindex{time!get\_ticks()}\\ 
     \url{https://pyga.me/docs/ref/time.html#pygame.time.get_ticks}
 	
 	\item \texttt{pygame.sprite.Sprite.kill()}:
-	\myindex{pyg}{\texttt{sprite}!\texttt{Sprite}!\texttt{kill()}}\\ 
+	\pygindex{sprite!Sprite!kill()}\\ 
 	\url{https://pyga.me/docs/ref/sprite.html#pygame.sprite.Sprite.kill}
 
 \end{itemize}

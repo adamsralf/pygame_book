@@ -1,14 +1,15 @@
 from random import choice, randrange
 from time import time
-from typing import Any, Tuple
+from typing import Any
+
+import pygame
 
 import config as cfg
-import pygame
 from config import MyEvents
 
 
 class Background(pygame.sprite.Sprite):
-    def __init__(self, *groups: Tuple[pygame.sprite.Group]) -> None:
+    def __init__(self, *groups: tuple[pygame.sprite.Group]) -> None:
         super().__init__(*groups)
         self.image = pygame.Surface(cfg.WINDOW.size).convert()
         self.rect = self.image.get_rect()
@@ -29,7 +30,7 @@ class Paddle(pygame.sprite.Sprite):
     BORDERDISTANCE = {"horizontal": 50, "vertical": 10}
     DIRECTION = {"up": -1, "down": 1, "halt": 0}
 
-    def __init__(self, player: str, *groups: Tuple[pygame.sprite.Group]) -> None:
+    def __init__(self, player: str, *groups: tuple[pygame.sprite.Group]) -> None:
         super().__init__(*groups)
         self.rect = pygame.FRect(0, 0, 15, cfg.WINDOW.height // 10)
         self.rect.centery = cfg.WINDOW.centery
@@ -44,7 +45,7 @@ class Paddle(pygame.sprite.Sprite):
         self.image.fill("yellow")
 
     def update(self, *args: Any, **kwargs: Any) -> None:
-        if "action" in kwargs.keys():
+        if "action" in kwargs:
             if kwargs["action"] == "move":
                 self.move()
             elif kwargs["action"] in Paddle.DIRECTION.keys():
@@ -61,7 +62,7 @@ class Paddle(pygame.sprite.Sprite):
 
 
 class Ball(pygame.sprite.Sprite):
-    def __init__(self, *groups: Tuple[pygame.sprite.Group]) -> None:
+    def __init__(self, *groups: tuple[pygame.sprite.Group]) -> None:
         super().__init__(*groups)
         self.rect = pygame.FRect(0, 0, 20, 20)
         self.image = pygame.Surface(self.rect.size).convert()
@@ -72,7 +73,7 @@ class Ball(pygame.sprite.Sprite):
         self.service()
 
     def update(self, *args: Any, **kwargs: Any) -> None:
-        if "action" in kwargs.keys():
+        if "action" in kwargs:
             if kwargs["action"] == "move":
                 self.move()
             elif kwargs["action"] == "hflip":
@@ -118,7 +119,7 @@ class Ball(pygame.sprite.Sprite):
 
 class Score(pygame.sprite.Sprite):
 
-    def __init__(self, *groups: Tuple[pygame.sprite.Group]):
+    def __init__(self, *groups: tuple[pygame.sprite.Group]):
         super().__init__(*groups)
         self.font = pygame.font.SysFont(None, 30)
         self.score = {1: 0, 2: 0}
@@ -127,7 +128,7 @@ class Score(pygame.sprite.Sprite):
         self.render()
 
     def update(self, *args: Any, **kwargs: Any) -> None:
-        if "player" in kwargs.keys():
+        if "player" in kwargs:
             self.score[kwargs["player"]] += 1
             self.render()
         return super().update(*args, **kwargs)

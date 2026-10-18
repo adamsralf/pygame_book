@@ -60,6 +60,7 @@ def main():
     window = pygame.Window( size=size, title = "A Peaceful Day")         
     clock = pygame.time.Clock()
     horizon = 250
+    screen = window.get_surface()
     meadow = Meadow(window, horizon)                
     sky = Sky(window, horizon)                      
     tree = Tree(window, horizon)                    

@@ -90,7 +90,7 @@ The \texttt{update()} method has now become quite interesting. First, the \textt
 
 What is the purpose of the three lines starting at \zeiref{srcAnimation0204}? They serve purely visual purposes. The dimensions of the explosion sprites are not always the same, and the \texttt{rect} object always aligns them to the upper-left corner, which would result in a visible jitter. To avoid this, the old center position is stored, the new rectangle of the next animation sprite is calculated, and its center is set to the previous position. This keeps the animation nicely aligned to the original center of the rock.
 
-Finally, it is checked whether the animation has finished. If so, the sprite is no longer needed and can be removed from the sprite group using \texttt{kill()}\randnotiz{kill()}\myindex{pyg}{\texttt{sprite}!\texttt{Sprite}!\texttt{kill()}}.
+Finally, it is checked whether the animation has finished. If so, the sprite is no longer needed and can be removed from the sprite group using \texttt{kill()}\randnotiz{kill()}\pygindex{sprite!Sprite!kill()}.
 
 
 \lstsource{SRC/01 Techniques/01 Animation/animation02.py}{62}{84}{python}{The exploding rock (1) -- \texttt{Rock}}{srcAnimation02a} 
