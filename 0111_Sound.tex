@@ -26,11 +26,11 @@ I~will not explain the imports, \texttt{config.py}, and the other familiar build
 
 \lstsource{SRC/00 Introduction/11 Sound/music/config.py}{1}{28}{python}{Sound -- \texttt{config.py}}{srcSound00a} 
 
-Before sound can be used, the corresponding subsystem must be initialized. This can be done explicitly using \texttt{pygame.mixer.init()}\randnotiz{init()}\myindex{pyg}{\texttt{mixer}!\texttt{init()}|underline}, or implicitly -- as in the source code at \zeiref{srcSound0002} -- by calling \texttt{pygame.init()}\myindex{pyg}{\texttt{init()}}.  
+Before sound can be used, the corresponding subsystem must be initialized. This can be done explicitly using \texttt{pygame.mixer.init()}\randnotiz{init()}\pygindex{mixer!init()|underline}, or implicitly -- as in the source code at \zeiref{srcSound0002} -- by calling \texttt{pygame.init()}\pygindex{init()}.  
 
-In the \texttt{sounds()} method, the preparatory steps for sound output are encapsulated. Background music\randnotiz{background music}\index{background music} is loaded into the mixer's internal memory using \texttt{pygame\-.mixer\-.music\-.load()}\myindex{pyg}{\texttt{mixer}!\texttt{music}!\texttt{load()}|underline}. However, loading the music does not start playback yet.  
+In the \texttt{sounds()} method, the preparatory steps for sound output are encapsulated. Background music\randnotiz{background music}\index{background music} is loaded into the mixer's internal memory using \texttt{pygame\-.mixer\-.music\-.load()}\pygindex{mixer!music!load()|underline}. However, loading the music does not start playback yet.  
 
-Playback begins after the volume has been set in \zeiref{srcSound0004} using\randnotiz{set\_volume()} \texttt{pygame\-.mixer\-.music\-.set\-\_volume()}\myindex{pyg}{\texttt{mixer}!\texttt{music}!\texttt{set\_volume()}|underline}, by calling the method in \zeiref{srcSound0005}. The method \texttt{pygame\-.mixer\-.music\-.play()}\myindex{pyg}{\texttt{mixer}!\texttt{music}!\texttt{play()}|underline}\randnotiz{play()} accepts three parameters: 
+Playback begins after the volume has been set in \zeiref{srcSound0004} using\randnotiz{set\_volume()} \texttt{pygame\-.mixer\-.music\-.set\-\_volume()}\pygindex{mixer!music!set\_volume()|underline}, by calling the method in \zeiref{srcSound0005}. The method \texttt{pygame\-.mixer\-.music\-.play()}\pygindex{mixer!music!play()|underline}\randnotiz{play()} accepts three parameters: 
 \begin{itemize}
 	\item The first parameter, \texttt{loops}, controls the number of repetitions; a value of~$-1$ means that the music is repeated indefinitely. 
 	\item The second parameter, \texttt{start}, specifies the position at which playback should begin; the default is~$0.0$. 
@@ -43,17 +43,17 @@ Playback begins after the volume has been set in \zeiref{srcSound0004} using\ran
 
 \lstsource{SRC/00 Introduction/11 Sound/music/sound.py}{24}{42}{python}{Sound -- \texttt{Game.watch\_for\_events()}}{srcSound00c} 
 
-I~want to start the background music at some times and fade it out at others. This is handled by the helper method \texttt{music\_start\_stop()}. The background music is stopped using \texttt{pygame.mixer.music.fadeout()}\myindex{pyg}{\texttt{mixer}!\texttt{music}!\texttt{fadeout()}|underline}\randnotiz{fadeout()}. Here, you have to specify over how many milliseconds the music should gradually become quieter until it stops -- in our example, this is~\SI{5000}{ms}. The method \texttt{pygame.mixer.music.play()}\myindex{pyg}{\texttt{mixer}!\texttt{music}!\texttt{play()}} used to start the background music has already been explained above.
+I~want to start the background music at some times and fade it out at others. This is handled by the helper method \texttt{music\_start\_stop()}. The background music is stopped using \texttt{pygame.mixer.music.fadeout()}\pygindex{mixer!music!fadeout()|underline}\randnotiz{fadeout()}. Here, you have to specify over how many milliseconds the music should gradually become quieter until it stops -- in our example, this is~\SI{5000}{ms}. The method \texttt{pygame.mixer.music.play()}\pygindex{mixer!music!play()} used to start the background music has already been explained above.
 
 \lstsource{SRC/00 Introduction/11 Sound/music/sound.py}{45}{49}{python}{Sound -- \texttt{Game.music\_start\_stop()}}{srcSound00e} 
 
-Pressing \keys{p} pauses the background music or resumes playback. The current state is stored in the attribute \texttt{pause}. This attribute then determines which of the two \texttt{music} methods is called in the \texttt{pause\_alter()} method -- either  \texttt{pygame.mixer.music.pause()}\myindex{pyg}{\texttt{mixer}!\texttt{music}!\texttt{pause()}|underline}\randnotiz{pause()} or \texttt{pygame.mixer.music.unpause()}\myindex{pyg}{\texttt{mixer}!\texttt{music}!\texttt{unpause()}|underline}\randnotiz{unpause()}. Finally, in \zeiref{srcSound0007}, the \texttt{pause} flag is toggled.
+Pressing \keys{p} pauses the background music or resumes playback. The current state is stored in the attribute \texttt{pause}. This attribute then determines which of the two \texttt{music} methods is called in the \texttt{pause\_alter()} method -- either  \texttt{pygame.mixer.music.pause()}\pygindex{mixer!music!pause()|underline}\randnotiz{pause()} or \texttt{pygame.mixer.music.unpause()}\pygindex{mixer!music!unpause()|underline}\randnotiz{unpause()}. Finally, in \zeiref{srcSound0007}, the \texttt{pause} flag is toggled.
 
 \lstsource{SRC/00 Introduction/11 Sound/music/sound.py}{51}{56}{python}{Sound -- \texttt{Game.pause\_alter()}}{srcSound00f} 
 
 As the final feature, volume control is introduced. It is encapsulated in the \texttt{volume\-\_alter()} method. Instead of passing an absolute volume value to this method, a delta value is provided.
 
-First, this value is added to the \texttt{volume} variable. Afterwards, the value is clamped to the interval $[0, 1]$, and finally the new volume is set using \texttt{pygame.mixer.music.set\-\_volume()}\myindex{pyg}{\texttt{mixer}!\texttt{music}!\texttt{set\_volume()}|underline}\randnotiz{set\_volume()}.
+First, this value is added to the \texttt{volume} variable. Afterwards, the value is clamped to the interval $[0, 1]$, and finally the new volume is set using \texttt{pygame.mixer.music.set\-\_volume()}\pygindex{mixer!music!set\_volume()|underline}\randnotiz{set\_volume()}.
 
 \lstsource{SRC/00 Introduction/11 Sound/music/sound.py}{58}{62}{python}{Sound -- \texttt{volume\_alter()} von \texttt{Game}}{srcSound00g} 
 
@@ -67,18 +67,18 @@ And finally, we deal with the remaining bits.
 	\url{https://github.com/adamsralf/pygame_book/tree/main/src/00%20Introduction/11%20Sound/effects}
 \end{diskbox}
 
-For sound effects\index{sound effects}\randnotiz{sound effects}, a separate \texttt{Sound} object is created in each case (\zeiref{srcSound0101}ff.). The constructor of \texttt{pygame.mixer.Sound}\myindex{pyg}{\texttt{mixer}!\texttt{Sound}|underline} is given the file name including the path. If you already have an open file object, you can pass that instead; in this case, however, you should provide a second parameter specifying the sound encoding, for example \texttt{.\gls{ogg}}\index{ogg} or \texttt{.\gls{mp3}}\index{mp3}. As with background music, loading a sound is not the same as playing it.
+For sound effects\index{sound effects}\randnotiz{sound effects}, a separate \texttt{Sound} object is created in each case (\zeiref{srcSound0101}ff.). The constructor of \texttt{pygame.mixer.Sound}\pygindex{mixer!Sound|underline} is given the file name including the path. If you already have an open file object, you can pass that instead; in this case, however, you should provide a second parameter specifying the sound encoding, for example \texttt{.\gls{ogg}}\index{ogg} or \texttt{.\gls{mp3}}\index{mp3}. As with background music, loading a sound is not the same as playing it.
 
 \lstsource{SRC/00 Introduction/11 Sound/effects/sound.py}{17}{19}{python}{Sound -- \texttt{Game.sound()}}{srcSound01a} 
 
 In \zeiref{srcSound0106}, the current volume is first stored in a variable using
-\texttt{pygame\-.mixer\-.Sound\-.get\_\-volume()}\randnotiz{get\_volume()}\myindex{pyg}{\texttt{mixer}!\texttt{Sound}!\texttt{get\_volume()}}. To ensure that both sounds are played at the same volume, this value is modified and then applied to both sounds using
-\texttt{pygame.mixer.Sound.set\_volume()}\randnotiz{set\_volume()}\myindex{pyg}{\texttt{mixer}!\texttt{Sound}!\texttt{set\_volume()}}.
+\texttt{pygame\-.mixer\-.Sound\-.get\_\-volume()}\randnotiz{get\_volume()}\pygindex{mixer!Sound!get\_volume()}. To ensure that both sounds are played at the same volume, this value is modified and then applied to both sounds using
+\texttt{pygame.mixer.Sound.set\_volume()}\randnotiz{set\_volume()}\pygindex{mixer!Sound!set\_volume()}.
 
 \newpage
 \lstsource{SRC/00 Introduction/11 Sound/effects/sound.py}{38}{43}{python}{Sound -- \texttt{Game.volume\_alter()}}{srcSound01b} 
 
-For simplicity, the sounds are played directly in \texttt{watch\_for\_events()} (see \zeiref{srcSound0103} and \zeiref{srcSound0104}). The actual playback is done using \texttt{pygame.mixer.Sound.play()}\myindex{pyg}{\texttt{mixer}!\texttt{Sound}!\texttt{play()}|underline}\randnotiz{play()}. You can see that the \texttt{play()} method is called on the corresponding \texttt{Sound} object.
+For simplicity, the sounds are played directly in \texttt{watch\_for\_events()} (see \zeiref{srcSound0103} and \zeiref{srcSound0104}). The actual playback is done using \texttt{pygame.mixer.Sound.play()}\pygindex{mixer!Sound!play()|underline}\randnotiz{play()}. You can see that the \texttt{play()} method is called on the corresponding \texttt{Sound} object.
 
 The \texttt{play()} method provides three optional arguments:
 \begin{itemize}
@@ -114,15 +114,15 @@ First, the necessary boilerplate, which should not require any further explanati
 
 \lstsource{SRC/00 Introduction/11 Sound/stereo/sound.py}{11}{22}{python}{Sound-Stereo -- Class \texttt{Ground}}{srcSound01ab} 
 
-In \zeiref{srcSound0101}, a \texttt{Sound} object\myindex{pyg}{\texttt{mixer}!\texttt{Sound}}\randnotiz{Sound object} is created. This object is played to emphasize the movement of the tank with appropriate sounds. In the following line (\zeiref{srcSound0201}), the helper method \texttt{stereo()} is called (see below), and then the playback of the driving sound starts in an infinite loop (\zeiref{srcSound0203}). 
+In \zeiref{srcSound0101}, a \texttt{Sound} object\pygindex{mixer!Sound}\randnotiz{Sound object} is created. This object is played to emphasize the movement of the tank with appropriate sounds. In the following line (\zeiref{srcSound0201}), the helper method \texttt{stereo()} is called (see below), and then the playback of the driving sound starts in an infinite loop (\zeiref{srcSound0203}). 
 
-It is noticeable that the output is not started using \texttt{pygame.mixer.Sound.play()}\myindex{pyg}{\texttt{mixer}!\texttt{Sound}!\texttt{play()}}. Normally, this would be a good choice, since this command automatically selects one of the eight available Pygame sound channels\index{channel}\randnotiz{channel}.
+It is noticeable that the output is not started using \texttt{pygame.mixer.Sound.play()}\pygindex{mixer!Sound!play()}. Normally, this would be a good choice, since this command automatically selects one of the eight available Pygame sound channels\index{channel}\randnotiz{channel}.
 
 \begin{hintbox}[Selecting channels manually]
-	However, it is also possible to address a Pygame channel directly and thus gain more control over the sound behavior. In \zeiref{srcSound0204}, a free \texttt{pygame.mixer.Channel} object\myindex{pyg}{\texttt{mixer}!\texttt{Channel}|underline} is determined for this purpose. The method \texttt{pygame.mixer.find\-\_chan\-nel()} \myindex{pyg}{\texttt{mixer}!\texttt{find\_channel()}|underline} returns the first pygame channel and stores it in the attribute \texttt{channel}.
+	However, it is also possible to address a Pygame channel directly and thus gain more control over the sound behavior. In \zeiref{srcSound0204}, a free \texttt{pygame.mixer.Channel} object\pygindex{mixer!Channel|underline} is determined for this purpose. The method \texttt{pygame.mixer.find\-\_chan\-nel()} \pygindex{mixer!find\_channel()|underline} returns the first pygame channel and stores it in the attribute \texttt{channel}.
 \end{hintbox} 
 
-Playback in \zeiref{srcSound0203} is then no longer started via a method of the \texttt{Sound} object, but by using \texttt{pygame.mixer.Channel.play()}\myindex{pyg}{\texttt{mixer}!\texttt{Channel}!\texttt{play()}|underline}\randnotiz{play()}.
+Playback in \zeiref{srcSound0203} is then no longer started via a method of the \texttt{Sound} object, but by using \texttt{pygame.mixer.Channel.play()}\pygindex{mixer!Channel!play()|underline}\randnotiz{play()}.
 
 This makes it possible to adjust volume and stereo panning dynamically while the sound is playing.
 
@@ -133,14 +133,14 @@ The \texttt{update()} method is shown here only for completeness. It does not co
 
 \lstsource{SRC/00 Introduction/11 Sound/stereo/sound.py}{51}{74}{python}{Sound-Stereo -- \texttt{Tank.update()}}{srcSound02c} 
 
-The \texttt{stereo()} method is surprisingly simple. The method \texttt{pygame.mixer.Channel\-.set-\_vol\-ume()}\myindex{pyg}{\texttt{mixer}!\texttt{Channel}!\texttt{set\_volume()}|underline}\randnotiz{set\_volume()} provides two parameters: \emph{left} and \emph{right}. Both parameters have a value range of~$[0, 1]$.
+The \texttt{stereo()} method is surprisingly simple. The method \texttt{pygame.mixer.Channel\-.set-\_vol\-ume()}\pygindex{mixer!Channel!set\_volume()|underline}\randnotiz{set\_volume()} provides two parameters: \emph{left} and \emph{right}. Both parameters have a value range of~$[0, 1]$.
 
 As discussed before, we want the right speaker to play the engine sound louder the further to the right the tank is positioned, and vice versa (\gls{stereopanning}) \randnotiz{Stereo Panning}. To achieve this, I~calculate the relative horizontal position of the tank’s center with respect to the window width in \zeiref{srcSound0203}. This calculation also yields a value in the interval~$[0, 1]$.
 
 Once this value is known, the relative value for the left speaker can be determined in the following line by $left = 1 - right $ . After that, both values are passed to the \texttt{set\_volume()} method.
 
 \begin{hintbox}[Hint]
-	The method \texttt{pygame.mixer.Channel\-.set\-\_vol\-ume()} allows different volume levels to be specified for the left and right Pygame channels, whereas the methods \texttt{pygame\-.mix\-er\-.Sound\-.set\-\_vol\-ume()}\myindex{pyg}{\texttt{mixer}!\texttt{Sound}!\texttt{set\_volume()}} and \texttt{pygame.mixer.music\-.set\-\_vol\-ume()}\myindex{pyg}{\texttt{mixer}!\texttt{music}!\texttt{set\_volume()}} do not. 
+	The method \texttt{pygame.mixer.Channel\-.set\-\_vol\-ume()} allows different volume levels to be specified for the left and right Pygame channels, whereas the methods \texttt{pygame\-.mix\-er\-.Sound\-.set\-\_vol\-ume()}\pygindex{mixer!Sound!set\_volume()} and \texttt{pygame.mixer.music\-.set\-\_vol\-ume()}\pygindex{mixer!music!set\_volume()} do not. 
 \end{hintbox}
  
  \lstsource{SRC/00 Introduction/11 Sound/stereo/sound.py}{76}{79}{python}{Sound-Stereo -- \texttt{Tank.stereo()}}{srcSound02d} 
@@ -326,58 +326,58 @@ Checking the current state often helps:
 \begin{pygbox}
 \begin{itemize}
 	\item\texttt{pygame.mixer.Channel} :
-	\myindex{pyg}{\texttt{mixer}!\texttt{Channel}}\\ \url{https://pyga.me/docs/ref/music.html#pygame.mixer.Channel}
+	\pygindex{mixer!Channel}\\ \url{https://pyga.me/docs/ref/music.html#pygame.mixer.Channel}
 
 	\item \texttt{pygame.mixer.Channel.play()}:
-	\myindex{pyg}{\texttt{mixer}!\texttt{Channel}!\texttt{play()}}\\ \url{https://pyga.me/docs/ref/mixer.html#pygame.mixer.Channel.play}
+	\pygindex{mixer!Channel!play()}\\ \url{https://pyga.me/docs/ref/mixer.html#pygame.mixer.Channel.play}
 
 	\item \texttt{pygame.mixer.Channel.set\_volume()}:
-	\myindex{pyg}{\texttt{mixer}!\texttt{Channel}!\texttt{set\_volume()}}\\ \url{https://pyga.me/docs/ref/mixer.html#pygame.mixer.Channel.set_volume}
+	\pygindex{mixer!Channel!set\_volume()}\\ \url{https://pyga.me/docs/ref/mixer.html#pygame.mixer.Channel.set_volume}
 
 	\item\texttt{pygame.mixer.find\_channel()} :
-	\myindex{pyg}{\texttt{mixer}!\texttt{find\_channel()}}\\ \url{https://pyga.me/docs/ref/music.html#pygame.mixer.find_channel}
+	\pygindex{mixer!find\_channel()}\\ \url{https://pyga.me/docs/ref/music.html#pygame.mixer.find_channel}
 
 	\item \texttt{pygame.mixer.init()}:
-	\myindex{pyg}{\texttt{mixer}!\texttt{init()}}\\ \url{https://pyga.me/docs/ref/mixer.html#pygame.mixer.init}
+	\pygindex{mixer!init()}\\ \url{https://pyga.me/docs/ref/mixer.html#pygame.mixer.init}
 
 	\item \texttt{pygame.mixer.set\_num\_channels()}:
-	\myindex{pyg}{\texttt{mixer}!\texttt{set\_num\_channels()}}\\ \url{https://pyga.me/docs/ref/mixer.html#pygame.mixer.set_num_channels}
+	\pygindex{mixer!set\_num\_channels()}\\ \url{https://pyga.me/docs/ref/mixer.html#pygame.mixer.set_num_channels}
 
 	\item\texttt{pygame.mixer.music.fadeout()}:
-	\myindex{pyg}{\texttt{mixer}!\texttt{music}!\texttt{fadeout()}}\\ \url{https://pyga.me/docs/ref/music.html#pygame.mixer.music.fadeout}
+	\pygindex{mixer!music!fadeout()}\\ \url{https://pyga.me/docs/ref/music.html#pygame.mixer.music.fadeout}
 
 	\item\texttt{pygame.mixer.music.get\_busy()} :
-	\myindex{pyg}{\texttt{mixer}!\texttt{music}!\texttt{get\_busy()}}\\ \url{https://pyga.me/docs/ref/music.html#pygame.mixer.music.get_busy}
+	\pygindex{mixer!music!get\_busy()}\\ \url{https://pyga.me/docs/ref/music.html#pygame.mixer.music.get_busy}
 
 	\item \texttt{pygame.mixer.music.get\_volume()}:
-	\myindex{pyg}{\texttt{mixer}!\texttt{music}!\texttt{get\_volume()}}\\ \url{https://pyga.me/docs/ref/music.html#pygame.mixer.music.get_volume}
+	\pygindex{mixer!music!get\_volume()}\\ \url{https://pyga.me/docs/ref/music.html#pygame.mixer.music.get_volume}
 
     \item \texttt{pygame.mixer.music.load()}:
-	\myindex{pyg}{\texttt{mixer}!\texttt{music}!\texttt{load()}}\\ \url{https://pyga.me/docs/ref/music.html#pygame.mixer.music.load}
+	\pygindex{mixer!music!load()}\\ \url{https://pyga.me/docs/ref/music.html#pygame.mixer.music.load}
 
 	\item \texttt{pygame.mixer.music.pause()}:
-	\myindex{pyg}{\texttt{mixer}!\texttt{music}!\texttt{pause()}}\\ \url{https://pyga.me/docs/ref/music.html#pygame.mixer.music.pause}
+	\pygindex{mixer!music!pause()}\\ \url{https://pyga.me/docs/ref/music.html#pygame.mixer.music.pause}
 
 	\item \texttt{pygame.mixer.music.play()}:
-	\myindex{pyg}{\texttt{mixer}!\texttt{music}!\texttt{play()}}\\ \url{https://pyga.me/docs/ref/music.html#pygame.mixer.music.play}
+	\pygindex{mixer!music!play()}\\ \url{https://pyga.me/docs/ref/music.html#pygame.mixer.music.play}
 
 	\item \texttt{pygame.mixer.music.set\_volume()}:
-	\myindex{pyg}{\texttt{mixer}!\texttt{music}!\texttt{set\_volume()}}\\ \url{https://pyga.me/docs/ref/music.html#pygame.mixer.music.set_volume}
+	\pygindex{mixer!music!set\_volume()}\\ \url{https://pyga.me/docs/ref/music.html#pygame.mixer.music.set_volume}
 
 	\item \texttt{pygame.mixer.music.unpause()}:
-	\myindex{pyg}{\texttt{mixer}!\texttt{music}!\texttt{unpause()}}\\ \url{https://pyga.me/docs/ref/music.html#pygame.mixer.music.unpause}
+	\pygindex{mixer!music!unpause()}\\ \url{https://pyga.me/docs/ref/music.html#pygame.mixer.music.unpause}
 
 	\item \texttt{pygame.mixer.Sound}:
-	\myindex{pyg}{\texttt{mixer}!\texttt{Sound}}\\ \url{https://pyga.me/docs/ref/mixer.html#pygame.mixer.Sound}
+	\pygindex{mixer!Sound}\\ \url{https://pyga.me/docs/ref/mixer.html#pygame.mixer.Sound}
 
 	\item \texttt{pygame.mixer.Sound.get\_volume()}:
-	\myindex{pyg}{\texttt{mixer}!\texttt{Sound}!\texttt{get\_volume()}}\\ \url{https://pyga.me/docs/ref/mixer.html#pygame.mixer.Sound.get_volume}
+	\pygindex{mixer!Sound!get\_volume()}\\ \url{https://pyga.me/docs/ref/mixer.html#pygame.mixer.Sound.get_volume}
 
 	\item \texttt{pygame.mixer.Sound.play()}:
-	\myindex{pyg}{\texttt{mixer}!\texttt{Sound}!\texttt{play()}}\\ \url{https://pyga.me/docs/ref/mixer.html#pygame.mixer.Sound.play}
+	\pygindex{mixer!Sound!play()}\\ \url{https://pyga.me/docs/ref/mixer.html#pygame.mixer.Sound.play}
 
 	\item \texttt{pygame.mixer.Sound.set\_volume()}:
-	\myindex{pyg}{\texttt{mixer}!\texttt{Sound}!\texttt{set\_volume()}}\\ \url{https://pyga.me/docs/ref/mixer.html#pygame.mixer.Sound.set_volume}
+	\pygindex{mixer!Sound!set\_volume()}\\ \url{https://pyga.me/docs/ref/mixer.html#pygame.mixer.Sound.set_volume}
 
 \end{itemize}
 \end{pygbox}

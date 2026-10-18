@@ -28,8 +28,11 @@
 \sisetup{
 	locale = US,
 	detect-all,
-	evaluate-expression = true
+	evaluate-expression = true,
+	per-mode = symbol
 }
+\DeclareSIUnit{\pixel}{px}
+\DeclareSIUnit{\pxsec}{\pixel\per\second}
 % -------------------------------------------------
 % Code Listings
 % -------------------------------------------------
@@ -63,6 +66,7 @@ pdfkeywords={Python, Pygame, Game Development, Programming},
 pdfcreator={LuaLaTeX},
 pdfproducer={LuaLaTeX}
 ]{hyperref}
+\usepackage{pdfcomment}
 % -------------------------------------------------
 % Boxen
 % -------------------------------------------------
@@ -93,6 +97,7 @@ pdfproducer={LuaLaTeX}
 \usetikzlibrary{automata}
 \usepackage{pgf-umlcd}
 \usepackage{multirow}
+\usepackage{multicol}
 \usepackage{colortbl}
 \usepackage{chngcntr}
 \usepackage[os=win]{menukeys}
@@ -138,7 +143,7 @@ pdfproducer={LuaLaTeX}
 	{\Large 2D Game Programming\par}
 	\vfill
 	{\large Ralf Adams\par}
-	{\large Version 1.4 (\today)\par}
+	{\large Version 1.5 (\today)\par}
 \end{titlepage}
   
   
@@ -156,7 +161,7 @@ pdfproducer={LuaLaTeX}
 	numberstyle=\color[gray]{0.5},%
 	escapechar={§},%
 	basicstyle={\ttfamily\scriptsize},%
-	breaklines=true,%
+	breaklines=true,% 
 	breakatwhitespace=true,%
 	frame={tb},%
 	framextopmargin={1mm},%
@@ -179,7 +184,8 @@ pdfproducer={LuaLaTeX}
 	{ö}{{\"o}}1%
 }%
 
-%\begin{comment}
+\begin{comment}
+\end{comment}
 \chapter{Goals}\label{secGoals}
 	\input{0001_Goals.tex}
 \chapter{Basics}\label{secBasics}
@@ -200,15 +206,13 @@ pdfproducer={LuaLaTeX}
 	\input{0201_Animation}
 	\input{0202_TileMaps}
 	\input{0203_WorldScrolling}
-%\end{comment}
 	\input{0204_EndlessBackground}
-%\begin{comment}
 	\input{0206_StateMachine}
 \chapter{Examples}\label{secExamples}
 	\input{0301_Pong}
 	\input{0302_Bubbles}
 	\input{0303_Moonlander}
-%	\input{0304_FourConnect}
+	\input{0304_Breakout}
 \listoffigures
 \listoftables
 %\lstlistoflistings
@@ -216,6 +220,5 @@ pdfproducer={LuaLaTeX}
 \printglossaries
 \printindex
 \printindex[pyg][Index of the \texttt{pygame} Namespace]
-%\end{comment}
 
 \end{document}

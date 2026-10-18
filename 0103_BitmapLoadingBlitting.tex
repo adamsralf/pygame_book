@@ -20,7 +20,7 @@ The file is then imported and usually given a shorter name, so its contents can 
 
 In \srcref{srcInvader01}, two bitmaps -- in this case two \Gls{png} files -- are loaded and displayed on the screen.
 
-Loading is done using the function \texttt{pygame.image.load()}\myindex{pyg}{\texttt{image}!\texttt{load()}}\randnotiz{load()}. In \zeiref{srcInvader0101}f., the bitmaps -- also called \glspl{sprite} -- are loaded and converted into a \texttt{Surface} object. In \zeiref{srcInvader0102} the two bitmaps are then printed onto the \texttt{screen} surface without any further processing using \texttt{pygame.Sur\-face.\-blit()}\myindex{pyg}{\texttt{Surface}!\texttt{blit()}}\randnotiz{blit()}. The first parameter of \texttt{blit()} is the \texttt{Surface} object that is to be drawn, followed by the position. Here, the horizontal (x) coordinate is specified first, and then the vertical (y) coordinate. You can \emph{admire} the result in \abbref[vref]{picInvader01}.
+Loading is done using the function \texttt{pygame.image.load()}\pygindex{image!load()}\randnotiz{load()}. In \zeiref{srcInvader0101}f., the bitmaps -- also called \glspl{sprite} -- are loaded and converted into a \texttt{Surface} object. In \zeiref{srcInvader0102} the two bitmaps are then printed onto the \texttt{screen} surface without any further processing using \texttt{pygame.Sur\-face.\-blit()}\pygindex{Surface!blit()}\randnotiz{blit()}. The first parameter of \texttt{blit()} is the \texttt{Surface} object that is to be drawn, followed by the position. Here, the horizontal (x) coordinate is specified first, and then the vertical (y) coordinate. You can \emph{admire} the result in \abbref[vref]{picInvader01}.
 
 \begin{hintbox}[The coordinate system’s origin]
 	Unlike in school mathematics, the origin is not at the lower left, but at the upper left. 
@@ -37,9 +37,9 @@ In addition, I want to adjust the size ratios of the two bitmaps, because the en
     \vspace{-1em}%
 	\myfigure{invader02.png}{0.8}{Sizes OK}{picInvader02}%
 \end{wrapfigure}%
-The function \texttt{pygame.Surface.load()} returned a \texttt{Surface} object. The \texttt{Surface} class now provides a method that performs the desired conversion: \texttt{pygame.Surface\-.convert()}\myindex{pyg}{\texttt{Surface}!\texttt{convert()}}\randnotiz{convert()}. As an example, please refer to \zeiref{srcInvader0201}.\label{pageTransparenz}
+The function \texttt{pygame.Surface.load()} returned a \texttt{Surface} object. The \texttt{Surface} class now provides a method that performs the desired conversion: \texttt{pygame.Surface\-.convert()}\pygindex{Surface!convert()}\randnotiz{convert()}. As an example, please refer to \zeiref{srcInvader0201}.\label{pageTransparenz}
  
-Resizing is done using \texttt{pygame\-.trans\-form\-.scale()}\myindex{pyg}{\texttt{transform}!\texttt{scale()}|underline}\randnotiz{scale()}. In \zeiref{srcInvader0202}, the image is scaled to the specified $(width, height)$ in the unit of pixels. The result shown in \abbref{picInvader02} does not quite meet my
+Resizing is done using \texttt{pygame\-.trans\-form\-.scale()}\pygindex{transform!scale()|underline}\randnotiz{scale()}. In \zeiref{srcInvader0202}, the image is scaled to the specified $(width, height)$ in the unit of pixels. The result shown in \abbref{picInvader02} does not quite meet my
 expectations.
 
 I do like the size ratios now, but why does a black background suddenly appear? The reason is that the conversion using \texttt{convert()} caused the transparency information\index{Transparency|underline} to be lost. Transparency controls how \emph{see-through} a pixel is. This is achieved by storing not only the three RGB values for each
@@ -49,10 +49,10 @@ pixel, but also an opacity value. This additional piece of information is called
 I now have two options to make this transparency available again:
 \begin{hintbox}[Transparency of loaded bitmaps]
 \begin{itemize}
-	\item \texttt{pygame.Surface.convert\_alpha()}\myindex{pyg}{\texttt{Surface}!\texttt{convert\_alpha()}}: Put very simply, the alpha channel is preserved during the
+	\item \texttt{pygame.Surface.convert\_alpha()}\pygindex{Surface!convert\_alpha()}: Put very simply, the alpha channel is preserved during the
 	conversion.	If possible, this should be your method of choice.
 	
-	\item \texttt{pygame.Surface.set\_colorkey()}\myindex{pyg}{\texttt{Surface}!\texttt{set\_colorkey()}}: Here, you pass the color that Pygame should skip when drawing onto the target surface. This can lead to two disadvantages. First, transparency levels between fully visible and fully invisible cannot be represented. It would therefore not be possible to make a pixel \emph{semi-transparent}. Second, parts of the figure that have the same color as the background will also appear transparent. If our alien had a black eye in the middle, it would disappear and the alien would have a hole in the center.
+	\item \texttt{pygame.Surface.set\_colorkey()}\pygindex{Surface!set\_colorkey()}: Here, you pass the color that Pygame should skip when drawing onto the target surface. This can lead to two disadvantages. First, transparency levels between fully visible and fully invisible cannot be represented. It would therefore not be possible to make a pixel \emph{semi-transparent}. Second, parts of the figure that have the same color as the background will also appear transparent. If our alien had a black eye in the middle, it would disappear and the alien would have a hole in the center.
 \end{itemize}
 \end{hintbox}
 
@@ -214,14 +214,14 @@ And just like that, everything fits (see \abbref[vref]{picInvader04d}).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Blitting Parts of a Bitmap}
 
-Very often, only parts of a bitmap need to be blitted. For this purpose, the function \texttt{Surface.blit()}\myindex{pyg}{\texttt{Surface}!\texttt{blit()!\texttt{area}}} provides the parameter \texttt{area}\randnotiz{area}.
+Very often, only parts of a bitmap need to be blitted. For this purpose, the function \texttt{Surface.blit()}\pygindex{Surface!blit()!area} provides the parameter \texttt{area}\randnotiz{area}.
 
 \begin{wrapfigure}[16]{l}{7cm}
 	\vspace{-1.0em}
 	\myfigure{part\_of\_a\_bitmap.png}{0.5}{Tiles to build a forest}{picPartofabitmap00}
 \end{wrapfigure}As an example, I use a bitmap that consists of tiles of size $\SI{32}{px}\times\SI{32}{px}$. From these tiles, I could build a forest and lake landscape for a game. The logic of this small application is that, using the arrow keys, I jump \SI{32}{px} to the right, left, up, or down, and in this way move from tile to tile. The tile currently selected is marked with a red rectangle (\zeiref{srcBlitofparts02}) and drawn as a sub-image into the lower right corner of the window -- in this example, a tent or a small hut.
 
-Using \texttt{clamp()}\myindex{pyg}{\texttt{math}!\texttt{clamp()}}\randnotiz{clamp()} I make sure that I cannot wander outside the image.
+Using \texttt{clamp()}\pygindex{math!clamp()}\randnotiz{clamp()} I make sure that I cannot wander outside the image.
 
  In \zeiref{srcBlitofparts01}, this approach is applied as shown in \abbref[vref]{picPartofabitmap00}. The first parameter of \texttt{blit()} is the bitmap -- here referenced as \texttt{image} -- that is to be drawn. The second parameter \texttt{(512-32, 512-32)} specifies the position within the window where the image should be drawn. How do we arrive at these values? The entire image has a width of \SI{512}{px} and a height of \SI{512}{px}. Each tile has a size of $\SI{32}{px}\times\SI{32}{px}$, and therefore the upper-left corner of the tile must be positioned \SI{32}{px} away from the edges. The third parameter -- the \texttt{area} -- is a 4-tuple. Its values represent \emph{left}, \emph{top}, \emph{width}, and \emph{height}. The variables \verb+x+ and \verb+y+ are determined by movement using the arrow keys, which is a preview of later sections of this book (see \secref[vref]{secMoving}). The width and height of the tiles are fixed at \SI{32}{px}.
 
@@ -243,7 +243,7 @@ A message box is a simple way to communicate an \gls{information}, a \gls{warnin
 	\end{tikzpicture}%
 	\caption{Messageboxes}\label{picMessages}%
 \renewcommand{\figurename}{Figure}%
-\end{wrapfigure}Here, I have only shown the crucial part of the program in \srcref[vref]{messageboxes01}; the rest is not important. The call is made using \texttt{pygame.display.message\_box()}\myindex{pyg}{\texttt{display}!\texttt{message\_box()}|underline}\randnotiz{message\-\_box()}.
+\end{wrapfigure}Here, I have only shown the crucial part of the program in \srcref[vref]{messageboxes01}; the rest is not important. The call is made using \texttt{pygame.display.message\_box()}\pygindex{display!message\_box()|underline}\randnotiz{message\-\_box()}.
 
 In \zeiref{srcMessageboxes01}, an information message is displayed. The first parameter is the text of the window’s title bar. The second parameter is the message text, which can also be much longer and formatted. After that, the type of the message box is specified. There are three -- self-explanatory -- types available: \texttt{info}, \texttt{warn}, and \texttt{error}. This setting determines the icon that is shown (see \abbref[vref]{picMessages}). The call for an error message works in exactly the same way, as shown in \zeiref{srcMessageboxes03}.
 
@@ -253,7 +253,7 @@ A bit more is demonstrated with the warning call starting at \zeiref{srcMessageb
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Creating Bitmaps}\label{secCreateBitmaps}
-Bitmaps do not necessarily have to be loaded from disk using \texttt{pygame.image.load()}. It is also possible to create a bitmap at runtime using \texttt{pygame.Surface()}\myindex{pyg}{\texttt{Surface()}|underline}\randnotiz{Surface()}. Let us take another look at \secref[vref]{secLandscape}. In that section, an animated landscape was created using drawing primitives. These primitives are drawn in every frame -- for example 60 times per second. In the end, this is an enormous waste of computing time.
+Bitmaps do not necessarily have to be loaded from disk using \texttt{pygame.image.load()}. It is also possible to create a bitmap at runtime using \texttt{pygame.Surface()}\pygindex{Surface()|underline}\randnotiz{Surface()}. Let us take another look at \secref[vref]{secLandscape}. In that section, an animated landscape was created using drawing primitives. These primitives are drawn in every frame -- for example 60 times per second. In the end, this is an enormous waste of computing time.
 
 \begin{hintbox}[Creating bitmaps during runtime]
 	A much more efficient approach is to draw the graphics once onto a \texttt{Surface} object and then only blit this bitmap to the correct position. Blitting \texttt{Surface} objects is much faster than drawing the shapes again and again.
@@ -270,7 +270,7 @@ The \texttt{Sky} class follows a similar approach. In the constructor, a \texttt
 
 \lstsource{SRC/00 Introduction/03 Bitmaps/landscape.py}{18}{34}{python}{Creating Bitmaps: Class \texttt{Sky}}{landscapebitmaps02}
 
-The \texttt{Tree} class is more similar to \texttt{Meadow}. In \zeiref{srcLandscapeBit01}, the bitmap is created and its contents are drawn using drawing primitives. However, the \texttt{Surface} object is created with the additional parameter \texttt{pygame.SRCALPHA}\myindex{pyg}{\texttt{SRCALPHA}|underline}\randnotiz{SRCALPHA}. This parameter ensures that the unpainted background of the \texttt{Surface} object remains transparent. Otherwise, a black background with the size of the \texttt{Surface} object would appear around the tree; with transparency enabled, the sky, sun, and meadow can be seen through it.
+The \texttt{Tree} class is more similar to \texttt{Meadow}. In \zeiref{srcLandscapeBit01}, the bitmap is created and its contents are drawn using drawing primitives. However, the \texttt{Surface} object is created with the additional parameter \texttt{pygame.SRCALPHA}\pygindex{SRCALPHA|underline}\randnotiz{SRCALPHA}. This parameter ensures that the unpainted background of the \texttt{Surface} object remains transparent. Otherwise, a black background with the size of the \texttt{Surface} object would appear around the tree; with transparency enabled, the sky, sun, and meadow can be seen through it.
 
 \lstsource{SRC/00 Introduction/03 Bitmaps/landscape.py}{36}{46}{python}{Creating Bitmaps: Class \texttt{Tree}}{landscapebitmaps03}
 
@@ -300,44 +300,47 @@ And, for the sake of completeness, the \texttt{Sun} class as well.
 \begin{pygbox}
 	\begin{itemize}
 	\item \texttt{pygame.display.Info()}	
-	\myindex{pyg}{\texttt{display}!\texttt{Info()}}:\\	\url{https://pyga.me/docs/ref/display.html#pygame.display.Info}
+	\pygindex{display!Info()}:\\	
+	\url{https://pyga.me/docs/ref/display.html#pygame.display.Info}
 	
-	\item \texttt{pygame.display.message\_box()}    \myindex{pyg}{\texttt{display}!\texttt{message\_box()}}:\\    \url{https://pyga.me/docs/ref/display.html#pygame.display.message_box}
+	\item \texttt{pygame.display.message\_box()}   
+	\pygindex{display!message\_box()}:\\    
+	\url{https://pyga.me/docs/ref/display.html#pygame.display.message_box}
 
 	\item \texttt{pygame.image}
-	\myindex{pyg}{\texttt{image}}:\\
+	\pygindex{image}:\\
 	\url{https://pyga.me/docs/ref/image.html}
 
 	\item \texttt{pygame.image.load()}
-	\myindex{pyg}{\texttt{image}!\texttt{load()}}:\\
+	\pygindex{image!load()}:\\
 	\url{https://pyga.me/docs/ref/image.html#pygame.image.load}
 	
 	\item \texttt{pygame.Surface()}:
-	\myindex{pyg}{\texttt{Surface()}}\\
+	\pygindex{Surface()}\\
 	\url{https://pyga.me/docs/ref/surface.html}
 	
 	\item \texttt{pygame.Surface.blit()}:
-	\myindex{pyg}{\texttt{Surface}!\texttt{blit()}}\\
+	\pygindex{Surface!blit()}\\
 	\url{https://pyga.me/docs/ref/surface.html#pygame.Surface.blit}
 
 	\item \texttt{pygame.Surface.convert()}:
-	\myindex{pyg}{\texttt{Surface}!\texttt{convert()}}\\
+	\pygindex{Surface!convert()}\\
 	\url{https://pyga.me/docs/ref/surface.html#pygame.Surface.convert}
 	
 	\item \texttt{pygame.Surface.convert\_alpha()}:
-	\myindex{pyg}{\texttt{Surface}!\texttt{convert\_alpha()}}\\
+	\pygindex{Surface!convert\_alpha()}\\
 	\url{https://pyga.me/docs/ref/surface.html#pygame.Surface.convert\_alpha}
 	
 	\item \texttt{pygame.Surface.set\_colorkey()}:
-	\myindex{pyg}{\texttt{Surface}!\texttt{set\_colorkey()}}\\
+	\pygindex{Surface!set\_colorkey()}\\
 	\url{https://pyga.me/docs/ref/surface.html#pygame.Surface.set\_colorkey}
 	
 	\item \texttt{pygame.SRCALPHA}:
-	\myindex{pyg}{\texttt{SRCALPHA}}\\
+	\pygindex{SRCALPHA}\\
 	\url{https://pyga.me/docs/ref/surface.html}
 
 	\item \texttt{pygame.transform.scale()}:
-	\myindex{pyg}{\texttt{transform}!\texttt{scale()}}\\
+	\pygindex{transform!scale()}\\
 	\url{https://pyga.me/docs/ref/transform.html#pygame.transform.scale}
 	
 \end{itemize}

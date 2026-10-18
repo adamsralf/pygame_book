@@ -29,7 +29,7 @@ If you now move the mouse back and forth, press a few keys, or close the applica
 \newpage
 \lstsource{console00.txt}{1}{999}{python}{Events -- console output}{srcConsole00a} 
 
-At first, it becomes apparent that the event information is provided in the form of a dictionary. The first entry (the number with a hyphen followed by a name) can be accessed via \texttt{event.type}\myindex{pyg}{\texttt{Event}!\texttt{type}}. So that you do not have to memorize these numbers, Pygame provides corresponding constants; an overview for the keyboard can be found in \tabref[vref]{tabKey}, and for the mouse in \tabref[vref]{tabMousebutton}.
+At first, it becomes apparent that the event information is provided in the form of a dictionary. The first entry (the number with a hyphen followed by a name) can be accessed via \texttt{event.type}\pygindex{Event!type}. So that you do not have to memorize these numbers, Pygame provides corresponding constants; an overview for the keyboard can be found in \tabref[vref]{tabKey}, and for the mouse in \tabref[vref]{tabMousebutton}.
 
 The key/value pairs inside the curly braces contain the information associated with the event.  For keyboard events, this includes, for example, the representation as a Unicode character or its Unicode number. Mouse events are sensibly provided with the position and the button number. Clicking the \emph{window close} button in the upper right corner triggers several events; the last four of the list are shown here.
 
@@ -52,17 +52,17 @@ When the rightmost box reaches the value~10, it generates an overflow to the nex
 Now let us look at the whole setup in detail. In the console output above (see page~\pageref{srcConsole00a}), a unique number can be seen for each event, which can be used to identify the event. \randnotiz{custom\_type()}
 
 \begin{hintbox}
-	Pygame reserves a range of numbers for user-defined events between the constants \texttt{pygame.USEREVENT}\myindex{pyg}{\texttt{USEREVENT}|underline} and \texttt{pygame.NUMEVENTS~-~1}\myindex{pyg}{\texttt{NUMEVENTS}|underline}. 
+	Pygame reserves a range of numbers for user-defined events between the constants \texttt{pygame.USEREVENT}\pygindex{USEREVENT|underline} and \texttt{pygame.NUMEVENTS~-~1}\pygindex{NUMEVENTS|underline}. 
 \end{hintbox}
-For each user-defined event, such a unique number must be assigned. The simplest approach is to call \texttt{pygame.event.custom\_type()}. You can find corresponding examples in \zeiref{srcEvent0101} and \zeiref{srcEvent0102}.\myindex{pyg}{\texttt{event}!\texttt{custom\_type()}|underline}
+For each user-defined event, such a unique number must be assigned. The simplest approach is to call \texttt{pygame.event.custom\_type()}. You can find corresponding examples in \zeiref{srcEvent0101} and \zeiref{srcEvent0102}.\pygindex{event!custom\_type()|underline}
 
 I encapsulate these definitions in a static class for no other reason than that it allows me to make good use of the editor’s auto-completion (\zeiref{srcEvent0100}). 
 
 \lstsource{SRC/00 Introduction/12 Events/event01/config.py}{1}{99}{python}{Events (2) -- \texttt{config.py}}{srcEvent01a}
 
-The \texttt{Button} class should also be understandable for the most part. The first interesting section can be found in \zeiref{srcEvent0103}. Here, a new \texttt{pygame.event.Event}\randnotiz{Event} object\myindex{pyg}{\texttt{event}!\texttt{Event}|underline} is created. As the first parameter, the previously mentioned ID must be specified. After that, any number of additional pieces of information can be passed as event data. In our example, the button text is included so that it can later be determined which button was pressed.
+The \texttt{Button} class should also be understandable for the most part. The first interesting section can be found in \zeiref{srcEvent0103}. Here, a new \texttt{pygame.event.Event}\randnotiz{Event} object\pygindex{event!Event|underline} is created. As the first parameter, the previously mentioned ID must be specified. After that, any number of additional pieces of information can be passed as event data. In our example, the button text is included so that it can later be determined which button was pressed.
 
-Afterwards, in \zeiref{srcEvent0104}, the event is dispatched using \texttt{pygame.event.post()}\randnotiz{post()}\myindex{pyg}{\texttt{event}!\texttt{post()}|underline}.
+Afterwards, in \zeiref{srcEvent0104}, the event is dispatched using \texttt{pygame.event.post()}\randnotiz{post()}\pygindex{event!post()|underline}.
 
 \lstsource{SRC/00 Introduction/12 Events/event01/events.py}{12}{27}{python}{Events (2) -- Class \texttt{Button}}{srcEvent01b}
 
@@ -173,7 +173,7 @@ This is actually quite simple. The previous example is extended so that new part
 
 \lstsource{SRC/00 Introduction/12 Events/event02/config.py}{4}{99}{python}{Events (3) --  \texttt{config.py}}{srcEvent02a}
 
-In the constructor of \texttt{Game}, a periodic timer is set in \zeiref{srcEvent0201} using \texttt{pygame.time.set\-\_timer()}\randnotiz{set\_timer()}\myindex{pyg}{\texttt{time}!\texttt{set\_timer()}|underline}. This timer fires the corresponding event ID every~\SI{500}{ms}.
+In the constructor of \texttt{Game}, a periodic timer is set in \zeiref{srcEvent0201} using \texttt{pygame.time.set\-\_timer()}\randnotiz{set\_timer()}\pygindex{time!set\_timer()|underline}. This timer fires the corresponding event ID every~\SI{500}{ms}.
 
 \lstsource{SRC/00 Introduction/12 Events/event02/events.py}{122}{124}{python}{Events (3) -- \texttt{Timer} in the constructor of \texttt{Game}}{srcEvent02b}
 
@@ -210,8 +210,8 @@ In each frame, the event loop should follow a clear and consistent structure:
 \begin{warningbox}[Common mistakes]
 	\begin{itemize}
 		\item Failing to regularly process events can cause the application window to become unresponsive.
-		\item Forgetting to call \texttt{pygame.event.get()} or processing events only sporadically.\myindex{pyg}{\texttt{event}!\texttt{get()}}
-		\item  Using \texttt{event.wait()} in the main loop, which can block rendering and updates.\myindex{pyg}{\texttt{event}!\texttt{wait()}}
+		\item Forgetting to call \texttt{pygame.event.get()} or processing events only sporadically.\pygindex{event!get()}
+		\item  Using \texttt{event.wait()} in the main loop, which can block rendering and updates.\pygindex{event!wait()}
 	\end{itemize}
 \end{warningbox}
 
@@ -221,9 +221,9 @@ In each frame, the event loop should follow a clear and consistent structure:
 
 \begin{hintbox}[Pygame provides different ways to access events:]
 \begin{itemize}
-	\item \texttt{pygame.event.get()}\myindex{pyg}{\texttt{event}!\texttt{get()}} retrieves all pending events (standard choice for games)
-	\item \texttt{pygame.event.poll()}\myindex{pyg}{\texttt{event}!\texttt{poll()}} retrieves a single event
-	\item \texttt{pygame.event.wait()}\myindex{pyg}{\texttt{event}!\texttt{wait()}} blocks until an event occurs
+	\item \texttt{pygame.event.get()}\pygindex{event!get()} retrieves all pending events (standard choice for games)
+	\item \texttt{pygame.event.poll()}\pygindex{event!poll()} retrieves a single event
+	\item \texttt{pygame.event.wait()}\pygindex{event!wait()} blocks until an event occurs
 \end{itemize}
 \end{hintbox}
 
@@ -260,7 +260,7 @@ Use clear, descriptive keys (e.g. action, index, pos) and stick to a consistent 
 \subsubsection{Managing User-Defined Event IDs}
 
 \begin{hintbox}[Best practice]
-	Define all custom event IDs centrally, for example in a configuration file.\myindex{pyg}{\texttt{event}!\texttt{custom\_type()}}
+	Define all custom event IDs centrally, for example in a configuration file.\pygindex{event!custom\_type()}
 \end{hintbox}
 
 \lstset{firstnumber=1}
@@ -275,7 +275,7 @@ NEWPARTICLES   = pygame.event.custom_type()
 \subsubsection{Avoid Manually Set Event IDs}
 
 \begin{warningbox}[Bad practice]
-	If you use the method shown below, event IDs may be assigned multiple times when they are defined across different source files. It is therefore preferable to use \texttt{pygame.event.custom\_type()} instead.\myindex{pyg}{\texttt{USEREVENT}}
+	If you use the method shown below, event IDs may be assigned multiple times when they are defined across different source files. It is therefore preferable to use \texttt{pygame.event.custom\_type()} instead.\pygindex{USEREVENT}
 
 \end{warningbox}
 
@@ -290,7 +290,7 @@ NEWPARTICLES   = pygame.event.custom_type()
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Use \texttt{set\_timer()} Correctly!}
 \begin{hintbox}[Best practice]
-	Set timers only once (e.g. in the constructor) and disable timers when they are no longer needed\myindex{pyg}{\texttt{time}!\texttt{set\_timer()}}.
+	Set timers only once (e.g. in the constructor) and disable timers when they are no longer needed\pygindex{time!set\_timer()}.
 \end{hintbox}
 
 \lstset{firstnumber=1}
@@ -383,47 +383,47 @@ In particular, clicking on the buttons can be implemented very easily using even
 \begin{pygbox}
 \begin{itemize}
 	\item \texttt{USEREVENT}
-    \myindex{pyg}{\texttt{USEREVENT}}:\\
+    \pygindex{USEREVENT}:\\
     \url{https://pyga.me/docs/ref/event.html#pygame.event}
 
     \item \texttt{NUMEVENTS}
-    \myindex{pyg}{\texttt{NUMEVENTS}}:\\
+    \pygindex{NUMEVENTS}:\\
     \url{https://pyga.me/docs/ref/event.html#pygame.event}
 
 	\item \texttt{pygame.event.custom\_type()}:
-	\myindex{pyg}{\texttt{event}!\texttt{custom\_type()}}\\
+	\pygindex{event!custom\_type()}\\
 	\url{https://pyga.me/docs/ref/event.html#pygame.event.custom_type}
 	
 	\item \texttt{pygame.event.Event}:
-	\myindex{pyg}{\texttt{event}!\texttt{Event}}\\
+	\pygindex{event!Event}\\
 	\url{https://pyga.me/docs/ref/event.html#pygame.event.Event}
 
 	\item \texttt{pygame.event.get()}
-    \myindex{pyg}{\texttt{event}!\texttt{get()}}:\\
+    \pygindex{event!get()}:\\
     \url{https://pyga.me/docs/ref/event.html#pygame.event.get}
 
 	\item \texttt{pygame.event.poll()}
-	\myindex{pyg}{\texttt{event}!\texttt{poll()}}:\\
+	\pygindex{event!poll()}:\\
 	\url{https://pyga.me/docs/ref/event.html#pygame.event.poll}
 
 	\item \texttt{pygame.event.post()}:
-	\myindex{pyg}{\texttt{event}!\texttt{post()}}\\
+	\pygindex{event!post()}\\
 	\url{https://pyga.me/docs/ref/event.html#pygame.event.post}
 	
 	\item \texttt{pygame.event.wait()}:
-	\myindex{pyg}{\texttt{event}!\texttt{wait()}}\\
+	\pygindex{event!wait()}\\
 	\url{https://pyga.me/docs/ref/event.html#pygame.event.wait}
 
 	\item \texttt{pygame.time.set\_allowed()}:
-	\myindex{pyg}{\texttt{time}!\texttt{set\_allowed()}}\\
+	\pygindex{time!set\_allowed()}\\
 	\url{https://pyga.me/docs/ref/time.html#pygame.time.set_allowed}
 
 	\item \texttt{pygame.time.set\_timer()}:
-	\myindex{pyg}{\texttt{time}!\texttt{set\_timer()}}\\
+	\pygindex{time!set\_timer()}\\
 	\url{https://pyga.me/docs/ref/time.html#pygame.time.set_timer}
 
 	\item \texttt{pygame.WINDOWPOS\_CENTERED}:
-	\myindex{pyg}{\texttt{locals}!\texttt{WINDOWPOS\_CENTERED}}\\
+	\pygindex{locals!WINDOWPOS\_CENTERED}\\
 	\url{https://pyga.me/docs/ref/window.html#pygame.Window.position}
 \end{itemize}
 \end{pygbox}

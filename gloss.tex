@@ -10,7 +10,7 @@
 {
 	name={Pygame-ce},
 	text={Pygame-ce},
-	description={A free and open-source library written in Python for developing 2D~games and multimedia applications. Pygame-ce is based on the C library SDL and provides functions for graphics rendering, event handling, audio playback, and input control via keyboard, mouse, and game controllers. Pygame was originally created by Pete Shinners in the year~2000 and for many years was the standard framework for Python-based game development. However, since the original project did not receive updates	for a long period of time, a fork called Pygame Community Edition (pygame-ce) was created in 2023. This version is actively developed by a community in order to support modern Python versions, improved graphics features (for example, alpha blending and better transformations),	and higher performance}
+	description={A free and open-source library written in Python for developing 2D~games and multimedia applications. Pygame-ce is based on the C library SDL and provides functions for graphics rendering, event handling, audio playback, and input control via keyboard, mouse, and game controllers. Pygame was originally created by Pete Shinners in the year~2000 and for many years was the standard framework for Python-based game development. However, since the original project did not receive updates	for a long period of time, a fork called Pygame Community Edition (pygame-ce) was created in 2023. This version is actively developed by a community in order to support modern Python versions, improved graphics features (for example, alpha blending and better transformations), and higher performance}
 }
 
 \newglossaryentry{constant}
@@ -52,7 +52,6 @@
 	text={namespace},
 	description={A namespace is a structural area in which identifiers such as variable names, function names, or class names are defined. Namespaces prevent name collisions by allowing a clear and unique mapping of names to objects.	In Python, there are, among others, local, global, and module-level namespaces. Example: A variable in a module can be accessed using \texttt{modulename.variable}}
 }
-
 
 \newdualentry{os}
 	{OS}
@@ -371,6 +370,23 @@
 	description={Refers to the process of creating a concrete, displayable image from abstract data (e.\,g.\ text, vectors, sprites, or 3D models). In computer graphics and in frameworks such as Pygame, rendering typically means that an object computes its visual representation (a \emph{Surface} or \emph{Bitmap}) and prepares it for display on the screen. Rendering is often performed only when the content or state of an object has changed, in order to save computational resources}
 }
 
+\newglossaryentry{softwareRendering}{
+	name={Software Rendering},
+	text={software rendering},
+	description={
+		A technique where the CPU is responsible for drawing graphics into memory. In Pygame-ce, this usually means drawing onto \texttt{Surface} objects using operations such as \texttt{blit()} or \texttt{pygame.draw()}. The finished image is then displayed using \texttt{flip()}. Software rendering is easy to use and works well for many 2D games, but can be slower than
+		hardware rendering for complex graphics.
+	}
+}
+
+\newglossaryentry{hardwareRendering}{
+	name={Hardware Rendering},
+	text={hardware rendering},
+	description={
+		A technique where the GPU (Graphics Processing Unit) handles most of the drawing work instead of the CPU. 	In Pygame-ce, hardware-accelerated rendering can be achieved using \texttt{pygame.\_sdl2.video.Renderer} and \texttt{Texture} objects. This approach is especially useful when drawing many sprites, scaling images, or applying graphical		effects. Hardware rendering can provide better performance, but requires a different approach
+		to drawing graphics than traditional \texttt{Surface}-based rendering.
+	}
+}
 \newdualentry{oo} % label
 	{OO}            % abbreviation
 	{Object Oriented}  % long form
@@ -706,7 +722,7 @@
 
 \newglossaryentry{broadcastsystem}{
 	name={Broadcast System},
-	name={broadcast system},
+	text={broadcast system},
 	description={An event distribution mechanism in which incoming events are forwarded to all interested components. In games, this allows multiple systems to react to the same event. Unlike a state stack, where only the active state processes user input, a broadcast system delivers events to every registered listener}
 }
 

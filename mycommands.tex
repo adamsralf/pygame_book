@@ -26,6 +26,7 @@
 \newcommand{\NoLinkColor}{\hypersetup{allcolors=.}}
 
 \newcommand{\myindex}[2]{\setindex{#1}\index{#2}\setindex{main}}
+\newcommand{\pygindex}[1]{\setindex{pyg}\index{#1}\setindex{main}}
 
 \definecolor{randyellowback}{RGB}{255,249,230}  % sehr helles Pastellgelb
 \definecolor{randyellowtext}{RGB}{110,90,40}    % warmes Dunkelgelb/Braun
@@ -235,4 +236,33 @@
 %	tabsize=4,
 %	frame=lines,
 %	framesep=2mm
+%}
+
+\newcommand{\colorentry}[4]{%
+	\noindent
+	\pdftooltip{%
+	\makebox[10mm][l]{%
+		\begingroup
+		\setlength{\fboxsep}{0pt}%
+		\colorbox[RGB]{#2,#3,#4}{%
+			\rule{0pt}{3.5mm}\rule{9.0mm}{0pt}%
+		}%
+		\endgroup
+	}%
+	{\scriptsize #1}
+	}{RGB: (#2, #3, #4)}%
+	\par\vspace{-2mm}%
+}
+
+%\newcommand{\colorentry}[4]{%
+%	\noindent
+%	\pdftooltip{%
+%	\makebox[8mm][l]{%
+%		\colorbox[RGB]{#2,#3,#4}{%
+%			\rule{0pt}{2.5mm}\rule{6mm}{0pt}%
+%		}%
+%	}%
+%	{\scriptsize { #1}}%\par
+%	}{RGB: (#2, #3, #4)}%
+%	\par\vspace{1mm}%
 %}

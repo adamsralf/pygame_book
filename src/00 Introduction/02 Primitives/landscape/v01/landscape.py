@@ -4,10 +4,10 @@ import pygame
 def main():
     size = (600, 400)
     pygame.init()
-    window = pygame.Window( size=size, title = "A Peaceful Day")         
+    window = pygame.Window(size=size, title = "A Peaceful Day")         
+    screen = window.get_surface()   # required! §\label{srcLandscape0101}§
     clock = pygame.time.Clock()
-    horizon = 250
-
+    horizont = 250
 
     running = True
     while running:

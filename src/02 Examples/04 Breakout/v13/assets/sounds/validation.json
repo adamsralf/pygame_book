@@ -1,0 +1,58 @@
+{
+  "play": {
+    "seconds": 12.8,
+    "frames": 564480,
+    "peak": 0.7783,
+    "boundary_jump": 0.001825,
+    "format": "VORBIS"
+  },
+  "pause": {
+    "seconds": 26.6667,
+    "frames": 1176000,
+    "peak": 0.7915,
+    "boundary_jump": 0.003835,
+    "format": "VORBIS"
+  },
+  "help": {
+    "seconds": 15.0001,
+    "frames": 661504,
+    "peak": 0.7835,
+    "boundary_jump": 0.002441,
+    "format": "VORBIS"
+  },
+  "gameover": {
+    "seconds": 30.0002,
+    "frames": 1323008,
+    "peak": 0.7897,
+    "boundary_jump": 0.004346,
+    "format": "VORBIS"
+  },
+  "levelup": {
+    "seconds": 2.8,
+    "frames": 123480,
+    "peak": 0.7851,
+    "boundary_jump": 0.006601,
+    "format": "VORBIS"
+  },
+  "start": {
+    "seconds": 16.0,
+    "unchanged": true
+  },
+  "wall": {
+    "seconds": 0.08501133786848072,
+    "unchanged": true
+  },
+  "paddle": {
+    "seconds": 0.13,
+    "unchanged": true
+  },
+  "brick": {
+    "seconds": 0.19,
+    "unchanged": true
+  },
+  "balllost": {
+    "seconds": 0.72,
+    "peak": 0.7034380435943604,
+    "format": "VORBIS"
+  }
+}

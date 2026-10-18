@@ -48,7 +48,7 @@ The \texttt{Background} class is a subclass of \texttt{Sprite}. It is only loade
 \lstsource{SRC/02 Examples/02 Bubbles/v01/bubbles.py}{7}{13}{python}{Bubbles (\reqref{reqStandard}.\ref{reqStandardHintergrund}) -- \texttt{Background
 }}{srcBubbles01c}
 
-In the \texttt{Game} class, the usual Pygame suspects are initialized or created in \texttt{\_\_init\_\_()}: \texttt{init()}\myindex{pyg}{\texttt{init()}}, \texttt{Window()}\myindex{pyg}{\texttt{Window}}, and \texttt{clock()}\myindex{pyg}{\texttt{time}!\texttt{Clock}}. The flag \texttt{running} for the main game loop is also initialized. The methods \texttt{run()}, \texttt{watch\_for\_events()}, \texttt{up\-date()}, and \texttt{draw()} contain only basic functionality and therefore do not need to be explained further at this point.
+In the \texttt{Game} class, the usual Pygame suspects are initialized or created in \texttt{\_\_init\_\_()}: \texttt{init()}\pygindex{init()}, \texttt{Window()}\pygindex{Window}, and \texttt{clock()}\pygindex{time!Clock}. The flag \texttt{running} for the main game loop is also initialized. The methods \texttt{run()}, \texttt{watch\_for\_events()}, \texttt{up\-date()}, and \texttt{draw()} contain only basic functionality and therefore do not need to be explained further at this point.
 
 \lstsource{SRC/02 Examples/02 Bubbles/v01/bubbles.py}{16}{52}{python}{Bubbles (\reqref{reqStandard}) -- \texttt{Game}}{srcBubbles01d}  
 
@@ -81,7 +81,7 @@ However, these methods already define the overall flow of the game. All further 
 \end{wrapfigure}%
 For the bubble, we use the already transparent graphic from \abbref{picBlase1}. The random position still needs to be restricted. The aquarium does not fill the entire screen (see \abbref[vref]{picAquarium01}); instead, it sits inside something like a TV frame. So we have to define a playing area (\emph{playground}). The bubbles should only appear inside this area.
 
-The playing area is a rectangle\index{rectangle}\index{self.rect} with an offset from the left and top edges of the screen -- \texttt{left}\myindex{pyg}{\texttt{Rect}!\texttt{left}} and \texttt{top}\myindex{pyg}{\texttt{Rect}!\texttt{top}} -- and a width (\texttt{width}\myindex{pyg}{\texttt{Rect}!\texttt{width}}) and height (\texttt{height}\myindex{pyg}{\texttt{Rect}!\texttt{height}}). The corresponding values are defined in \zeiref{srcBubble0203}. The distance to the border of the playing area and the minimum distance between bubbles are defined in \zeiref{srcBubble0202} as \SI{10}{px}, in accordance with \reqref{reqBlasenErscheinen}.\ref{reqBlasenErscheinenAbstand}. The initial radius\index{self.radius} -- and therefore the minimum radius -- is set to \SI{15}{px} in \zeiref{srcBubble0201} because of \reqref{reqBlasenErscheinen}.\ref{reqBlasenErscheinenRadius}. While playing, I noticed that smaller initial radii are simply too hard to see.
+The playing area is a rectangle\index{rectangle}\index{self.rect} with an offset from the left and top edges of the screen -- \texttt{left}\pygindex{Rect!left} and \texttt{top}\pygindex{Rect!top} -- and a width (\texttt{width}\pygindex{Rect!width}) and height (\texttt{height}\pygindex{Rect!height}). The corresponding values are defined in \zeiref{srcBubble0203}. The distance to the border of the playing area and the minimum distance between bubbles are defined in \zeiref{srcBubble0202} as \SI{10}{px}, in accordance with \reqref{reqBlasenErscheinen}.\ref{reqBlasenErscheinenAbstand}. The initial radius\index{self.radius} -- and therefore the minimum radius -- is set to \SI{15}{px} in \zeiref{srcBubble0201} because of \reqref{reqBlasenErscheinen}.\ref{reqBlasenErscheinenRadius}. While playing, I noticed that smaller initial radii are simply too hard to see.
 
 \lstsource{SRC/02 Examples/02 Bubbles/v02/config.py}{14}{16}{python}{Bubbles (\reqref{reqBlasenErscheinen}) -- additions in \texttt{config.py}}{srcBubbles02a}
 
@@ -108,7 +108,7 @@ The basic idea behind \texttt{spawn\_bubble()} is to keep guessing a position fo
 
 For this purpose, the radius is temporarily increased (\zeiref{srcBubble0207}) and then reduced back to its original value after the collision check (\zeiref{srcBubble0208}). 
 
-This is an example showing that a method reference is passed to \texttt{pygame.sprite\-.sprite\-collide()}\myindex{pyg}{\texttt{sprite}!\texttt{spritecollide()}}\randnotiz{sprite\-collide()} -- in this case \texttt{pygame.sprite.collide\_circle()}\myindex{pyg}{\texttt{sprite}!\texttt{collide\_circle()}}\randnotiz{collide\_\-circle()} -- and that the usual rectangle-based collision check is therefore not used.
+This is an example showing that a method reference is passed to \texttt{pygame.sprite\-.sprite\-collide()}\pygindex{sprite!spritecollide()}\randnotiz{sprite\-collide()} -- in this case \texttt{pygame.sprite.collide\_circle()}\pygindex{sprite!collide\_circle()}\randnotiz{collide\_\-circle()} -- and that the usual rectangle-based collision check is therefore not used.
 
 \lstsource{SRC/02 Examples/02 Bubbles/v02/bubbles.py}{79}{89}{python}{Bubbles (\reqref{reqBlasenErscheinen}) -- \texttt{spawn\_bubble()} of \texttt{Game}}{srcBubbles02f}  
 
@@ -150,7 +150,7 @@ The rest of the program remains unchanged.
 \end{enumerate}
 \er
 
-The purpose of \reqref{reqBlasenWachstum}.\ref{reqBlasenWachstumContainer} is to save computing time. During the game, bubbles repeatedly start with a certain radius and then grow. Scaling the bitmap to the required size every single time would waste processing power -- after all, the same bubble appears multiple times with identical radii. For this reason, it makes sense to scale the bubble once to all possible radii and store the results in a dictionary. The key used is the respective radius (see \zeiref{srcBubble0403}).\myindex{pyg}{\texttt{transform}!\texttt{scale()}}\randnotiz{scale()}
+The purpose of \reqref{reqBlasenWachstum}.\ref{reqBlasenWachstumContainer} is to save computing time. During the game, bubbles repeatedly start with a certain radius and then grow. Scaling the bitmap to the required size every single time would waste processing power -- after all, the same bubble appears multiple times with identical radii. For this reason, it makes sense to scale the bubble once to all possible radii and store the results in a dictionary. The key used is the respective radius (see \zeiref{srcBubble0403}).\pygindex{transform!scale()}\randnotiz{scale()}
 
 The \texttt{get()} method then returns the appropriately scaled and ready-to-use image for a given radius. Before that, lines~\ref{srcBubble0404} and~\ref{srcBubble0405} check whether the radius lies within the valid range. If the radius is too large, the maximum value is used; if it is too small, the minimum value is applied instead.
 
@@ -249,7 +249,7 @@ The value~$d$ represents the distance in pixels between the center of the circle
 
 With the help of this method, the solution is no longer a problem. The variable \texttt{is\_over} is a flag that keeps track of whether the mouse coordinates are inside a bubble or not. The normal case is that the mouse is not inside any bubble, so the variable is initialized with \false.
 
-After that, the current mouse position is obtained using \texttt{pygame.mouse.\-get\-\_pos()}\myindex{pyg}{\texttt{mouse}!\texttt{get\_pos()}}. This mouse position is passed to the \texttt{Bubble.collidepoint()} method in \zeiref{srcBubble0502}. If a bubble is found that collides with the mouse, the flag is set to \true\ and the loop is terminated using \texttt{break}. This saves some processing time, since not all remaining bubbles have to be checked. Depending on the flag, the mouse cursor is then set accordingly.\myindex{pyg}{\texttt{SYSTEM\_CURSOR\_HAND}}\myindex{pyg}{\texttt{SYSTEM\_CURSOR\_CROSSHAIR}}
+After that, the current mouse position is obtained using \texttt{pygame.mouse.\-get\-\_pos()}\pygindex{mouse!get\_pos()}. This mouse position is passed to the \texttt{Bubble.collidepoint()} method in \zeiref{srcBubble0502}. If a bubble is found that collides with the mouse, the flag is set to \true\ and the loop is terminated using \texttt{break}. This saves some processing time, since not all remaining bubbles have to be checked. Depending on the flag, the mouse cursor is then set accordingly.\pygindex{SYSTEM\_CURSOR\_HAND}\pygindex{SYSTEM\_CURSOR\_CROSSHAIR}
 
 \lstsource{SRC/02 Examples/02 Bubbles/v05/bubbles.py}{124}{134}{python}{Bubbles (\reqref{reqMauscursor}) -- \texttt{Game.set\_mousecursor()}}{srcbubbles05b}  
 
@@ -269,7 +269,7 @@ Try running the program. Place the mouse in a lower-left corner outside a bubble
 	When a left mouse click occurs inside a bubble, the bubble should burst.
 \er
 
-Most of the work required to implement this requirement has already been done with the implementation of the \texttt{Bubble.collidepoint()} method. We only need to use this method in a clever way -- in fact, only a few remaining steps are necessary. In \texttt{watch\_for\_events()}, the left mouse click is detected first (\zeiref{srcBubble0601})\myindex{pyg}{\texttt{MOUSEBUTTONDOWN}}\myindex{pyg}{\texttt{mouse}!\texttt{get\_pos()}}\randnotiz{MOUSEBUTTONDOWN get\_pos()} and the current mouse position is passed to the newly created \texttt{sting()} method (\zeiref{srcBubble0602}).
+Most of the work required to implement this requirement has already been done with the implementation of the \texttt{Bubble.collidepoint()} method. We only need to use this method in a clever way -- in fact, only a few remaining steps are necessary. In \texttt{watch\_for\_events()}, the left mouse click is detected first (\zeiref{srcBubble0601})\pygindex{MOUSEBUTTONDOWN}\pygindex{mouse!get\_pos()}\randnotiz{MOUSEBUTTONDOWN get\_pos()} and the current mouse position is passed to the newly created \texttt{sting()} method (\zeiref{srcBubble0602}).
 
 \begin{hintbox}[\texttt{watch\_\-for\_\-events()} as a dispatcher]
 	As a general rule, implement as little logic as possible in \texttt{watch\_\-for\_\-events()}. This method acts as a dispatcher; the actual processing should always be delegated to separate methods.
@@ -277,7 +277,7 @@ Most of the work required to implement this requirement has already been done wi
 
 \lstsource{SRC/02 Examples/02 Bubbles/v06/bubbles.py}{85}{94}{python}{Bubbles (\reqref{reqBlasenzerplatzen}) -- \texttt{Game.watch\_for\_event()}}{srcbubbles06a}  
 
-The \texttt{sting()} method is now very simple. All \texttt{Bubble} objects are iterated over and checked to see whether the mouse position lies within their radius (\zeiref{srcBubble0603}). If the answer is \emph{yes}, the corresponding object is removed from the sprite group using \texttt{kill()}\myindex{pyg}{\texttt{sprite}!\texttt{Sprite}!\texttt{kill()}}\randnotiz{kill()}.
+The \texttt{sting()} method is now very simple. All \texttt{Bubble} objects are iterated over and checked to see whether the mouse position lies within their radius (\zeiref{srcBubble0603}). If the answer is \emph{yes}, the corresponding object is removed from the sprite group using \texttt{kill()}\pygindex{sprite!Sprite!kill()}\randnotiz{kill()}.
 
 \lstsource{SRC/02 Examples/02 Bubbles/v06/bubbles.py}{138}{141}{python}{Bubbles (\reqref{reqBlasenzerplatzen}) -- \texttt{Game.sting()}}{srcbubbles06b}  
 
@@ -313,15 +313,15 @@ The \texttt{sting()} and \texttt{update()} methods in \texttt{Game} have to be a
 
 \lstsource{SRC/02 Examples/02 Bubbles/v07/bubbles.py}{122}{125}{python}{Bubbles (\reqref{reqPunktestand}.\ref{reqPunktestandRadius}) -- \texttt{Game.update()}}{srcbubbles07d}  
 
-This leaves \reqref{reqPunktestand}.\ref{reqPunktestandAnzeige}. Similar to the playing area, I want to define the dimensions of the lower section as an output box in \texttt{config.py}.\randnotiz{Rect}\myindex{pyg}{\texttt{Rect}}
+This leaves \reqref{reqPunktestand}.\ref{reqPunktestandAnzeige}. Similar to the playing area, I want to define the dimensions of the lower section as an output box in \texttt{config.py}.\randnotiz{Rect}\pygindex{Rect}
 
 \lstsource{SRC/02 Examples/02 Bubbles/v07/bubbles.py}{19}{19}{python}{Bubbles (\reqref{reqPunktestand}.\ref{reqPunktestandAnzeige}) -- extension of \texttt{config.py}}{srcbubbles07e}  
 
-For displaying the score itself, I once again create a small class that encapsulates this task: \texttt{Points}. In the constructor, a \texttt{Font}\myindex{pyg}{\texttt{font}!\texttt{Font}}\randnotiz{Font} object is created, which is then used in \texttt{update()} to render the score. The position of the text output is determined from the values defined in \texttt{config.py}. The rest is handled for me by the \texttt{Sprite} class.
+For displaying the score itself, I once again create a small class that encapsulates this task: \texttt{Points}. In the constructor, a \texttt{Font}\pygindex{font!Font}\randnotiz{Font} object is created, which is then used in \texttt{update()} to render the score. The position of the text output is determined from the values defined in \texttt{config.py}. The rest is handled for me by the \texttt{Sprite} class.
 
 \lstsource{SRC/02 Examples/02 Bubbles/v07/bubbles.py}{79}{90}{python}{Bubbles (\reqref{reqPunktestand}.\ref{reqPunktestandAnzeige}) -- Class \texttt{Points}}{srcbubbles07f}  
 
-A few extensions remain in \texttt{Game}. In the constructor, the \texttt{Points} object is added to the \texttt{Group} object\myindex{pyg}{\texttt{sprite}!\texttt{Group}}.
+A few extensions remain in \texttt{Game}. In the constructor, the \texttt{Points} object is added to the \texttt{Group} object\pygindex{sprite!Group}.
 
 \lstsource{SRC/02 Examples/02 Bubbles/v07/bubbles.py}{102}{104}{python}{Bubbles (\reqref{reqPunktestand}.\ref{reqPunktestandAnzeige}) -- extension of the \texttt{Game} constructor}{srcbubbles07g}  
 
@@ -350,7 +350,7 @@ The basic structure of our game makes it fairly easy to implement this requireme
 
 \lstsource{SRC/02 Examples/02 Bubbles/v08/bubbles.py}{125}{131}{python}{Bubbles (\reqref{reqSpielende}) -- extension of \texttt{Game.update()}}{srcbubbles08a}
 
-In the new method \texttt{check\_\-bubble\-coll\-ision()}, it is checked whether bubbles touch each other or whether a bubble collides with the edge. This method is simply used as a decision maker (\zeiref{srcBubble0801}) to determine whether the game should end. If the answer is \emph{yes}, the flag of the main game loop is set; if the answer is \emph{no}, the remaining game logic is executed as usual. The two nested \forSchleife s starting at \zeiref{srcBubble0802} iterate over the bubble group twice and avoid two problems:\myindex{pyg}{\texttt{sprite}!\texttt{Group}!\texttt{sprites()}}\randnotiz{sprites()}
+In the new method \texttt{check\_\-bubble\-coll\-ision()}, it is checked whether bubbles touch each other or whether a bubble collides with the edge. This method is simply used as a decision maker (\zeiref{srcBubble0801}) to determine whether the game should end. If the answer is \emph{yes}, the flag of the main game loop is set; if the answer is \emph{no}, the remaining game logic is executed as usual. The two nested \forSchleife s starting at \zeiref{srcBubble0802} iterate over the bubble group twice and avoid two problems:\pygindex{sprite!Group!sprites()}\randnotiz{sprites()}
 
 \begin{itemize}
 	\item A bubble must not be compared with itself. Therefore, the index of the inner loop always starts one position after the current index of the outer loop, and the outer loop index ends before the last element of the bubble group.
@@ -361,7 +361,7 @@ In the new method \texttt{check\_\-bubble\-coll\-ision()}, it is checked whether
 \myezweihbild{aquarium05}{0.65}{Bubbles -- collision with the edge}{picAquarium05}{aquarium06}{0.70}{Bubbles -- bubble collision}{picAquarium06}
 
 
-In \zeiref{srcBubble0803}, \reqref{reqSpielende}.\ref{reqSpielendeBlase} is checked. For this purpose, circle-based collision detection using \texttt{collide\_circle()} is applied. In \zeiref{srcBubble0804} and \zeiref{srcBubble0805}, \reqref{reqSpielende}.\ref{reqSpielendeRand} is implemented. This makes use of the fact that the playing area is a rectangle and that the sprite itself also has a rectangular shape. The method \texttt{pygame.Rect.\-con\-tains()}\myindex{pyg}{\texttt{Rect}!\texttt{contains()}}\randnotiz{contains()} checks whether one rectangle is completely contained within another. If this is not the case -- meaning the bubble leaves the playing area -- a collision is detected.
+In \zeiref{srcBubble0803}, \reqref{reqSpielende}.\ref{reqSpielendeBlase} is checked. For this purpose, circle-based collision detection using \texttt{collide\_circle()} is applied. In \zeiref{srcBubble0804} and \zeiref{srcBubble0805}, \reqref{reqSpielende}.\ref{reqSpielendeRand} is implemented. This makes use of the fact that the playing area is a rectangle and that the sprite itself also has a rectangular shape. The method \texttt{pygame.Rect.\-con\-tains()}\pygindex{Rect!contains()}\randnotiz{contains()} checks whether one rectangle is completely contained within another. If this is not the case -- meaning the bubble leaves the playing area -- a collision is detected.
 
 \lstsource{SRC/02 Examples/02 Bubbles/v08/bubbles.py}{170}{182}{python}{Bubbles (\reqref{reqSpielende}) -- \texttt{Game.check\_bubblecollision()}}{srcbubbles08b}  
 
@@ -536,7 +536,7 @@ But what if the two bubbles do not touch each other? In that case, there is no n
 
 \lstsource{SRC/02 Examples/02 Bubbles/v10/bubbles.py}{183}{199}{python}{Bubbles (\reqref{reqKollisionanzeigen}) -- \texttt{Game.check\_bubblecollision()}}{srcbubbles10f}  
 
-To give me enough time to see the collision, I want to wait for~\SI{2}{s} at the end. The method \texttt{pygame.time.wait()}\myindex{pyg}{\texttt{time}!\texttt{wait()}}\randnotiz{wait()} pauses the application for the specified duration (\zeiref{srcBubble1007}).
+To give me enough time to see the collision, I want to wait for~\SI{2}{s} at the end. The method \texttt{pygame.time.wait()}\pygindex{time!wait()}\randnotiz{wait()} pauses the application for the specified duration (\zeiref{srcBubble1007}).
 
 \lstsource{SRC/02 Examples/02 Bubbles/v10/bubbles.py}{201}{213}{python}{Bubbles (\reqref{reqKollisionanzeigen}) -- waiting time in \texttt{run()}}{srcbubbles10g}
 
@@ -638,11 +638,11 @@ Finally, a small sound accompaniment is added. Similar to the bubble sprites, I 
 
 \lstsource{SRC/02 Examples/02 Bubbles/v13/bubbles.py}{109}{111}{python}{Bubbles (\reqref{reqSound}) -- \texttt{SOUND\_CONTAINER}}{srcbubbles13a}  
 
-In the constructor of \texttt{Game}, the dictionary is populated with objects of the \texttt{Sound} class. The class used for sound effects is \texttt{pygame.mixer.Sound}\myindex{pyg}{\texttt{mixer}!\texttt{Sound}}\randnotiz{Sound} (see \zeiref{srcBubble1302} ff.).
+In the constructor of \texttt{Game}, the dictionary is populated with objects of the \texttt{Sound} class. The class used for sound effects is \texttt{pygame.mixer.Sound}\pygindex{mixer!Sound}\randnotiz{Sound} (see \zeiref{srcBubble1302} ff.).
 
 \lstsource{SRC/02 Examples/02 Bubbles/v13/bubbles.py}{113}{122}{python}{Bubbles (\reqref{reqSound}) -- populating \texttt{SOUND\_CONTAINER}}{srcbubbles13b}
 
-Now the sounds only need to be played at the appropriate places using \texttt{pygame.mixer\-.Sound\-.play()}\myindex{pyg}{\texttt{mixer}!\texttt{Sound}!\texttt{play()}}\randnotiz{play()}. First, the sound that is played when a new bubble appears: in \texttt{spawn\_\-bubb\-le()} in \zeiref{srcBubble1303}.
+Now the sounds only need to be played at the appropriate places using \texttt{pygame.mixer\-.Sound\-.play()}\pygindex{mixer!Sound!play()}\randnotiz{play()}. First, the sound that is played when a new bubble appears: in \texttt{spawn\_\-bubb\-le()} in \zeiref{srcBubble1303}.
 
 \lstsource{SRC/02 Examples/02 Bubbles/v13/bubbles.py}{198}{201}{python}{Bubbles  (\reqref{reqSound}.\ref{reqSoundErscheinen}) -- \texttt{spawn\_bubble()}}{srcbubbles13c}
 
@@ -662,7 +662,7 @@ And that’s it :-)
 	\url{https://github.com/adamsralf/pygame_book/tree/main/src/02%20Examples/02%20Bubbles/v14}
 \end{diskbox}
 
-Pause, restart, and game over are currently still implemented rather sloppily; for example, the end of the game is delayed by playing a sound instead of using a properly programmed delay. In one version (see \srcref[vref]{srcbubbles10g}), I even froze the entire program for several seconds using \texttt{pygame.time.wait()}\myindex{pyg}{\texttt{time}!\texttt{wait()}} -- brrr :-(
+Pause, restart, and game over are currently still implemented rather sloppily; for example, the end of the game is delayed by playing a sound instead of using a properly programmed delay. In one version (see \srcref[vref]{srcbubbles10g}), I even froze the entire program for several seconds using \texttt{pygame.time.wait()}\pygindex{time!wait()} -- brrr :-(
 
 It is far more advantageous to control the game using states. What exactly this means should become clear when looking at the solution.
 

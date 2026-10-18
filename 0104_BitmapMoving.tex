@@ -7,7 +7,7 @@
 \end{diskbox}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Class \texttt{Rect}/\texttt{FRect}}\label{secRect}
- In the summary of the previous chapter, we noted that when displaying bitmaps we need the \emph{upper-left corner} as the position value, and we need the \emph{height} and \emph{width}, for example for distance calculations. These values can be conveniently encoded in a rectangle. For this purpose, Pygame provides the classes \texttt{pygame.rect.Rect}\myindex{pyg}{\texttt{rect}!\texttt{Rect}|underline}\randnotiz{Rect} (integers only) and \texttt{pygame.rect.FRect}\myindex{pyg}{\texttt{rect}!\texttt{FRect}|underline}\randnotiz{FRect} (floating-point numbers). In \abbref[vref]{picRect01}, you can find what I~consider to be the most important attributes of this class.
+ In the summary of the previous chapter, we noted that when displaying bitmaps we need the \emph{upper-left corner} as the position value, and we need the \emph{height} and \emph{width}, for example for distance calculations. These values can be conveniently encoded in a rectangle. For this purpose, Pygame provides the classes \texttt{pygame.rect.Rect}\pygindex{rect!Rect|underline}\randnotiz{Rect} (integers only) and \texttt{pygame.rect.FRect}\pygindex{rect!FRect|underline}\randnotiz{FRect} (floating-point numbers). In \abbref[vref]{picRect01}, you can find what I~consider to be the most important attributes of this class.
 
 \begin{figure}[H]
 \begin{tikzpicture}
@@ -94,31 +94,31 @@
 \caption{Elements of a \texttt{Rect}-/\texttt{FRect}-Object}\label{picRect01}
 \end{figure}
 
-\myindex{pyg}{\texttt{rect}!\texttt{Rect}!\texttt{centerx}}%
-\myindex{pyg}{\texttt{rect}!\texttt{Rect}!\texttt{right}}%
-\myindex{pyg}{\texttt{rect}!\texttt{Rect}!\texttt{left}|underline}%
-\myindex{pyg}{\texttt{rect}!\texttt{Rect}!\texttt{centery}}%
-\myindex{pyg}{\texttt{rect}!\texttt{Rect}!\texttt{bottom}}%
-\myindex{pyg}{\texttt{rect}!\texttt{Rect}!\texttt{top}|underline}%
-\myindex{pyg}{\texttt{rect}!\texttt{Rect}!\texttt{topleft}}%
-\myindex{pyg}{\texttt{rect}!\texttt{Rect}!\texttt{bottomright}}%
-\myindex{pyg}{\texttt{rect}!\texttt{Rect}!\texttt{center}|underline}%
-\myindex{pyg}{\texttt{rect}!\texttt{Rect}!\texttt{width}|underline}%
-\myindex{pyg}{\texttt{rect}!\texttt{Rect}!\texttt{height}|underline}%
-\myindex{pyg}{\texttt{rect}!\texttt{Rect}!\texttt{size}|underline}%
+\pygindex{rect!Rect!centerx}%
+\pygindex{rect!Rect!right}%
+\pygindex{rect!Rect!left|underline}%
+\pygindex{rect!Rect!centery}%
+\pygindex{rect!Rect!bottom}%
+\pygindex{rect!Rect!top|underline}%
+\pygindex{rect!Rect!topleft}%
+\pygindex{rect!Rect!bottomright}%
+\pygindex{rect!Rect!center|underline}%
+\pygindex{rect!Rect!width|underline}%
+\pygindex{rect!Rect!height|underline}%
+\pygindex{rect!Rect!size|underline}%
 
-\myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{centerx}}%
-\myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{right}}%
-\myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{left}|underline}%
-\myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{centery}}%
-\myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{bottom}}%
-\myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{top}|underline}%
-\myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{topleft}}%
-\myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{bottomright}}%
-\myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{center}|underline}%
-\myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{width}|underline}%
-\myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{height}|underline}%
-\myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{size}|underline}%
+\pygindex{rect!FRect!centerx}%
+\pygindex{rect!FRect!right}%
+\pygindex{rect!FRect!left|underline}%
+\pygindex{rect!FRect!centery}%
+\pygindex{rect!FRect!bottom}%
+\pygindex{rect!FRect!top|underline}%
+\pygindex{rect!FRect!topleft}%
+\pygindex{rect!FRect!bottomright}%
+\pygindex{rect!FRect!center|underline}%
+\pygindex{rect!FRect!width|underline}%
+\pygindex{rect!FRect!height|underline}%
+\pygindex{rect!FRect!size|underline}%
 
 In the figure, line segments are shown in normal font, while points are shown in \textit{italic font}. The segments are one-dimensional, and the points are two-dimensional $(x, y)$. The coordinate~$x$ represents the horizontal distance from the origin of the coordinate system or the upper-left corner of the rectangle, and~$y$ represents the vertical distance. The meaning of the individual labels should be self-explanatory.
 
@@ -134,7 +134,7 @@ As a result, the screen information can be accessed conveniently and without per
 
 \lstsource{SRC/00 Introduction/04 Moving/invader05.py}{6}{36}{python}{Moving Bitmaps, Version 1.0}{srcInvader05}
 
-For \texttt{Surface} objects, we can conveniently create a \texttt{Rect} object using \texttt{pygame.Surface\-.get\-\_rect()}\myindex{pyg}{\texttt{Surface}!\texttt{get\_rect()}}\randnotiz{get\_rect()} (\zeiref{srcInvader0501}). Positioning can now be handled much more easily via the attributes. For example, the center no longer needs to be part of a calculation; instead, I~can directly set the horizontal center to half the window width (\zeiref{srcInvader0502}). Likewise, the vertical coordinate no longer has to be considered from the top edge; instead, I~can specify the distance of the bottom edge from the screen edge in a much more intuitive way (\zeiref{srcInvader0503}). And as a final bonus, the \texttt{Rect} object can even be passed directly as a parameter to the \texttt{blit()} function\randnotiz{blit()}\myindex{pyg}{\texttt{Surface}!\texttt{blit()}} (\zeiref{srcInvader0504}).
+For \texttt{Surface} objects, we can conveniently create a \texttt{Rect} object using \texttt{pygame.Surface\-.get\-\_rect()}\pygindex{Surface!get\_rect()}\randnotiz{get\_rect()} (\zeiref{srcInvader0501}). Positioning can now be handled much more easily via the attributes. For example, the center no longer needs to be part of a calculation; instead, I~can directly set the horizontal center to half the window width (\zeiref{srcInvader0502}). Likewise, the vertical coordinate no longer has to be considered from the top edge; instead, I~can specify the distance of the bottom edge from the screen edge in a much more intuitive way (\zeiref{srcInvader0503}). And as a final bonus, the \texttt{Rect} object can even be passed directly as a parameter to the \texttt{blit()} function\randnotiz{blit()}\pygindex{Surface!blit()} (\zeiref{srcInvader0504}).
 
 \myebild{invader05.png}{0.8}{Moving Bitmaps, Version 1.0}{picInvader05}
 
@@ -178,7 +178,7 @@ Try combining this with vertical movement as well.
 
 There is still one problem: In \zeiref{srcInvader0507}, the new position is assigned to the \texttt{Rect} object even though it may already extend beyond the edge. With a speed of \texttt{1} or \texttt{2}, this may not be very noticeable, but if we set the speed to the width of the spaceship, the problem becomes obvious (temporarily set \texttt{cfg.FPS = 5} so that you can see it clearly). The spaceship ends up leaving the screen halfway. 
  
-So we should check the new position first and only then assign it to the \texttt{Rect} object \texttt{defender\_rect}. In this context, let us introduce a very useful method of the \texttt{Rect} class: \texttt{pygame.rect.Rect.move()}\myindex{pyg}{\texttt{rect}!\texttt{Rect}!\texttt{move()}|underline}\randnotiz{move()}. 
+So we should check the new position first and only then assign it to the \texttt{Rect} object \texttt{defender\_rect}. In this context, let us introduce a very useful method of the \texttt{Rect} class: \texttt{pygame.rect.Rect.move()}\pygindex{rect!Rect!move()|underline}\randnotiz{move()}. 
  
 \lstsource{SRC/00 Introduction/04 Moving/invader05d.py}{27}{35}{python}{Move Bitmaps, Version 1.4}{srcInvader05d}
 
@@ -188,33 +188,20 @@ The subsequent collision checks are then performed using the \texttt{newpos} rec
 
 
 \begin{figure}[H]
-\begin{center}
-\begin{tikzpicture}
-\node (myfirstpic) at (0,0) {\includegraphics[scale=0.8]{invader06.png}};
-
-\draw
- (-1.8cm,-1.3cm) node (a) {}
- (5.8cm,-1.3cm) node (b) {}
- (5.8cm,-0.57cm) node (c) {}
- (3.4cm,-0.57cm) node (d) {}
-;
-\draw[>->, very thick, red, densely dotted] (a) -- (b) ;
-\draw[>->, very thick, red, densely dotted] (c) -- (d) ;
-
-%node[above, black, xshift=-2.6cm] {move left}
-%\draw[->] (a) -- (b);
-%\draw[->] (o) -- (y);
-
-
-%Left
-%\draw
-% (-0.15,3.4) node (left1) {}
-% (3.15,3.4) node (left2) {}
-%;
-%
-\end{tikzpicture}
-\caption{The Defender moves and bounces}\label{picBewegung01}
-\end{center}
+	\begin{center}
+		\begin{tikzpicture}
+			\node (myfirstpic) at (0,0) {\includegraphics[scale=0.8]{invader06.png}};
+			\draw
+ 				(-1.8cm,-1.3cm) node (a) {}
+ 				(5.8cm,-1.3cm) node (b) {}
+ 				(5.8cm,-0.57cm) node (c) {}
+ 				(3.4cm,-0.57cm) node (d) {}
+			;
+			\draw[>->, very thick, red, densely dotted] (a) -- (b) ;
+			\draw[>->, very thick, red, densely dotted] (c) -- (d) ;
+		\end{tikzpicture}
+	\caption{The Defender moves and bounces}\label{picBewegung01}
+	\end{center}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -236,7 +223,7 @@ To illustrate this dependency, I~modified the previous source code for a small e
 In \zeiref{srcInvader05e01}, you can see the different frame rates with which the experiment was carried out. In the line above, the window dimensions are set so that the window is tall and narrow, and in the line below the absolute number of milliseconds is specified during which the spaceship moves upward.
 
 
-\Zeiref{srcInvader05e02} stores the time at which the spaceship’s ascent began. For this purpose, the function \texttt{pygame.time.get\_ticks()}\myindex{pyg}{\texttt{time}!\texttt{get\_ticks()}}\randnotiz{get\_ticks()} returns the number of milliseconds since the call to \texttt{pygame.init()}\myindex{pyg}{\texttt{init()}}; for example, \SI{5}{ms}.
+\Zeiref{srcInvader05e02} stores the time at which the spaceship’s ascent began. For this purpose, the function \texttt{pygame.time.get\_ticks()}\pygindex{time!get\_ticks()}\randnotiz{get\_ticks()} returns the number of milliseconds since the call to \texttt{pygame.init()}\pygindex{init()}; for example, \SI{5}{ms}.
 
 Inside the main loop, the spaceship now moves upward by a certain number of pixels per frame. The new position is calculated by adding the product of direction and speed to the \texttt{top} coordinate of the old position (\zeiref{srcInvader05e03}) -- so there is nothing new at this point.
 
@@ -403,7 +390,7 @@ The speed is adjusted from~2 to~600 in \zeiref{srcInvader05f02}, and in \zeiref{
 \end{warningbox}
 
 
-We cannot solve the first problem without a significant loss of performance, so we will not consider it any further. The second problem, however, can be addressed. Instead of a fixed delta time, we need a value that is based on the actual duration of a frame. The method \texttt{pygame.clock.tick()}\myindex{pyg}{\texttt{clock}!\texttt{tick()}}\randnotiz{tick()} in \zeiref{srcInvader05g01} provides a good estimate of the frame time. Luckily, this feature is already built in and can therefore be used directly (see \srcref[vref]{srcInvader05g}). The result in \abbref[vref]{fpsbewegung02} is better, but still not satisfying~{:-(}. In \abbref[vref]{picFehlerInvers}, you can see that the red line more or less dances around the green one, and no clear trend is visible.
+We cannot solve the first problem without a significant loss of performance, so we will not consider it any further. The second problem, however, can be addressed. Instead of a fixed delta time, we need a value that is based on the actual duration of a frame. The method \texttt{pygame.clock.tick()}\pygindex{clock!tick()}\randnotiz{tick()} in \zeiref{srcInvader05g01} provides a good estimate of the frame time. Luckily, this feature is already built in and can therefore be used directly (see \srcref[vref]{srcInvader05g}). The result in \abbref[vref]{fpsbewegung02} is better, but still not satisfying~{:-(}. In \abbref[vref]{picFehlerInvers}, you can see that the red line more or less dances around the green one, and no clear trend is visible.
 
 \myebild{error_invers.pdf}{1.0}{Position Error of $1/fps$ and \texttt{pygame.clock.tick()}}{picFehlerInvers}
 
@@ -438,7 +425,7 @@ The cause is a problem that we should have fixed immediately. In the assignment 
 	Error         & 0.8 &  1.3 &  2.4 &  3.2 &  4.0 &  4.8 &  5.6 &  6.4 &  7.2 \\
 \end{longtable} 
 
-Recently, Pygame introduced a variant of \texttt{Rect}, namely \texttt{FRect}\myindex{pyg}{\texttt{rect}!\texttt{FRect}|underline}\randnotiz{FRect}. In this class, all values are stored as \texttt{float}s, so fractional parts are no longer truncated. Alternatively, we would have to	store the position values independently of the \texttt{Rect} object in an additional float variable in order to preserve the fractional parts, for example in a \texttt{pygame.math.Vector2}\myindex{pyg}{\texttt{math}!\texttt{Vector2}} object.
+Recently, Pygame introduced a variant of \texttt{Rect}, namely \texttt{FRect}\pygindex{rect!FRect|underline}\randnotiz{FRect}. In this class, all values are stored as \texttt{float}s, so fractional parts are no longer truncated. Alternatively, we would have to	store the position values independently of the \texttt{Rect} object in an additional float variable in order to preserve the fractional parts, for example in a \texttt{pygame.math.Vector2}\pygindex{math!Vector2} object.
  
 \newpage 
 \lstsource{SRC/00 Introduction/04 Moving/dt/h/invader05h.py}{11}{49}{python}{Normalized Movement with Positions in Float}{srcInvader05h}
@@ -447,7 +434,7 @@ In \abbref[vref]{fpsbewegung03}, we can see that the result has already improved
 
 \myebild{error_float.pdf}{1.0}{Position Error of Rect and FRect}{picFehlerFloat}
 
-However, there is yet another source of error: \texttt{pygame.clock.tick()}\myindex{pyg}{\texttt{clock}!\texttt{tick()}} does not provide enough decimal precision. Over long runtimes, the missing fractional parts accumulate and again lead to noticeable errors. There are better Python functions for measuring elapsed time.
+However, there is yet another source of error: \texttt{pygame.clock.tick()}\pygindex{clock!tick()} does not provide enough decimal precision. Over long runtimes, the missing fractional parts accumulate and again lead to noticeable errors. There are better Python functions for measuring elapsed time.
 
 \zeiref{srcInvader05i01} of \srcref[vref]{srcInvader05i}, \texttt{time.time()}\randnotiz{time()}\index{time!time()|underline} is used to return the number of seconds since January~1,~1970 as a floating-point number. The fractional part represents fractions of a second. This measurement is more precise than the one provided by \texttt{pygame.clock.tick()} and, depending on the time-measurement capabilities of the computer architecture and the operating system, can provide more decimal places—up to the nanosecond range.
 
@@ -540,35 +527,35 @@ In \zeiref{srcInvader05i02}, the current time is measured after one frame has el
 \begin{itemize}
 
 	\item \texttt{pygame.rect.FRect}:
-	\myindex{pyg}{\texttt{rect}!\texttt{FRect}}\\
+	\pygindex{rect!FRect}\\
 	\url{https://pyga.me/docs/ref/rect.html}
 	
 	\item \texttt{pygame.rect.FRect.move()}:
-    \myindex{pyg}{\texttt{rect}!\texttt{FRect}!\texttt{move()}}\\
+    \pygindex{rect!FRect!move()}\\
     \url{https://pyga.me/docs/ref/rect.html#pygame.Rect.move}
 
 	\item \texttt{pygame.rect.Rect}:
-    \myindex{pyg}{\texttt{rect}!\texttt{Rect}}\\
+    \pygindex{rect!Rect}\\
     \url{https://pyga.me/docs/ref/rect.html}
 
    \item \texttt{pygame.rect.Rect.move()}:
-   \myindex{pyg}{\texttt{rect}!\texttt{Rect}!\texttt{move()}}\\
+   \pygindex{rect!Rect!move()}\\
    \url{https://pyga.me/docs/ref/rect.html#pygame.Rect.move}
 
 	\item \texttt{pygame.Surface.get\_rect()}:
-	\myindex{pyg}{\texttt{Surface}!\texttt{get\_rect()}}\\
+	\pygindex{Surface!get\_rect()}\\
 	\url{https://pyga.me/docs/ref/surface.html#pygame.Surface.get_rect}
 
 	\item \texttt{pygame.time.get\_ticks()}:
-    \myindex{pyg}{\texttt{time}!\texttt{get\_ticks()}}\\
+    \pygindex{time!get\_ticks()}\\
     \url{https://pyga.me/docs/ref/surface.html#pygame.time.get_ticks}
 
     \item \texttt{pygame.math.Vector2}:
-    \myindex{pyg}{\texttt{math}!\texttt{Vector2}}\\
+    \pygindex{math!Vector2}\\
     \url{https://pyga.me/docs/ref/math.html#pygame.math.Vector2}
 
     \item \texttt{pygame.math.Vector3}:
-    \myindex{pyg}{\texttt{math}!\texttt{Vector3}}\\
+    \pygindex{math!Vector3}\\
     \url{https://pyga.me/docs/ref/math.html#pygame.math.Vector3}
 \end{itemize}
 \end{pygbox}

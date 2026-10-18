@@ -37,12 +37,12 @@ And off we go. Here, the \texttt{config.py}. I assume that you have sufficient P
 \end{wrapfigure}%
 The background is not loaded from a bitmap this time, but created on the fly. There is no deep reason for this -- apart from showing that bitmaps do not always have to come from image files (see \secref[vref]{secCreateBitmaps}). Instead, they can be generated dynamically as well.
 
-To do this, a \texttt{Surface} object\myindex{pyg}{\texttt{Surface}} with the size of the screen is created first. It is then filled with a dark red color, meant to resemble a clay court. In \texttt{paint\_net()}, starting at \zeiref{srcPong0101}, the net is drawn as a sequence of small white rectangles.
+To do this, a \texttt{Surface} object with the size of the screen is created first. It is then filled with a dark red color, meant to resemble a clay court. In \texttt{paint\_net()}, starting at \zeiref{srcPong0101}, the net is drawn as a sequence of small white rectangles.
 
 \lstsource{SRC/02 Examples/01 Pong/v01/pong01.py}{8}{23}{python}{Pong (\Reqref{req0201Standard}) -- the class \texttt{Background}}
 {srcPong01b}
 
-The class \texttt{Game} consists of the basic building blocks that we have already seen in \kapref{secBasics}. In \texttt{\_\_init\_\_()}, Pygame is initialized, the window and the clock are created, and the control flag for the main game loop is set up. The background is stored in a \texttt{Group\-Single} object\myindex{pyg}{\texttt{sprite}!\texttt{GroupSingle}}. The remaining methods should be fairly self-explanatory.
+The class \texttt{Game} consists of the basic building blocks that we have already seen in \kapref{secBasics}. In \texttt{\_\_init\_\_()}, Pygame is initialized, the window and the clock are created, and the control flag for the main game loop is set up. The background is stored in a \texttt{Group\-Single} object\pygindex{sprite!GroupSingle}. The remaining methods should be fairly self-explanatory.
 
 \lstsource{SRC/02 Examples/01 Pong/v01/pong01.py}{26}{60}{python}{Pong (\Reqref{req0201Standard}) -- the class \texttt{Game}}
 {srcPong01c}
@@ -91,7 +91,7 @@ All that remains is the method \texttt{move()}. It looks more complicated than i
 \lstsource{SRC/02 Examples/01 Pong/v02/pong02.py}{52}{58}{python}{Pong (\Reqref{req0201Schläger}) -- \texttt{Paddle.move()}}
 {srcPong02c}
 
-Now the paddles need to be integrated into the \texttt{Game} class. In \zeiref{srcPong0208}, a sprite group\myindex{pyg}{\texttt{sprite}!\texttt{Group}} is created first, which will hold all sprites except the background. After that, the two paddles are created and immediately added to the sprite group via constructor arguments.
+Now the paddles need to be integrated into the \texttt{Game} class. In \zeiref{srcPong0208}, a sprite group\pygindex{sprite!Group} is created first, which will hold all sprites except the background. After that, the two paddles are created and immediately added to the sprite group via constructor arguments.
 
 \lstsource{SRC/02 Examples/01 Pong/v02/pong02.py}{61}{72}{python}{Pong (\Reqref{req0201Schläger}) -- Constructor of \texttt{Game}}
 {srcPong02d}
@@ -245,7 +245,7 @@ In \texttt{update()}, the appropriate score value is updated and \texttt{render(
 \lstsource{SRC/02 Examples/01 Pong/v04/pong04.py}{124}{128}{python}{Pong (\Reqref{req0201Punkte}) -- \texttt{Score.update()}}
 {srcPong04c}
 
-What is still missing is a trigger for updating the score display. This is a perfect opportunity to introduce a user-defined event. Starting at \zeiref{srcPong0400}, everything required for such a user event is implemented. First, an event ID is defined, followed by the corresponding \texttt{pygame.e\-vent\-.E\-vent} object\myindex{pyg}{\texttt{event}!\texttt{Event()}}.
+What is still missing is a trigger for updating the score display. This is a perfect opportunity to introduce a user-defined event. Starting at \zeiref{srcPong0400}, everything required for such a user event is implemented. First, an event ID is defined, followed by the corresponding \texttt{pygame.e\-vent\-.E\-vent} object\pygindex{event!Event()}.
 
 \lstsource{SRC/02 Examples/01 Pong/v04/config.py}{1}{99}{python}{Pong (\Reqref{req0201Punkte}) -- \texttt{MyEvent}}{srcPong04d}
 
@@ -295,7 +295,7 @@ At first glance, the game already looks finished -- but it is still not really p
 \end{enumerate}
 \er
 
-To achieve this, we add the method \texttt{check\_collision()} to the \texttt{Game} class. This method checks whether the ball has hit one of the paddles. A good choice here is the method \texttt{pygame\-.sprite\-.coll\-ide\_rect()}\myindex{pyg}{\texttt{sprite}!\texttt{collide\_rect()}}.  
+To achieve this, we add the method \texttt{check\_collision()} to the \texttt{Game} class. This method checks whether the ball has hit one of the paddles. A good choice here is the method \texttt{pygame\-.sprite\-.coll\-ide\_rect()}\pygindex{sprite!collide\_rect()}.  
 
 If a collision is detected, the previously unused method \texttt{horizontal\_flip()} (see \srcref[vref]{srcPong03e}) is triggered via \texttt{update()}. Afterwards, the positions are adjusted so that the ball and the paddle no longer overlap. In addition, the method \texttt{respeed()} is called via \texttt{update()} to fulfill requirement~\ref{req0201Schlag}.\ref{req0201SchlagGeschwindigkeit}.
 

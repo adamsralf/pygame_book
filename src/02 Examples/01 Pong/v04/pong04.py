@@ -1,13 +1,14 @@
 from random import choice
 from time import time
-from typing import Any, Tuple
+from typing import Any
+
+import pygame
 
 import config as cfg
-import pygame
 
 
 class Background(pygame.sprite.Sprite):
-    def __init__(self, *groups: Tuple[pygame.sprite.Group]) -> None:
+    def __init__(self, *groups: tuple[pygame.sprite.Group]) -> None:
         super().__init__(*groups)
         self.image = pygame.Surface(cfg.WINDOW.size).convert()
         self.rect = self.image.get_rect()
@@ -28,7 +29,7 @@ class Paddle(pygame.sprite.Sprite):
     BORDERDISTANCE = {"horizontal": 50, "vertical": 10}
     DIRECTION = {"up": -1, "down": 1, "halt": 0}
 
-    def __init__(self, player: str, *groups: Tuple[pygame.sprite.Group]) -> None:
+    def __init__(self, player: str, *groups: tuple[pygame.sprite.Group]) -> None:
         super().__init__(*groups)
         self.rect = pygame.FRect(0, 0, 15, cfg.WINDOW.height // 10)
         self.rect.centery = cfg.WINDOW.centery
@@ -43,7 +44,7 @@ class Paddle(pygame.sprite.Sprite):
         self.image.fill("yellow")
 
     def update(self, *args: Any, **kwargs: Any) -> None:
-        if "action" in kwargs.keys():
+        if "action" in kwargs:
             if kwargs["action"] == "move":
                 self.move()
             elif kwargs["action"] in Paddle.DIRECTION.keys():
@@ -60,7 +61,7 @@ class Paddle(pygame.sprite.Sprite):
 
 
 class Ball(pygame.sprite.Sprite):
-    def __init__(self, *groups: Tuple[pygame.sprite.Group]) -> None:
+    def __init__(self, *groups: tuple[pygame.sprite.Group]) -> None:
         super().__init__(*groups)
         self.rect = pygame.FRect(0, 0, 20, 20)
         self.image = pygame.Surface(self.rect.size).convert()
@@ -71,7 +72,7 @@ class Ball(pygame.sprite.Sprite):
         self.service()
 
     def update(self, *args: Any, **kwargs: Any) -> None:
-        if "action" in kwargs.keys():
+        if "action" in kwargs:
             if kwargs["action"] == "move":
                 self.move()
             elif kwargs["action"] == "hflip":
@@ -91,12 +92,12 @@ class Ball(pygame.sprite.Sprite):
             self.vertical_flip()
             self.rect.bottom = cfg.WINDOW.bottom
         elif self.rect.right < 0:
-            MyEvents.MYEVENT.player = 2             # Player§\label{srcPong0402}§
-            pygame.event.post(MyEvents.MYEVENT)     # Shoot event§\label{srcPong0403}§
+            cfg.MyEvents.MYEVENT.player = 2             # Player§\label{srcPong0402}§
+            pygame.event.post(cfg.MyEvents.MYEVENT)     # Shoot event§\label{srcPong0403}§
             self.service()
         elif self.rect.left > cfg.WINDOW.right:
-            MyEvents.MYEVENT.player = 1
-            pygame.event.post(MyEvents.MYEVENT)
+            cfg.MyEvents.MYEVENT.player = 1
+            pygame.event.post(cfg.MyEvents.MYEVENT)
             self.service()
 
     def service(self) -> None:
@@ -112,7 +113,7 @@ class Ball(pygame.sprite.Sprite):
 
 class Score(pygame.sprite.Sprite):
 
-    def __init__(self, *groups: Tuple[pygame.sprite.Group]):
+    def __init__(self, *groups: tuple[pygame.sprite.Group]):
         super().__init__(*groups)
         self.font = pygame.font.SysFont(None, 30)
         self.score = {1: 0, 2: 0}                   # Not in Settings anymore!§\label{srcPong0405}§
@@ -121,7 +122,7 @@ class Score(pygame.sprite.Sprite):
         self.render()
 
     def update(self, *args: Any, **kwargs: Any) -> None:
-        if "player" in kwargs.keys():
+        if "player" in kwargs:
             self.score[kwargs["player"]] += 1
             self.render()
         return super().update(*args, **kwargs)
@@ -186,7 +187,7 @@ class Game:
                     self.paddle["right"].update(action="halt")
                 elif event.key == pygame.K_w or event.key == pygame.K_s:
                     self.paddle["left"].update(action="halt")
-            elif event.type == MyEvents.POINT_FOR:  # User event§\label{srcPong0404}§
+            elif event.type == cfg.MyEvents.POINT_FOR:  # User event§\label{srcPong0404}§
                 self.score.update(player=event.player)
 
 
