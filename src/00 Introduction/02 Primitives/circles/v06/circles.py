@@ -21,9 +21,9 @@ class Circle:
         self.posx += self.speedx
         self.posy += self.speedy
         self.radius += Circle.RADIUS_INC
-        if self.posx - self.radius < 0:
+        if self.posx + self.radius < 0:
             self.todelete = True
-        elif self.posx + self.radius > window.size[0]:
+        elif self.posx - self.radius > window.size[0]:
             self.todelete = True
         elif self.posy - self.radius > window.size[1]:
             self.todelete = True
