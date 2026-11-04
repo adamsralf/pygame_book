@@ -37,7 +37,7 @@ At this point, the preamble is presented once. I assume that you have sufficient
 
 It is required that the window has an appropriate size. With $\SI{1220}{px} \times \SI{1002}{px}$, the window is large enough to distribute the bubbles, yet small enough to allow quick mouse movement. Everything else has already been discussed in detail in previous chapters (e.g.\ \texttt{FPS}, \texttt{DELTATIME}, or \texttt{PATH}) and will therefore not be explained further here.
 
-\myebild{aquarium01}{0.15}{Bubbles: background image}{picAquarium01}
+\myebild{aquarium01}{0.15}{Bubbles -- background image}{picAquarium01}
 
 \lstsource{SRC/02 Examples/02 Bubbles/v01/config.py}{1}{99}{python}{Bubbles (\reqref{reqStandard}.\ref{reqStandardGröße}) -- \texttt{config.py}
 }{srcBubbles01a}
@@ -76,7 +76,10 @@ However, these methods already define the overall flow of the game. All further 
 \begin{wrapfigure}[6]{r}{3.1cm}%
 	\begin{center}%
 		\vspace{-1cm}%
-		\myfigure{blase1.png}{0.05}{Bubble}{picBlase1}%
+		\renewcommand{\figurename}{Fig.}
+		\includegraphics[scale=0.05,clip=true]{blase1.png}%
+		\caption[Bubbles -- bubble~1]{Bubble~1}\label{picBlase1}%
+	\renewcommand{\figurename}{Figure}		
 	\end{center}%
 \end{wrapfigure}%
 For the bubble, we use the already transparent graphic from \abbref{picBlase1}. The random position still needs to be restricted. The aquarium does not fill the entire screen (see \abbref[vref]{picAquarium01}); instead, it sits inside something like a TV frame. So we have to define a playing area (\emph{playground}). The bubbles should only appear inside this area.
@@ -114,7 +117,7 @@ This is an example showing that a method reference is passed to \texttt{pygame.s
 
 The result can be seen in \abbref[vref]{picAquarium02}. The bubbles are evenly distributed across the playing area, and the required minimum distance to the edges and between the bubbles is maintained.
 
-\myebild{aquarium02}{0.32}{Bubbles: the bubbles have a minimum distance at the start}{picAquarium02}
+\myebild{aquarium02}{0.32}{Bubbles -- the bubbles have a minimum distance at the start}{picAquarium02}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\Reqref{reqBlasenanzahl}: Number of bubbles}
@@ -241,7 +244,7 @@ The value~$d$ represents the distance in pixels between the center of the circle
 \path [name=y1, color=red] let \p1 = (k1) in node  at (-0.4cm,\y1) {$y_1$};
 \path [name=y2, color=red] let \p1 = (k2) in node  at (-0.4cm,\y1) {$y_2$};
 \end{tikzpicture}
-\caption[collision detection -- point inside a circle?]{collision detection -- point inside a circle (\gls{pythagoras})?}\label{picKollKreis02}
+\caption[Bubbles -- point inside a circle?]{Bubbles -- point inside a circle (\gls{pythagoreantheorem})?}\label{picKollKreis02}
 \end{center}
 \end{figure}
 
@@ -408,7 +411,10 @@ If you now try out the game, you will notice an easy start and a moderate increa
 \begin{wrapfigure}[6]{r}{3.5cm}%
 	\begin{center}%
 		\vspace{-1cm}%
-		\myfigure{blase2.png}{0.05}{Bubble~2}{picBlase2}%
+		\renewcommand{\figurename}{Fig.}
+		\includegraphics[scale=0.05,clip=true]{blase2.png}%
+		\caption[Bubbles -- bubble~2]{Bubble~2}\label{picBlase2}%
+		\renewcommand{\figurename}{Figure}		
 	\end{center}%
 \end{wrapfigure}%
 So far, the game ends so quickly that I cannot really check whether I actually lost for a valid reason or whether the program is misbehaving. With this requirement, I want to be able to see the two colliding bubbles, or the bubble that touches the edge, in a different color. For this purpose, I colored the bubble red (see \abbref{picBlase2}).
@@ -514,7 +520,7 @@ A naive approach would cause problems if both loops compared all sprites from st
 				\end{tabular}
 			};
 		\end{tikzpicture}
-		\caption{Why does the inner loop start at \texttt{$index_1+1$}?}\label{picForFor01}
+		\caption{Bubbles -- Why does the inner loop start at \texttt{$index_1+1$}?}\label{picForFor01}
 	\end{center}
 \end{figure}
 

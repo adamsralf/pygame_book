@@ -32,7 +32,7 @@ And off we go. Here, the \texttt{config.py}. I assume that you have sufficient P
 \begin{wrapfigure}[9]{r}{6.5cm}%
 	\begin{center}%
 		\vspace{-1em}%
-		\myfigure{pong00.png}{0.2}{Pong: the background}{picPong00}%
+		\myfigure{pong00.png}{0.2}{Pong -- the background}{picPong00}%
 	\end{center}%
 \end{wrapfigure}%
 The background is not loaded from a bitmap this time, but created on the fly. There is no deep reason for this -- apart from showing that bitmaps do not always have to come from image files (see \secref[vref]{secCreateBitmaps}). Instead, they can be generated dynamically as well.
@@ -286,7 +286,7 @@ The ball reports what happened and the game decides what to do about it.
 \end{diskbox}
 At first glance, the game already looks finished -- but it is still not really playable, because the paddles are not doing anything yet.
 
-\myebild{pong01.png}{0.3}{Pong: paddles, ball, and score}{picPong01}
+\myebild{pong01.png}{0.3}{Pong -- paddles, ball, and score}{picPong01}
 
 \br{Paddle hit}{req0201Schlag}
 \begin{enumerate}
@@ -355,7 +355,7 @@ In short: For simple games like Pong, a straightforward \emph{follow the ball}\r
 
 In \texttt{watch\_for\_events()}, more extensive changes are required. First, manual control for a paddle must be disabled whenever that paddle is set to computer control. So, before calling the corresponding \texttt{update()} method, we first check whether the computer player currently has control. An example can be found in \zeiref{srcPong0604}.
 
-\myebild{pong02.png}{0.3}{Pong: paddle color indicates AI mode (left AI, right manual)}{picPong02}
+\myebild{pong02.png}{0.3}{Pong -- paddle color indicates AI mode (left AI, right manual)}{picPong02}
 
 One remaining detail is requirement~\ref{req0201Computer}.\ref{req0201ComputerHalt}. For this, the corresponding flag is checked as shown in \zeiref{srcPong0605}, and the paddle is sent a halt signal.
 
@@ -435,7 +435,7 @@ In \texttt{draw()}, the currently active mode is checked as well. If the game is
 
 \lstsource{SRC/02 Examples/01 Pong/v08/pong08.py}{238}{245}{python}{Pong (\Reqref{req0201PauseHelp}) -- \texttt{Game.draw()}}{srcPong08e}
 
-\myebild{pong03.png}{0.3}{Pong: Help screen}{picPong03}
+\myebild{pong03.png}{0.3}{Pong -- help screen}{picPong03}
 
 \subsubsection*{Pause vs.\ Help -- what happens technically?}
 

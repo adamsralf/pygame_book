@@ -75,7 +75,7 @@ If we take a look at the screen outputs of the current source code in \abbref{pi
 		\draw (3.5,10 - 2.5) node[rotate=45] (bottomright_p) {(580,420)};
 		\draw [line width=1.5pt] (oo) rectangle (bottomright_p);
 	\end{tikzpicture}
-	\caption{PlainWindow as a Viewport of the World}\label{picPlainWindow03}
+	\caption{PlainWindow as a viewport of the world}\label{picPlainWindow03}
 \end{figure}
 
 \index{Visibility culling}Before continuing with the different top-down views, I~would like to address a \randnotiz{Visibility culling} performance issue. To do so, I~extend the window title to display the actual \texttt{FPS} and increase \texttt{FPS} in \texttt{config.py} to \SI{600}{fps} -- not because this is a realistic value for a game, but because I~want to determine how many frames are actually achieved. I~then store this actually achieved number of frames in a text file.
@@ -145,11 +145,11 @@ This data is then used in \texttt{draw()} of \texttt{BirdEyeView}, and the recta
 
 \lstsource{SRC/01 Techniques/03 WorldScrolling/V04/windows.py}{49}{57}{python}{Big World --  \texttt{BirdEyeView.draw()}}{srcWindows04}
 
-%\myebild{birdeye_image_02.png}{0.35}{Bird’s-Eye View (simplified and with visibility indicator)}{picBirdEyeImage02}
+%\myebild{birdeye_image_02.png}{0.35}{Bird’s-eye view (simplified and with visibility indicator)}{picBirdEyeImage02}
 
 One more note on performance: Due to the preparations carried out -- namely the one-time creation of a smaller, symbolic representation of the game elements -- a significant performance improvement was achieved as well. Analogous to the measurements above, I~performed a corresponding benchmark over \SI{660}{frames}. The result can be read from \abbref[vref]{picPerformaceMitOhneVorbereitung01}.
 
-%\myezweihbild{birdeye_image_01.png}{0.35}{BirdEye (scaled)\newline \newline}{picBirdEyeImage01}{birdeye_image_02.png}{0.35}{Bird’s-Eye View (simplified and with visibility indicator)}{picBirdEyeImage02}
+%\myezweihbild{birdeye_image_01.png}{0.35}{BirdEye (scaled)\newline \newline}{picBirdEyeImage01}{birdeye_image_02.png}{0.35}{Bird’s-eye view (simplified and with visibility indicator)}{picBirdEyeImage02}
 
 \begin{figure}[hbtp]%
 	\centering%
@@ -162,7 +162,7 @@ One more note on performance: Due to the preparations carried out -- namely the 
 	\begin{minipage}[b]{6.5cm}%
 		\centering%
 		\includegraphics[scale=0.35]{birdeye_image_02.png}%
-		\caption{Bird’s-Eye View (simplified and with visibility indicator)}\label{picBirdEyeImage02}%
+		\caption{Bird’s-eye view (simplified and with visibility indicator)}\label{picBirdEyeImage02}%
 	\end{minipage}%
 \end{figure}%
 
@@ -250,7 +250,7 @@ What remains is the method \texttt{draw()}. This method looks almost the same as
 
 If we now run the source code and move the player to the top-left corner of the game world, we obtain the views shown in \abbref[vref]{picBirdEyeImage04} and \abbref[vref]{picCenteredImage01}. In the left image, the screen section visible in the right image can be identified by the green rectangle. The green rectangle only appears to be smaller than the blue one; in fact, three quarters of the view lie outside the visible area of the Bird’s-Eye View.
 
-\myezweihbild{birdeye_image_04.png}{0.35}{Bird’s-Eye View: Green = Centered}{picBirdEyeImage04}{centered_image_01.png}{0.35}{Centered Camera -- with border error}{picCenteredImage01}
+\myezweihbild{birdeye_image_04.png}{0.35}{Bird’s-eye view: green = centered}{picBirdEyeImage04}{centered_image_01.png}{0.35}{Centered camera -- with border error}{picCenteredImage01}
 
 We therefore need to adjust the method \texttt{scroll()} so that the borders are not exceeded. We now see that the offset is limited to~0 at the top and on the left, meaning it cannot become negative. This would otherwise indicate that we are extending beyond the world to the top or to the left. The same logic applies to the right and bottom edges. Here, it is checked whether the right edge of the object exceeds the right edge of the world, and analogously whether this also happens at the bottom. This procedure is known as \gls{clamp}\index{Clamp}\randnotiz{Clamp}.
 
@@ -261,7 +261,7 @@ In \abbref[vref]{picCenteredImage02}, we no longer see any border artifacts.
 Instead, the player’s position has shifted from the center toward the edge—exactly as intended.  
 Note: In \abbref[vref]{picBirdEyeImage05}, the blue border of \texttt{PlainWindow} can no longer be seen, since both views now cover the same section.
 
-\myezweihbild{birdeye_image_05.png}{0.35}{BirdEyeView: Grün=Centered}{picBirdEyeImage05}{centered_image_02.png}{0.35}{Centered Camera -- without border error}{picCenteredImage02}
+\myezweihbild{birdeye_image_05.png}{0.35}{BirdEyeView: Grün=Centered}{picBirdEyeImage05}{centered_image_02.png}{0.35}{Centered camera -- without border error}{picCenteredImage02}
 
 \begin{warningbox}[There is one more thing I~would like to address]
 	In the method \texttt{draw()} (see \srcref[vref]{srcWindows08}), the method \texttt{world2camera()} is called for every single game object; that is, thousands of coordinates are transformed. Would it not be more efficient to transform the world coordinates just once and then compare them with the coordinates of the game objects?
@@ -298,13 +298,13 @@ The actual work happens in the method \texttt{scroll()}. Here as well, the basic
 	\begin{minipage}[b]{6.5cm}%
 		\centering%
 		\includegraphics[scale=0.35]{birdeye_image_06.png}%
-		\caption[Bird’s-Eye: Centered, Pagewise, InnerRect]{Bird’s-Eye: \textcolor{green}{Centered}, \textcolor{red}{Pagewise}, \textcolor{brown}{InnerRect}}\label{picBirdEyeImage06}%
+		\caption[Bird’s-eye: centered, pagewise, InnerRect]{Bird’s-eye: \textcolor{green}{centered}, \textcolor{red}{pagewise}, \textcolor{brown}{InnerRect}}\label{picBirdEyeImage06}%
 	\end{minipage}%
 	\hfil%
 	\begin{minipage}[b]{6.5cm}%
 		\centering%
 		\includegraphics[scale=0.35]{pagewise_image_01.png}%
-		\caption[Page / Edge Scrolling]{Page / Edge Scrolling\newline}\label{picPagewiseImage01}%
+		\caption[Page / edge scrolling]{Page / edge scrolling\newline}\label{picPagewiseImage01}%
 	\end{minipage}%
 \end{figure}%
 

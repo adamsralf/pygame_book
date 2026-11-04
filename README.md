@@ -11,6 +11,16 @@ All source code and resources used in the book are available in this repository.
 
 Feedback, suggestions, and constructive criticism are always welcome.
 
+## Python source formatting
+
+Python examples are formatted with [autopep8](https://github.com/hhatto/autopep8)
+using the 79-character line length recommended by PEP 8. In VS Code, install the
+recommended Python and autopep8 extensions; Python files are formatted on save.
+To install the formatter in the selected Python environment, run:
+
+```powershell
+python -m pip install -r requirements-dev.txt
+```
 
 ## License
 

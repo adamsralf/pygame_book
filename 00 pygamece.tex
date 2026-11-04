@@ -33,6 +33,7 @@
 }
 \DeclareSIUnit{\pixel}{px}
 \DeclareSIUnit{\pxsec}{\pixel\per\second}
+\newcommand{\mysi}[2]{{#1}\,\si{#2}}
 % -------------------------------------------------
 % Code Listings
 % -------------------------------------------------
@@ -143,7 +144,7 @@ pdfproducer={LuaLaTeX}
 	{\Large 2D Game Programming\par}
 	\vfill
 	{\large Ralf Adams\par}
-	{\large Version 1.5 (\today)\par}
+	{\large Version 1.6 (\today)\par}
 \end{titlepage}
   
   
@@ -184,8 +185,7 @@ pdfproducer={LuaLaTeX}
 	{ö}{{\"o}}1%
 }%
 
-\begin{comment}
-\end{comment}
+%\begin{comment}
 \chapter{Goals}\label{secGoals}
 	\input{0001_Goals.tex}
 \chapter{Basics}\label{secBasics}
@@ -207,12 +207,14 @@ pdfproducer={LuaLaTeX}
 	\input{0202_TileMaps}
 	\input{0203_WorldScrolling}
 	\input{0204_EndlessBackground}
-	\input{0206_StateMachine}
+	\input{0205_Vector}
+\	\input{0206_StateMachine}
 \chapter{Examples}\label{secExamples}
 	\input{0301_Pong}
 	\input{0302_Bubbles}
 	\input{0303_Moonlander}
 	\input{0304_Breakout}
+%\end{comment}
 \listoffigures
 \listoftables
 %\lstlistoflistings
@@ -220,5 +222,6 @@ pdfproducer={LuaLaTeX}
 \printglossaries
 \printindex
 \printindex[pyg][Index of the \texttt{pygame} Namespace]
+
 
 \end{document}

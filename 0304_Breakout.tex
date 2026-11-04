@@ -379,7 +379,7 @@ In other words, in the example shown in \abbref[vref]{picBreakoutOverlab}, the b
 	\end{scope}
 	
 \end{tikzpicture}
-\caption{Breakout -- Determining the Bounce Direction Based on Rectangle Overlaps}
+\caption{Breakout -- determining the bounce direction based}
 \label{picBreakoutBounce}
 \end{figure}
 
@@ -551,7 +551,7 @@ Next, the relative offset is calculated (see \abbref[vref]{picBreakoutBouncePadd
 		{\texttt{offset}};
 		
 	\end{tikzpicture}
-	\caption{Breakout -- Ball Bounce Behavior on the Paddle}
+	\caption{Breakout -- ball bounce behavior on the paddle}
 	\label{picBreakoutBouncePaddle}
 	\end{center}
 \end{figure}
@@ -744,7 +744,7 @@ The ball therefore moves to the right and upwards at the same time. Notice that 
 		\fill[pointcol] (B) circle (1.2pt) node[above right, black] {ball};
 		
 	\end{tikzpicture}
-	\caption{The horizontal and vertical velocities form a velocity vector.}
+	\caption{Breakout -- The horizontal and vertical velocities form a velocity vector.}
 	\label{figVelocity}
 \end{figure}
 
@@ -768,9 +768,10 @@ This gives the player much more control and makes the game more interesting.
 
 So, in just a few lines of code, \texttt{bounce\_paddle()} performs three important tasks: it detects a collision, corrects the ball's position, and calculates a new trajectory that the player can influence.
 
+\newpage
 \lstsource{SRC/02 Examples/04 Breakout/v06/breakout.py}{101}{114}{python}{Breakout (\reqref{reqBreakoutPaddleBounce}) -- \texttt{Ball.bounce\_paddle()}}{srcV06BallBouncePaddle}
 
-\newpage
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\Reqref{reqBreakoutAutopilot}: Autopilot}
 
@@ -884,7 +885,7 @@ I want the level number (\texttt{cfg.LEVEL}) to determine the probability that a
 But what happens when the level number exceeds~10? Since the probability should not exceed \SI{100}{\percent}, we limit the level number used in the calculation to~10. This gives us \texttt{min(cfg.LEVEL, 10) / 10}.
 
 \begin{longtable}{rr@{ $\widehat{=}$ }r}
-	\caption{Level $\rightarrow$ Probability}\label{tabLevelProb} \\
+	\caption{Level $\rightarrow$ probability}\label{tabLevelProb} \\
 	% Definition des Tabellenkopfes auf der ersten Seite
 	\toprule
 	Level  & Probability & \%\\
@@ -892,7 +893,7 @@ But what happens when the level number exceeds~10? Since the probability should 
 	\endfirsthead % Erster Kopf zu Ende
 	
 	% Definition des Tabellenkopfes auf den folgenden Seiten
-	\caption{Level $\rightarrow$ Probability (continued)}\\
+	\caption{Level $\rightarrow$ probability (continued)}\\
 	\toprule
 	Level  & Probability & \%\\
 	\midrule
@@ -1210,7 +1211,7 @@ All that remains is the actual gameplay class, \texttt{PlayState}. Don't be inti
 		
 	\end{tikzpicture}
 	
-	\caption{Breakout -- State machine with temporary
+	\caption{Breakout -- state machine with temporary
 		overlay states}
 	\label{picBreakoutStateMachine}
 \end{figure}

@@ -632,12 +632,6 @@
 	description={In computer science, an infinite loop is a sequence of instructions that repeats endlessly and has no defined termination condition. In most cases, infinite loops are unintended and therefore represent an error in an application. They often arise from incorrect loop conditions. However, infinite loops are sometimes used intentionally, for example: \texttt{while True:}} 
 }
 
-\newglossaryentry{pythagoras}
-{
-	name={Pythagorean theorem},
-	description={In a right-angled triangle, the sum of the squares of the legs is equal to the square of the hypotenuse: $c^2 = a^2 + b^2$. The theorem is named after the mathematician \emph{Pythagoras of Samos} (ca.~570~BC to ca.~510~BC)} 
-}
-
 \newglossaryentry{toggling}
 {
 	name={Toggling},
@@ -731,6 +725,51 @@
 	{Role-Playing Game}  % long form
 	{In an RPG, the player controls one or more characters and develops them over time by gaining experience, learning new	abilities, collecting equipment, and interacting with a game world. Examples include games such as \emph{The Elder Scrolls V: Skyrim}, \emph{Final Fantasy},	or \emph{Baldur's Gate 3}} % description
 
+
+\newglossaryentry{einheitsvektor}{
+	name={Unit Vector},
+	text={unit vector},
+	plural={unit vectors},
+	description={A vector of length~1. It describes a direction independently of a speed or distance. A unit vector is obtained by dividing a nonzero vector by its length. This process is called normalization. For example, the vector $(150, 200)$ has a length of $\sqrt{150^2 + 200^2} = \sqrt{62500} = 250$. Dividing both components by this length gives the unit vector $(150/250, 200/250) = (0.6, 0.8)$. Its length is $\sqrt{0.6^2 + 0.8^2} = \sqrt{1} = 1$, and its direction is the same as that of the original vector}
+}
+
+
+\newglossaryentry{linearinterpolation}{
+	name={Linear Interpolation},
+	text={linear interpolation},
+	description={A calculation that produces intermediate values between a start value and an end value. The formula \texttt{start + (end - start) * progress} uses a progress value between 0 and 1: 0 gives the start value, 1 gives the end value, and 0.5 gives the value halfway between them. In \texttt{update\_color()} in \srcref[vref]{srcVectorAsteroidParticle02}, this calculation is applied separately to the red, green, and blue components of the particle's color. As the particle ages, its color gradually changes from \texttt{start\_color} to \texttt{end\_color}}
+}
+
+
+\newglossaryentry{topdownparadigm}{
+	name={Top-down Paradigm},
+	text={top-down paradigm},
+	description={An approach to program design that starts with an overall task and gradually divides it into smaller, more specific subtasks. Each subtask is refined until it can be implemented directly. For example, a game's main loop can be divided into event handling, updating game objects, and drawing the scene. Updating game objects can then be divided further into movement, collision detection, and other tasks}
+}
+
+
+\newglossaryentry{dotproduct}{
+	name={Dot Product},
+	text={dot product},
+	description={An operation that multiplies corresponding components of two vectors and adds the results, producing a single number called a scalar. For two-dimensional vectors, the calculation is $a_x \cdot b_x + a_y \cdot b_y$. The result is positive if two nonzero vectors form an angle smaller than~\SI{90}{\degree}, 0~if they are perpendicular, and negative if their angle is greater than~\SI{90}{\degree}. 
+	In Pygame, it is calculated using \texttt{Vector2.dot()}. For example, the dot product of a relative position vector and a relative velocity vector helps determine whether two game objects are approaching or moving apart.
+	In German it is called \emph{Skalarprodukt}}
+}
+
+\newglossaryentry{normalvector}
+{
+	name={Normal Vector},
+	text={normal vector},
+	plural={normal vectors},
+	description={A nonzero vector perpendicular to a given vector, line, or surface. Two vectors are perpendicular if their dot product is zero. For a two-dimensional vector $\mathbf{v}=(x,y)$, the vectors $\mathbf{n}=(-y,x)$ and $-\mathbf{n}=(y,-x)$ are perpendicular to $\mathbf{v}$. 
+	Dividing a normal vector by its length produces a \emph{unit normal vector}. In game development, normal vectors are used to describe surface orientation, calculate reflections, and resolve collisions}
+}
+
+\newglossaryentry{pythagoreantheorem}{
+	name={Pythagorean Theorem},
+	text={Pythagorean theorem},
+	description={A rule for right-angled triangles: the square of the longest side (the hypotenuse) equals the sum of the squares of the other two sides, so $c^2~=~a^2~+~b^2$. For a two-dimensional vector, this gives us its length from its horizontal and vertical components: $|\vec{v}| = \sqrt{v_x^2 + v_y^2}$}
+}
 \label{GRENZE}
 
 

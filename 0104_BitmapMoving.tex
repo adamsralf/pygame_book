@@ -91,7 +91,7 @@
 \draw[<->, very thick, purple] (h1) -- (h2) node[above, black, yshift=2.4cm, rotate=90] {height};
 
 \end{tikzpicture}
-\caption{Elements of a \texttt{Rect}-/\texttt{FRect}-Object}\label{picRect01}
+\caption{Elements of a \texttt{Rect}-/\texttt{FRect}-object}\label{picRect01}
 \end{figure}
 
 \pygindex{rect!Rect!centerx}%
@@ -136,7 +136,7 @@ As a result, the screen information can be accessed conveniently and without per
 
 For \texttt{Surface} objects, we can conveniently create a \texttt{Rect} object using \texttt{pygame.Surface\-.get\-\_rect()}\pygindex{Surface!get\_rect()}\randnotiz{get\_rect()} (\zeiref{srcInvader0501}). Positioning can now be handled much more easily via the attributes. For example, the center no longer needs to be part of a calculation; instead, I~can directly set the horizontal center to half the window width (\zeiref{srcInvader0502}). Likewise, the vertical coordinate no longer has to be considered from the top edge; instead, I~can specify the distance of the bottom edge from the screen edge in a much more intuitive way (\zeiref{srcInvader0503}). And as a final bonus, the \texttt{Rect} object can even be passed directly as a parameter to the \texttt{blit()} function\randnotiz{blit()}\pygindex{Surface!blit()} (\zeiref{srcInvader0504}).
 
-\myebild{invader05.png}{0.8}{Moving Bitmaps, Version 1.0}{picInvader05}
+\myebild{invader05.png}{0.8}{Moving bitmaps, version 1.0}{picInvader05}
 
 The result is unspectacular (see \abbref[vref]{picInvader05}) and has
 nothing to do with movement yet.
@@ -200,7 +200,7 @@ The subsequent collision checks are then performed using the \texttt{newpos} rec
 			\draw[>->, very thick, red, densely dotted] (a) -- (b) ;
 			\draw[>->, very thick, red, densely dotted] (c) -- (d) ;
 		\end{tikzpicture}
-	\caption{The Defender moves and bounces}\label{picBewegung01}
+	\caption{The defender moves and bounces}\label{picBewegung01}
 	\end{center}
 \end{figure}
 
@@ -392,14 +392,14 @@ The speed is adjusted from~2 to~600 in \zeiref{srcInvader05f02}, and in \zeiref{
 
 We cannot solve the first problem without a significant loss of performance, so we will not consider it any further. The second problem, however, can be addressed. Instead of a fixed delta time, we need a value that is based on the actual duration of a frame. The method \texttt{pygame.clock.tick()}\pygindex{clock!tick()}\randnotiz{tick()} in \zeiref{srcInvader05g01} provides a good estimate of the frame time. Luckily, this feature is already built in and can therefore be used directly (see \srcref[vref]{srcInvader05g}). The result in \abbref[vref]{fpsbewegung02} is better, but still not satisfying~{:-(}. In \abbref[vref]{picFehlerInvers}, you can see that the red line more or less dances around the green one, and no clear trend is visible.
 
-\myebild{error_invers.pdf}{1.0}{Position Error of $1/fps$ and \texttt{pygame.clock.tick()}}{picFehlerInvers}
+\myebild{error_invers.pdf}{1.0}{Position error of $1/fps$ and \texttt{pygame.clock.tick()}}{picFehlerInvers}
 
 \lstsource{SRC/00 Introduction/04 Moving/dt/g/invader05g.py}{46}{49}{python}{Normalized Movement with \texttt{pygame.clock.tick()}}{srcInvader05g}
 
 The cause is a problem that we should have fixed immediately. In the assignment in \zeiref{srcInvader05f03} in \srcref[vref]{srcInvader05f}, the right-hand side is a floating-point value\index{float}, while the left-hand side is an \gls{int}\index{int}\randnotiz{Float for logic, Int for rendering}. As a result, the decimal places are truncated in every loop iteration. For example, if the spaceship were supposed to move by \SI{5.8}{px} in each frame, the following values would occur:
 
 \begin{longtable}{lrrrrrrrrr}
-	\caption{Error Propagation}\label{tabFpsBewegung04} \\
+	\caption{Error propagation}\label{tabFpsBewegung04} \\
 	% Definition des Tabellenkopfes auf der ersten Seite
 	\toprule
     Frame & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
@@ -407,7 +407,7 @@ The cause is a problem that we should have fixed immediately. In the assignment 
 	\endfirsthead % Erster Kopf zu Ende
 	
 	% Definition des Tabellenkopfes auf den folgenden Seiten
-	\caption{Error Propagation (continued)}\\
+	\caption{Error propagation (continued)}\\
 	\toprule
     Frame & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
 	\midrule
@@ -432,7 +432,7 @@ Recently, Pygame introduced a variant of \texttt{Rect}, namely \texttt{FRect}\py
 
 In \abbref[vref]{fpsbewegung03}, we can see that the result has already improved significantly. The deviation from the optimal value~\SI{315}{px} has also been reduced dramatically. The difference is visualized in \abbref[vref]{picFehlerFloat}.
 
-\myebild{error_float.pdf}{1.0}{Position Error of Rect and FRect}{picFehlerFloat}
+\myebild{error_float.pdf}{1.0}{Position error of Rect and FRect}{picFehlerFloat}
 
 However, there is yet another source of error: \texttt{pygame.clock.tick()}\pygindex{clock!tick()} does not provide enough decimal precision. Over long runtimes, the missing fractional parts accumulate and again lead to noticeable errors. There are better Python functions for measuring elapsed time.
 
@@ -442,7 +442,7 @@ In \zeiref{srcInvader05i02}, the current time is measured after one frame has el
 
 \abbref[vref]{fpsbewegung04} shows that the target positions are reached almost perfectly for all frame rates. However, comparing the position errors in \abbref[vref]{picFehlerFunktion} does not allow for a clear evaluation. I~suspect that experiments with significantly longer runtimes would make a difference visible. We must -- and can -- live with the remaining error.
 
-\myebild{error_function.pdf}{1.0}{Position Error with Different Time Functions}{picFehlerFunktion}
+\myebild{error_function.pdf}{1.0}{Position error with different time functions}{picFehlerFunktion}
 
 \newpage 
 \begin{figure}[p] 
@@ -503,7 +503,7 @@ In \zeiref{srcInvader05i02}, the current time is measured after one frame has el
 			\node (fps300) at (10.0, 0) {\fbox{\includegraphics[scale=0.35]{fps_05i_300_00.png}}};
 			\node (fps600) at (12.0, 0) {\fbox{\includegraphics[scale=0.35]{fps_05i_600_00.png}}};
 		\end{tikzpicture}
-		\caption[Movement with normalization and \texttt{time.time()}]{Movement with normalization and \texttt{time.time()} using constant speed but different fps (from left to right: 10, 30, 60, 120, 240, 300, 600), Version 3}\label{fpsbewegung04}%
+		\caption[Movement with normalization and \texttt{time.time()}]{Movement with normalization and \texttt{time.time()} using constant speed but different fps (from left to right: 10, 30, 60, 120, 240, 300, 600), version 3}\label{fpsbewegung04}%
 	\end{center}
 \end{figure}
 \newpage

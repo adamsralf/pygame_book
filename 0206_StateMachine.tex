@@ -11,7 +11,7 @@
 \begin{wrapfigure}[11]{r}{5.0cm}%
 	\begin{center}%
 		\vspace{-2em}%
-		\myfigure{ttt01.png}{0.35}{Tic-Tac-Toe -- Start}{picTtt01}%
+		\myfigure{ttt01.png}{0.35}{State machine -- start}{picTtt01}%
 	\end{center}%
 \end{wrapfigure}%
 Before we dive into the abstract concept of a state machine, let's look at a simple example that illustrates the problem it is designed to solve. In this case, using a state machine is a bit like using a sledgehammer to crack a nut -- but our goal here is simply to understand the underlying idea.
@@ -43,8 +43,6 @@ The start screen should display the game title and a short help text. This can b
 One small detail is worth mentioning: the fonts are stored in a static variable, namely the \texttt{FONTS} dictionary. Of course, there are other ways to organize this, but for a small project like this, the approach works well and keeps the code simple. The result is shown in \abbref[vref]{picTtt01}.
 
 \lstsource{src/01 Techniques/06 State Machine/v01/tictactoe.py}{1}{999}{python}{TicTacToe (\reqref{reqTicTacToeStart}) -- \texttt{tictactoe.py}}{srcTicTacToe01}
-
-%\myebild{ttt01.png}{0.35}{Tic-Tac-Toe -- Start Screen}{picTtt01}
 
 
 \subsubsection{The Playground}
@@ -101,7 +99,7 @@ The left mouse button is handled in a similar way. Mouse clicks are processed on
 \begin{wrapfigure}[10]{r}{5.5cm}%
 	\begin{center}%
 		\vspace{-2em}%
-		\myfigure{ttt02.png}{0.35}{Tic-Tac-Toe -- Playground}{picTtt02}%
+		\myfigure{ttt02.png}{0.35}{State machine -- playground}{picTtt02}%
 	\end{center}%
 \end{wrapfigure}%
 In \texttt{update()}, while the game is in the \emph{play} state, we first check whether the mouse click was inside the playground. If this is the case, the row and column numbers are calculated.
@@ -270,7 +268,7 @@ All that remains is to provide the appropriate parameter values and call the met
 
 \lstsource{src/01 Techniques/06 State Machine/v04/tictactoe.py}{144}{176}{python}{TicTacToe (\reqref{reqTicTacToeRestart}) -- \texttt{draw\_start(), draw\_win() und \texttt{draw\_draw()}}}{srcTicTacToe04b}
 
-\myezweihbild{ttt98.png}{0.35}{You've won}{picTtt1}{ttt99.png}{0.35}{It's a draw}{picTtt2}
+\myezweihbild{ttt98.png}{0.35}{State machine -- you've won}{picTtt1}{ttt99.png}{0.35}{State machine -- it's a draw}{picTtt2}
 
 But how do we react to the user's answer? First, \texttt{watch\_for\_events()} has to be extended. Starting at \zeiref{srcTictactoe0402}, the input is handled depending on the current status of the game.
 
@@ -410,7 +408,7 @@ For our example, the corresponding UML state machine diagram is shown in \abbref
 
 	
 \end{tikzpicture}
-\caption{Tic-Tac-Toe -- UML state machine diagram}\label{picUMLStateMachine01}
+\caption{State machine -- UML state machine diagram}\label{picUMLStateMachine01}
 \end{figure}
 
 In our example, the initial \emph{start} state is left when the player presses \keys{SPACE}, causing the application to enter the \emph{play} state. Throughout the program, chains of \texttt{if} statements are then used to determine the current state and decide how the program should react.
@@ -521,7 +519,7 @@ As a first example, let us look at the class \texttt{StartState}. Since the game
 		
 		\composition{Game}{}{1..1}{State}
 	\end{tikzpicture}
-	\caption{Example of a simple State Machine}\label{picStateMachine01}
+	\caption{State machine -- a simple example}\label{picStateMachine01}
 \end{figure}
 
 The methods \texttt{watch\_for\_events()}, \texttt{update()}, and \texttt{draw()} are now greatly simplified. They no longer contain any state-specific logic themselves. Instead, they simply delegate their work to the corresponding methods of the currently active state object.

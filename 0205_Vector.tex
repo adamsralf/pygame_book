@@ -1,0 +1,2544 @@
+% !TeX spellcheck = en_US
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Working with Vectors}\label{secVector}\index{Vector}\pygindex{math!Vector2|underline}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{A Simple Example: Asteroids}\label{secVectorStart}
+
+A spaceship drifts through space. A quick burst of thrust changes its velocity, and a turn sets the direction of its next shot. Asteroids cross its path, and an enemy drone starts chasing it. All these different situations share one useful tool: vectors.
+
+So far, we have often described positions and movement using separate x- and y-values or a \texttt{Rect} or \texttt{FRect} object. The \texttt{Vector2} and \texttt{Vector3} classes let us keep related components together and do calculations with them. This gives us a direct way to handle many common game programming tasks: Which direction is the target in? How far away is it? How does extra thrust change our velocity? And where does a projectile go after bouncing off a wall?
+
+In this chapter, we will build a small Asteroids-style game step by step. We will start with a single asteroid drifting steadily across the playing field, then add more features as we go. The goal is to explore examples and practical solutions using \texttt{Vector2}, rather than build a complete game. Each new feature gives us a chance to try another vector operation.
+
+We do not need fancy graphics or a strong maths background. Simple shapes and arrows will help us see what the code is doing. \texttt{Vector2} will be our companion throughout this two-dimensional game.%; We will get to know Vector3 as a version with an extra component.
+
+By the end of this chapter, you should be ready to use vectors to bring your own game ideas to life. Let's start with an asteroid and get it moving.
+
+
+\br{Start from Scratch}{reqVectorStart}
+	An asteroid tumbles through space. Press \keys{1} to \keys{5} to create asteroids of different sizes, and use \keys{SPACE} to remove them again.
+\er
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Start from Scratch}
+
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/05%20Vector/v0101}
+\end{diskbox}
+
+We start with some very simple code. The \texttt{config.py} file contains just a few basic settings.
+
+\begin{hintbox}[Colors]
+	I chose these colors to save your printer's black ink or toner when you print the pages, rather than for their looks.
+\end{hintbox}
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v0101/config.py}{1}{99}{python}{Asteroids (\reqref{reqVectorStart}) -- \texttt{config.py}}{srcVectorStart0101}
+
+\begin{wrapfigure}[11]{r}{7.0cm}%
+	\begin{center}%
+		\vspace{-2em}%
+		\myfigure{vector01.png}{0.3}{Vectors -- 1st version}{picVector01}%
+	\end{center}%
+\end{wrapfigure}%
+The constructor of Asteroid creates a transparent image and draws a closed, gray polygon on it -- the asteroid itself.
+
+Next, the asteroid is positioned as usual, and its horizontal and vertical velocity components are stored in \texttt{speed}. 
+
+The \texttt{update()} method then calculates the new position and repositions the asteroid if it has left the screen.
+
+We have already introduced and discussed this kind of logic earlier.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v0101/asteroids.py}{9}{30}{python}{Asteroids (\reqref{reqVectorStart}) -- \texttt{Asteroid}}{srcVectorAsteroid0101}
+
+The code in \texttt{Game} follows the pattern we have used several times already. Everything here should look familiar by now; this is just the simple starting point we will build on as we explore the next topics.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v0101/asteroids.py}{33}{71}{python}{Asteroids (\reqref{reqVectorStart}) -- \texttt{Game}}{srcVectorAsteroidGame0101}
+
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{More Asteroids}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/05%20Vector/v0102}
+\end{diskbox}
+
+\begin{wrapfigure}[12]{l}{7.0cm}%
+	\begin{center}%
+		\vspace{-2em}%
+		\myfigure{vector02.png}{0.3}{Vectors -- five asteroids}{picVector02}%
+	\end{center}%
+\end{wrapfigure}%
+Let's add our first feature: pressing \keys{SPACE} should create several asteroids with different sizes and velocities.
+
+You can see the five different asteroids in \abbref{picVector02}. They differ only in how they move (their direction and speed), but not in appearance.
+
+First, we add a class-level list containing the polygon data. Since this information is shared by all asteroids, defining it in the constructor would waste memory and processing time. 
+
+Each entry contains a size (30, 45, 60, 75, or 90) and a list of coordinate pairs that define the polygon.
+
+The constructor now takes a \texttt{number} parameter, which selects one of the five asteroid designs. The parameter value is not checked. Creating the Surface object and drawing the asteroid work just as before.
+
+The asteroid now always starts at the center of the screen, while its horizontal and vertical velocity components are chosen randomly.
+
+The two entries in \texttt{speed} together form the velocity vector. Its direction depends on the signs and the ratio of its components, while its magnitude is calculated using the \gls{pythagoreantheorem} (\abbref[vref]{picVectorSpeedComponents}). In the current code, \texttt{randint(250, 250)} always returns~250. Only the signs are random, so all asteroids move diagonally at the same speed of $250\sqrt{2}\approx\SI{353.6}{\pxsec}$.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v0102/asteroids.py}{10}{32}{python}{Asteroids (\reqref{reqVectorStart}) -- \texttt{Asteroid}}{srcVectorAsteroidShape0102}
+
+There is nothing particularly exciting in the \texttt{Game} constructor, apart from the rather unexpected dictionary \texttt{self.size\_by\_key}. Bear with me -- I will explain what it is for in a moment.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v0102/asteroids.py}{46}{61}{python}{Asteroids (\reqref{reqVectorStart}) -- \texttt{Game.\_\_init\_\_()}}{srcVectorGameInit0102}
+
+Nothing has changed in \texttt{run()}, but there are some updates to \texttt{watch\_for\_events()}. Pressing \keys{SPACE} removes the oldest asteroid, as long as there is still one in the list.
+
+Next, we want the keys \keys{1} to \keys{5} to create asteroids~0 to~4, respectively. We could write five (!) \texttt{elif} branches, or we could use the \texttt{size\_by\_key} dictionary defined above. Its keys are \texttt{pygame.K\_1} to \texttt{pygame.K\_5}, which are exactly the values we receive in \texttt{event.key}. We can therefore use \texttt{event.key} to look up the matching asteroid number directly. I find this more elegant than all those \texttt{elif} branches.
+
+Give it a try: you can now create as many asteroids as you like and remove them again.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v0102/asteroids.py}{75}{88}{python}{Asteroids (\reqref{reqVectorStart}) -- \texttt{Game.watch\_for\_events()}}{srcVectorGameWatch0102}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Visual Aids (Direction and Speed)}\label{secVectorHelplines}
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/05%20Vector/v02}
+\end{diskbox}
+
+\br{Visual Aids}{reqVectorHelplines}
+	I would like to display each asteroid's direction and speed using a red arrow. Its length should represent the speed, and it should point in the asteroid's direction of travel. 
+\er
+
+But what exactly do we mean by the asteroid's speed? In the code above, we randomly chose the horizontal and vertical velocity components from~$[-250, +250]$. Does that mean we always have to talk about two separate speeds?
+
+Let's look at an example with:
+\begin{codebox}
+self.speed[0] = 250
+self.speed[1] = 250	
+\end{codebox}
+\Abbref[vref]{picVectorSpeedComponents} helps us picture this. The horizontal and vertical components combine to produce the asteroid's actual movement. Since they are perpendicular to each other, we can arrange them as the two legs of a right-angled triangle:
+\begin{itemize}
+	\item $v_x=\texttt{speed[0]}=\SI{250}{\pxsec}$ is the horizontal leg,
+	\item $v_y=\texttt{speed[1]}=\SI{250}{\pxsec}$ is the vertical leg, and
+	\item $|\vec v|=\sqrt{v_x^2+v_y^2} = \sqrt{250^2 + 250^2} = 250\sqrt{2} \approx \SI{353.6}{\pxsec}$ is the length of the hypotenuse.
+\end{itemize}
+
+The example on the right in \abbref[vref]{picVectorSpeedComponents} changes only the horizontal velocity component to \SI{300}{\pxsec} -- yes, I know \SI{250}{\pxsec} was the maximum, but the diagram fits so nicely alongside the first one ;-) You can clearly see that both the length of the hypotenuse and the angle~$\alpha$ have changed.
+
+\begin{figure}[htbp]
+	\centering
+	\begin{tikzpicture}[
+		x=0.8cm, y=-0.8cm, >=Latex,
+		every node/.style={font=\small},
+		component/.style={->, very thick, blue!70!black},
+		resultant/.style={->, ultra thick, red!75!black}
+		]
+		\coordinate (O) at (0,0);
+		\coordinate (X) at (6,0);
+		\coordinate (Y) at (0,6);
+		\coordinate (V) at (6,6);
+		
+		\draw[->, gray!70] (-0.6,0) -- (6.1,0) node[right] {$+x$};
+		\draw[->, gray!70] (0,-0.6) -- (0,5.9) node[below] {$+y$};
+		\draw[densely dashed, gray] (Y) -- (V);
+		\draw[->, densely dashed, blue!70!black] (X) -- (V);
+		\draw[gray] (5.72,0) -- (5.72,0.28) -- (6,0.28);
+		
+		\draw[component] (O) -- (X)	node[midway, above=5pt] {$v_x=\texttt{speed[0]}=\SI{250}{px/s}$};
+		\draw[component] (O) -- (Y)	node[midway, sloped, below=5pt, align=right] {$v_y=\texttt{speed[1]}=\SI{250}{px/s}$};
+		\draw[resultant] (O) -- (V)	node[pos=0.5, sloped, above=5pt] {total velocity $\vec v$};
+		\draw[gray!80] (0.9,0) arc[start angle=0,end angle=45,radius=0.9];
+		\node at (1.2,0.45) {$\alpha$};
+		\fill (O) circle (2pt) node[above left] {Asteroid};
+		\fill[red!75!black] (V) circle (2pt);
+		
+		\begin{scope}[xshift=7.5cm]
+			\coordinate (O2) at (0,0);
+			\coordinate (X2) at (7.5,0);
+			\coordinate (Y2) at (0,6);
+			\coordinate (V2) at (7.5,6);
+			
+			\draw[->, gray!70] (-0.6,0) -- (7.5,0) node[right] {$+x$};
+			\draw[->, gray!70] (0,-0.6) -- (0,5.9) node[below] {$+y$};
+			\draw[densely dashed, gray] (Y2) -- (V2);
+			\draw[->, densely dashed, blue!70!black] (X2) -- (V2);
+			\draw[gray] (7.23,0) -- (7.23,0.28) -- (7.5,0.28);
+			
+			\draw[component] (O2) -- (X2) node[midway, above=5pt] {$v_x=\texttt{speed[0]}=\SI{300}{px/s}$};
+			\draw[component] (O2) -- (Y2) node[midway, sloped, below=5pt, align=right] {$v_y=\texttt{speed[1]}=\SI{250}{px/s}$};
+			\draw[resultant] (O2) -- (V2) node[pos=0.5, sloped, above=5pt] {total velocity $\vec v$};
+			\draw[gray!80] (O2) ++(0.9,0) arc[start angle=0,end angle=38.7,radius=0.9];
+			\node at (1.25,0.4) {$\alpha$};
+			\fill (O2) circle (2pt) node[above left] {Asteroid};
+			\fill[red!75!black] (V2) circle (2pt);
+		\end{scope}
+	\end{tikzpicture}
+	\caption{Vectors -- horizontal and vertical velocity combined}
+	\label{picVectorSpeedComponents}
+\end{figure}
+
+We can also read the two diagrams the other way around. So far, we have used the horizontal and vertical velocity components to calculate the overall speed. In practice, we often do the opposite: we know the speed and direction, but need the horizontal and vertical components to update the position. So let's assume we know the speed $|\vec v|$ and the angle $\alpha$. How do we find the components $v_x$ and $v_y$?
+
+Let's look at the right-angled triangle again. The angle $\alpha$ is measured from the positive x-axis to the direction of movement. The horizontal component $v_x$ is the adjacent side, the vertical component $v_y$ is the opposite side, and the speed is the length of the hypotenuse. From the definitions of sine and cosine, we get:
+
+\[
+\cos(\alpha)=\frac{v_x}{|\vec v|}
+\qquad\text{and}\qquad
+\sin(\alpha)=\frac{v_y}{|\vec v|}.
+\]
+
+Multiplying both equations by $|\vec v|$ gives us the velocity components we are looking for:
+
+\begin{minipage}{0.44\linewidth}
+	\begin{equation}
+		\boxed{v_x=|\vec v|\cdot\cos(\alpha)}
+		\label{eqn_vx}
+	\end{equation}
+\end{minipage}%
+\hfill
+\begin{minipage}{0.08\linewidth}
+	\centering
+	und
+\end{minipage}%
+\hfill
+\begin{minipage}{0.44\linewidth}
+	\begin{equation}
+		\boxed{v_y=|\vec v|\cdot\sin(\alpha)}
+		\label{eqn_vy}
+	\end{equation}
+\end{minipage}
+
+For the example on the left, we know the speed $|\vec v|=250\sqrt{2}\,\mathrm{px/s}$ and the angle $\alpha=45^\circ$. Since sine and cosine both have the value $\frac{\sqrt{2}}{2}$ at this angle, we get our original components back:
+
+\[
+v_x=250\sqrt{2}\cdot\frac{\sqrt{2}}{2}=\SI{250}{\pxsec},
+\qquad
+v_y=250\sqrt{2}\cdot\frac{\sqrt{2}}{2}=\SI{250}{\pxsec}.
+\]
+
+This lets us define movement using its speed and direction. If we change only the angle, the speed stays the same, while the horizontal and vertical components change.
+In Pygame, we need to keep the screen coordinates in mind: the positive y-axis points downwards. With the formulas above, $\alpha=0^\circ$ therefore means moving to the right, and $\alpha=90^\circ$ means moving downwards. Positive angles turn the direction of movement clockwise on the screen.
+
+In game programming, we often start with the overall speed~$|\vec v|$ and direction angle~$\alpha$, rather than the two velocity components~$v_x$ and~$v_y$. Think, for example, of calculating the angle from a starting position to a target so we can fire a projectile in that direction.
+
+So let's change the Asteroid class to choose a random speed and angle instead of random velocity components. We can then use those same values to draw the direction arrow.
+
+A key part of the solution is the \texttt{pygame.math.Vector2}\pygindex{math!Vector2}\randnotiz{Vector2} class. It takes care of many of these calculations for us.
+
+\begin{hintbox}[pygame.math.Vector2]
+	An object of this class stores two related numbers as its x- and y-components. For example, \texttt{pygame.math.Vector2(250, 0)} creates a vector with an x-component of~250 and a y-component of~0. If we use it as a velocity vector, it describes movement to the right at \SI{250}{\pxsec}.
+	
+	So what makes this class special? Unlike a simple tuple, a \texttt{Vector2} object supports vector calculations directly. Multiplying it by a number multiplies both components by that number. Adding two vectors adds their matching x- and y-components. We do not have to write separate calculations for each component.
+	
+	The class also provides several useful methods, including:
+	\begin{itemize}
+		\item \texttt{length()}\pygindex{math!Vector2!length()} returns the vector's length. For our velocity vector, this is the speed~$|\vec v|$.
+		\item \texttt{rotate()}\pygindex{math!Vector2!rotate()} lets us turn a vector through a given angle without changing its length. This allows us to change an asteroid's direction of movement while keeping its speed the same.
+		\item \texttt{normalize()}\pygindex{math!Vector2!normalize()} creates a new vector that points in the same direction but has a length of~$|\vec v| = 1$. We use this \gls{einheitsvektor}, when we only need the direction or want to set a particular length by multiplying it afterwards. The original vector stays unchanged. A vector of length~0 cannot be normalized because it has no direction.
+	\end{itemize}
+	
+	A vector does not know whether it represents a position or a velocity. We give it that meaning through the way we use it in our program.
+\end{hintbox}
+
+First, \zeiref{asteroid0201} sets the speed~$|\vec v|$ to a random value from~$[100, 250]$. Then, \zeiref{asteroid0202} picks the direction~$\alpha$ as another random number from~$[0, 359]$.
+
+Two things happen in \zeiref{asteroid0203}. First, we create the velocity vector~$\vec v$. Its initial components might look a little odd: $v_x = totalspeed$ and $v_y = 0$. But think about it -- the speed~$|\vec v|$ is now exactly $totalspeed$:
+
+$|\vec v| = \sqrt{totalspeed^2 + 0^2} = \sqrt{totalspeed^2} = totalspeed$
+
+Next, \texttt{pygame.math.Vector2.rotate()}\pygindex{math!Vector2!rotate()}\randnotiz{rotate()} rotates this vector through the angle~$\alpha$. This applies exactly the calculations shown in formula~\ref{eqn_vx} for~$v_x$ and formula~\ref{eqn_vy} for~$v_y$. Without having to do the maths ourselves, \texttt{self.speed} now contains the correct velocity vector~$\vec v$, with the chosen speed~$|\vec v|$ and direction~$\alpha$.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v02/asteroids.py}{24}{33}{python}{Asteroids (\reqref{reqVectorHelplines}) -- \texttt{Asteroid.\_\_init\_\_()}}{srcVectorAsteroidInit02}
+
+Vectors also make the \texttt{update()} method in \texttt{Asteroid} simpler. First, we store the asteroid's center position in a \texttt{Vector2} object. In \zeiref{asteroid0205}, we update this position by adding \texttt{speed * DELTATIME}. Then, in \zeiref{asteroid0206}, we assign the new position to the center of the sprite's \texttt{self.rect}. Everything else stays the same.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v02/asteroids.py}{35}{46}{python}{Asteroids (\reqref{reqVectorHelplines}) -- \texttt{Asteroid.update()}}{srcVectorAsteroidUpdate02}
+
+I also added the helper method \texttt{draw\_velocity()}, which can display the speed and direction as a red arrow whenever we want. It makes the velocity vector visible by drawing an arrow from the asteroid's center. The arrow points in the direction of movement, and its length is proportional to the speed. The \texttt{surface} parameter specifies where the arrow should be drawn; in our case, this will be the \texttt{screen}.
+
+\begin{hintbox}
+	This next part can get a little tricky. Keep an eye on \abbref[vref]{picVectorDrawVelocity} as you read along.
+\end{hintbox}
+
+First, we store the asteroid's center in \texttt{start} as a \texttt{Vector2}. Next, \texttt{self.speed.normalize()}\pygindex{math!Vector2!normalize()}\randnotiz{normalize()} creates a unit vector, which we store in \texttt{direction}. The original vector \texttt{self.speed} stays unchanged. We will use this unit vector in a moment to keep the arrowhead the same size, regardless of the speed.
+
+We calculate the arrow's endpoint with \texttt{start + self.speed * 0.15}. This multiplication scales the velocity vector to a suitable length for drawing. At a speed of \SI{200}{\pxsec}, for example, the arrow is \SI{30}{\pixel} long. You can think of it as the distance the asteroid would travel in \SI{0.15}{\second} at a constant velocity.
+
+The arrowhead needs three corner points. The first is the endpoint \texttt{end}, which we have already calculated. The other two sit on a shared base behind this point. To find the midpoint of that base, \texttt{arrow\_base}, we subtract \texttt{direction * 7} from \texttt{end}. In other words, we start at the arrow's tip and move back exactly \SI{7}{\pixel} against the direction of movement.
+
+\begin{wrapfigure}[12]{l}{7.0cm}%
+	\begin{center}%
+		\vspace{-2em}%
+		\myfigure{vector03.png}{0.3}{Vectors -- velocity vector}{picVector03}%
+	\end{center}%
+\end{wrapfigure}%
+Now we need a sideways offset. To get it, we turn the unit vector through a right angle using \texttt{direction.rotate(90)} and multiply it by~4. The resulting vector, \texttt{arrow\_side}, is perpendicular to the direction of movement and has a length of \SI{4}{\pixel}. Adding this vector to \texttt{arrow\_base} and subtracting it from \texttt{arrow\_base} gives us the two side corners. Our triangular arrowhead is therefore \SI{7}{\pixel} long and \SI{8}{\pixel} wide at its base.
+
+Finally, \texttt{pygame.draw.line()} draws the red arrow shaft with a line width of two pixels. Then \texttt{pygame.draw.polygon()} draws the filled arrowhead using the three points \texttt{end}, \texttt{arrow\_base + arrow\_side}, and \texttt{arrow\_base - arrow\_side}.
+
+Normalization requires the velocity vector to have a length greater than~0. Here, the randomly chosen speed from~$[100,250]$ guarantees this.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v02/asteroids.py}{48}{59}{python}{Asteroids (\reqref{reqVectorHelplines}) -- \texttt{Asteroid.draw\_velocity()}}{srcVectorAsteroidDrawVelocity02}
+
+\begin{figure}[htbp]
+	\centering
+\begin{tikzpicture}[
+	x=1cm, y=-1cm,
+	>=Latex,
+	every node/.style={font=\small},
+	point/.style={circle, fill=black, inner sep=2pt},
+	helper/.style={densely dashed, gray},
+	dimension/.style={<->, gray!80}
+	]
+	% Schematische Darstellung:
+	% Die Pfeilspitze ist 7 px lang und 8 px breit.
+	\coordinate (S) at (0,0);
+	\coordinate (E) at (8,0);
+	\coordinate (B) at (5.9,0);
+	\coordinate (P) at (5.9,1.2);
+	\coordinate (M) at (5.9,-1.2);
+	
+	% Pfeilschaft und gefüllte Pfeilspitze
+	\draw[red!75!black, very thick] (S) -- (E);
+	\filldraw[draw=red!75!black,fill=red!15,thick] (E) -- (P) -- (M) -- cycle;
+	
+	% Hilfslinie entlang der Basis
+	\draw[helper] (M) -- (P);
+	
+	% Rückweg von end zum Mittelpunkt der Basis
+	\draw[->, blue!70!black, thick](8,-1.85) -- (5.9,-1.85)	node[midway, above=3pt]	{$-\mathtt{direction}\cdot 7$};
+	\draw[helper] (E) -- (8,-2.15);
+	\draw[helper] (B) -- (5.9,-2.15);
+	
+	% Seitlicher Versatz: direction.rotate(90) * 4
+	\draw[->, blue!70!black, thick]	(B) -- (P) node[midway, right=5pt]	{$+\mathtt{arrow\_side}$};
+	
+	\draw[->, blue!70!black, thick]	(B) -- (M) node[midway, right=5pt]	{$-\mathtt{arrow\_side}$};
+	
+	% Punkte und ihre Bezeichnungen
+	\node[point] at (S) {};
+	\node[above=6pt, align=center] at (S) {\texttt{start}};
+	
+	\node[point] at (E) {};
+	\node[right=7pt] at (E) {\texttt{end}};
+	
+	\node[point] at (B) {};
+	\node[below left=5pt, align=right] at (B) {\texttt{arrow\_base}};
+	
+	\node[point] at (M) {};
+	\node[above left=4pt] at (M) {\texttt{arrow\_base - arrow\_side}};
+	
+	\node[point] at (P) {};
+	\node[below=7pt] at (P)	{\texttt{arrow\_base + arrow\_side}};
+	
+	% Abmessungen der Pfeilspitze
+	\draw[helper] (M) -- (4.7,-1.2);
+	\draw[helper] (P) -- (4.7,1.2);
+	\draw[dimension] (4.8,-1.2) -- (4.8,1.2) node[midway, left=4pt] {$8\,\mathrm{px}$};
+	
+	\draw[dimension] (5.9,-2.65) -- (8,-2.65) node[midway, above=3pt] {$7\,\mathrm{px}$};
+	
+	% Gesamtlänge des dargestellten Vektors
+	\draw[helper] (S) -- (0,2.65);
+	\draw[helper] (E) -- (8,2.65);
+	\draw[dimension] (0,2.5) -- (8,2.5)	node[midway, below=5pt]	{Pfeillänge: $|\vec v|\cdot 0{,}15$};
+\end{tikzpicture}
+	\caption{Vectors -- meaning of \texttt{draw\_velocity()}}
+\label{picVectorDrawVelocity}
+\end{figure}
+
+All that is left is to let us switch the arrow display on and off. The flag itself is defined in \texttt{config.py}.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v02/config.py}{1}{14}{python}{Asteroids (\reqref{reqVectorHelplines}) -- \texttt{config.py}}{srcVectorConfig02}
+
+Next, we extend \texttt{watch\_for\_events()} to handle presses of \keys{F2}.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v02/asteroids.py}{98}{99}{python}{Asteroids (\reqref{reqVectorHelplines}) -- \texttt{Game.watch\_for\_events()}}{srcVectorAsteroidWatch02}
+
+We then check this flag in \texttt{draw()} to decide whether to show the arrows.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v02/asteroids.py}{111}{117}{python}{Asteroids (\reqref{reqVectorHelplines}) -- \texttt{Game.draw()}}{srcVectorAsteroidDraw02}
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Spaceship with Discrete Rotation}\label{secVectorSpaceshipRotationSkip}
+
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/05%20Vector/v03}
+\end{diskbox}
+
+\br{Spaceship with Rotation}{reqVectorSpaceshipRotationSkip}
+Now I would like to add a spaceship and control it using the arrow keys.
+\begin{enumerate}
+	\item \keys{$\leftarrow$} turns the spaceship \SI{15}{\degree} to the left.
+	\item \keys{$\rightarrow$} turns the spaceship \SI{15}{\degree} to the right.
+	\item \keys{$\uparrow$} accelerates the spaceship at \SI{200}{$\pixel\per\second  ^2$}.
+\end{enumerate}
+A stream of particles should make the thrust visible. As with the asteroids, there should also be a velocity display that we can switch on and off using \keys{F1}.
+\er
+
+That is quite a few new features for our program. So let's start with the smallest one: the particles emitted when the spaceship accelerates.
+
+The particles are emitted by the spaceship, so they need its position and velocity. We can conveniently pass both values as \texttt{Vector2} arguments.
+
+\begin{hintbox}
+	We could have passed the spaceship itself instead. By passing just the position and velocity, we keep the particle class more general, so we can reuse it wherever we need a stream of particles.
+\end{hintbox}
+
+Each particle uses a \texttt{Surface} object that is \SI{6}{\pixel} wide and \SI{6}{\pixel} high. Its center is set to the position passed to the constructor. The particle's lifetime is chosen randomly from $[\SI{0.4}{\second}, \SI{0.9}{\second}]$. We store its remaining lifetime in \texttt{self.remaining}. On each call to \texttt{update()}, this value is reduced by \texttt{cfg.DELTATIME} until it eventually reaches a value~$\leq~0$. At that point, \texttt{kill()}\pygindex{sprite!Sprite!kill()}\randnotiz{kill()} removes the sprite from its groups.
+
+\begin{hintbox}
+	Let's take a closer look at \zeiref{asteroid0304}. This line is a good example of how \texttt{Vector2} makes our code simpler. To move the particle, we need to change its position both horizontally and vertically. Without vectors, we would normally do two separate calculations: one for the x-coordinate and one for the y-coordinate. With \texttt{Vector2}, we can combine both calculations in a single expression.
+	
+	First, \texttt{pygame.Vector2(self.rect.center)} creates a vector from the two coordinates of the particle's current center. \texttt{self.speed} is also a \texttt{Vector2} object. Its components describe how fast the particle moves horizontally and vertically, both in pixels per second.
+	
+	Multiplying by \texttt{cfg.DELTATIME}, the time in seconds since the previous frame, gives us the displacement vector for the current frame. \texttt{Vector2} automatically multiplies both velocity components by the same time value. For example, if the particle has a velocity of $\mysi{(100, -50)}{\pixel\per\second}$ and $\SI{0.02}{\second}$ have passed, the displacement is $\Delta \overrightarrow{pos} = \mysi{(2, -1)}{\pixel}$. The particle therefore moves two pixels to the right and one pixel upwards.
+	
+	\[
+	\Delta \overrightarrow{pos}
+	= \vec{v} \cdot \Delta t
+	= \begin{pmatrix} 100 \\ -50 \end{pmatrix} \,\frac{\mathrm{px}}{\mathrm{s}}	\cdot 0.02\,\mathrm{s}
+	= \begin{pmatrix} 2 \\ -1 \end{pmatrix}	\,\mathrm{px}
+	\]
+	
+	Next, we add this displacement vector to the previous position. Once again, \texttt{Vector2} handles the matching components: the horizontal displacement is added to the x-coordinate, and the vertical displacement to the y-coordinate. The result is assigned back to the center, \texttt{self.rect.center}. Since we use an \texttt{FRect}, fractional coordinates are preserved too.
+	
+	\[
+	\overrightarrow{center}
+	= \overrightarrow{center} + \Delta \overrightarrow{pos}
+	= \begin{pmatrix} 35 \\ 150 \end{pmatrix}\,\mathrm{px}  + \begin{pmatrix} 2 \\ -1 \end{pmatrix}
+	\,\mathrm{px}
+	= \begin{pmatrix} 37 \\ 149 \end{pmatrix} \,\mathrm{px}
+	\]
+	
+	We can read the whole movement calculation directly as
+	\[\text{new position} = \text{previous position} + \text{velocity} \times \text{elapsed time}\]
+	We no longer need to handle the two coordinates separately. Instead, we can focus on the actual game task: moving the particle according to its velocity.
+\end{hintbox}
+
+\definecolor{localred}{RGB}{225, 185, 110}
+\definecolor{localyellow}{RGB}{190, 100, 0}
+What is going on with the colors and the repeated redrawing of particles in \texttt{update\-\_color()}? This method changes a thrust particle's color over its lifetime and gradually fades it out. It starts out \fcolorbox{localyellow}{localyellow!10}{reddish brown} and becomes \fcolorbox{localred}{localred!10}{more yellow}. This color change helps create the fading effect.
+
+First, though, the method checks whether the particle's lifetime has already ended. If \texttt{remaining} is less than or equal to zero, \texttt{return} exits the method immediately. Next, \zeiref{asteroid0301} calculates how much of the particle's lifetime has passed. For a newly created particle, \texttt{remaining} and \texttt{lifetime} are equal, so \texttt{progress} is~0. Halfway through its lifetime, the value is~{0.5}; towards the end, it approaches~1.
+
+Using this progress value, the method calculates a color between \texttt{start\_color} and \texttt{end\_color}. Each color consists of three components: red, green, and blue. The Python function \texttt{zip()}\index{zip()}\randnotiz{zip()} pairs up the matching components: first the two red values, then the green values, and finally the blue values. The same calculation is applied to each pair in \zeiref{asteroid0302}. A neat use of \texttt{zip()}, right?
+
+At \texttt{progress == 0}, we get the starting value; at \texttt{progress == 1}, we get the final value. In between, we get a matching blend of the two. This gradual, even transition is called \gls{linearinterpolation}. \texttt{int()}\index{int()}\randnotiz{int()} converts the result to an integer, and \texttt{tuple()}\index{tuple()}\randnotiz{tuple()} combines the three calculated values into an RGB color.
+
+Next, \zeiref{asteroid0303} clears the old image to make it fully transparent, then draws a centered circle with a radius of \SI{3}{\pixel} in the calculated color. Finally, the opacity of the entire particle image is adjusted. At the start, the particle is fully opaque, with an $\alpha$ value of~255. As its remaining lifetime decreases, this value drops towards~0. The particle therefore becomes more yellow and more transparent until \texttt{update()} removes it from its sprite group.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v03/asteroids.py}{49}{80}{python}{Asteroids (\reqref{reqVectorSpaceshipRotationSkip}) -- \texttt{Particle}}{srcVectorAsteroidParticle02}
+
+Now let's move on to the spaceship. Its constructor works just like the one in \texttt{Asteroid} (see \srcref[vref]{srcVectorAsteroidInit02}): we draw a triangle pointing forwards on a $\SI{40}{\pixel} \times \SI{40}{\pixel}$ surface. The new additions are the particle list \texttt{particle}, so the spaceship can add particles directly to it, the current rotation \texttt{rotation}, and the current thrust acceleration \texttt{thrust}.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v03/asteroids.py}{83}{95}{python}{Asteroids (\reqref{reqVectorSpaceshipRotationSkip}) -- \texttt{Spaceship.\_\_init\_\_()}}{srcVectorSpaceshipInit03}
+
+As usual, the \texttt{update()} method receives control commands and uses them to change the spaceship's state. These commands are passed as keyword arguments, which arrive in the \texttt{kwargs} dictionary. For example, we can trigger a turn with
+\begin{codebox}
+	update(rotate="left")
+\end{codebox}
+or switch on the thrust with
+\begin{codebox}
+	update(action="thrust")
+\end{codebox}
+
+First, the method checks whether the key \verb+"rotate"+ was passed. Its value determines the direction of rotation: \verb+"left"+ sets \texttt{self.rotation} to the negative value of \texttt{cfg.ROTATION\_SPEED}, while \verb+"right"+ sets it to the positive value. The command \verb+"stop"+ sets this value to~0. Then \texttt{self.rotation} is added to the current angle, \texttt{self.angle}.
+
+The calculation in \zeiref{asteroid0305} keeps the angle in the range from~\SI{0}{\degree} to~\SI{359}{\degree}. The modulo operator gives us the remainder after division by~360. For example, an angle of \SI{370}{\degree} becomes~\SI{10}{\degree}, while~\SI{-10}{\degree} becomes~\SI{350}{\degree}. In each case, the new value represents the same orientation as the original one. This prevents the stored angle from growing larger or smaller with every turn.
+
+Next, the method checks for an \verb+"action"+ command. The value \verb+"thrust"+ activates the engine by setting \texttt{self.thrust} to \texttt{cfg.THRUST}. The command \verb+"unthrust"+ switches the thrust off again. This does not change the existing velocity: the spaceship keeps drifting due to its inertia.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v03/asteroids.py}{97}{113}{python}{Asteroids (\reqref{reqVectorSpaceshipRotationSkip}) -- \texttt{Spaceship.update()}}{srcVectorSpaceshipUpdate03}
+
+Finally, the command \verb+"move"+ calls the \texttt{move()} method. This method calculates the direction from the angle, creates thrust particles when needed, and updates the velocity and position. \texttt{Vector2} plays a central role here: directions, velocities, and positions can each be handled as a pair of related values. \texttt{move()} also takes care of displaying the rotated spaceship and wrapping it around the screen edges.
+
+This makes \texttt{update()} the central entry point for control commands, while \texttt{move()} brings the movement calculations together. There is one detail to keep in mind about the current implementation: the angle only changes when \texttt{update()} is called with \texttt{rotate}. Storing a value in \texttt{self.rotation} alone does not make the spaceship keep turning in later frames.
+
+First, \zeiref{asteroid0306} calculates the direction the spaceship is facing. 
+\begin{codebox}
+	direction = pygame.Vector2(0, -1).rotate(self.angle)
+\end{codebox}
+The vector $(0, -1)$ points straight up on the screen because the y-coordinate increases downwards. This matches the original orientation of our drawn triangle. Calling \texttt{rotate(self.angle)} creates a new vector rotated through the current angle. At \SI{90}{\degree}, for example, it points to the right. Its length stays at~1 during rotation, so \texttt{direction} represents only a direction.
+
+When the engine is on, we first calculate the starting position of a thrust particle (\zeiref{asteroid0307}). 
+\begin{codebox}
+	position = pygame.Vector2(self.rect.center) - direction * 15
+\end{codebox}
+The spaceship's center is converted to a \texttt{Vector2}. The expression \texttt{direction * 15} gives us a vector pointing~\SI{15}{\pixel} in the direction the spaceship is facing. Since we subtract this vector from the center, the resulting position is~\SI{15}{\pixel} \emph{behind} the center. This makes the particle emission automatically follow every turn of the spaceship.
+
+The particle's velocity is also calculated using vectors, in \zeiref{asteroid0308}. 
+\begin{codebox}
+	speed = self.speed - direction.rotate(uniform(-30, 30)) * uniform(100, 180)
+\end{codebox}
+We start with the spaceship's current velocity (\texttt{self.speed}), which the emitted particle initially inherits. From this, we subtract an extra velocity pointing roughly in the direction the spaceship is facing. This gives the particle a backwards motion relative to the spaceship.
+
+A random rotation between~\SI{-30}{\degree} and~\SI{30}{\degree} spreads out the emission direction. A second random number sets the ejection speed between~100 and \SI{180}{\pxsec}. Together, these create a fan-shaped stream of particles. A particle does not necessarily move backwards on the screen: if the spaceship is already moving forwards very quickly, the particle may also keep moving forwards, while falling behind the ship.
+
+\newpage
+In \zeiref{asteroid0309}, we update the velocity \texttt{self.speed}. 
+\begin{codebox}
+	self.speed += direction * self.thrust * cfg.DELTATIME
+\end{codebox}
+The direction vector is multiplied by the thrust strength. Since \texttt{self.thrust} represents an acceleration in~$px/s^2$, this gives us an acceleration vector pointing in the direction the spaceship is facing. Multiplying this by the elapsed time then gives us the change in velocity for the current frame:
+\[
+\overrightarrow{speed_{\mathrm{neu}}}
+= \overrightarrow{speed_{\mathrm{alt}}}
++ \overrightarrow{direction} \cdot thrust \cdot \Delta t
+\]
+
+This change is added to the existing velocity. That is essential to how the spaceship flies: thrust changes the current velocity rather than replacing it. Sideways thrust therefore gradually bends the flight path. When the engine is switched off, \texttt{self.thrust} is~0 and the velocity stays the same.
+
+The next line uses this updated velocity to calculate the new position. 
+\begin{codebox}
+	position = pygame.Vector2(self.rect.center) + self.speed * cfg.DELTATIME
+\end{codebox}
+Multiplying velocity by elapsed time gives us the displacement for the current frame, which we add to the previous position. \texttt{Vector2} handles both coordinates together: the x-component determines the horizontal movement, and the y-component determines the vertical movement.
+
+Next, the original spaceship image is rotated to match the direction it is facing (see \zeiref{asteroid0310}). 
+\begin{codebox}
+	self.image = pygame.transform.rotate(self.original_image, -self.angle)
+\end{codebox}
+The negative sign compensates for the different rotation directions of \texttt{Vector2.rotate()}\pygindex{math!Vector2!rotate()} in screen coordinates and \texttt{pygame.transform.rotate()}\pygindex{transform!rotate()}. This makes the triangle's tip point in the same direction as \texttt{direction}. Since rotating the image can change its dimensions, we create a new \texttt{FRect} and center it at the position calculated earlier. This also preserves fractional coordinates.
+
+This method clearly shows that the direction the spaceship faces and the direction it travels are two different things: \texttt{direction} describes where the spaceship is pointing and which way its thrust acts. \texttt{self.speed}, on the other hand, describes where it is actually going and how fast. The way these two work together creates that familiar \emph{Asteroids} flight feel.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v03/asteroids.py}{115}{132}{python}{Asteroids (\reqref{reqVectorSpaceshipRotationSkip}) -- \texttt{Spaceship.move()}}{srcVectorSpaceshipMove03}
+
+All that is left is to integrate this into \texttt{Game}. In \zeiref{asteroid0311}, we create the particle group, followed immediately by the \texttt{Spaceship} object as the sole sprite in a \texttt{GroupSingle}.. 
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v03/asteroids.py}{135}{152}{python}{Asteroids (\reqref{reqVectorSpaceshipRotationSkip}) -- \texttt{Game.\_\_init\_\_()}}{srcVectorGameInit03}
+
+The \texttt{watch\_for\_events()} method now needs to catch and forward the spaceship's control commands. To keep things simple, the first line assigns the spaceship to the local variable spaceship. This saves some typing and also avoids type-checking issues.
+
+From \zeiref{asteroid0313} onwards, the spaceship's control commands are passed to the \texttt{update()} method of \texttt{Spaceship}. Releasing the relevant keys then stops the corresponding action.
+
+
+% Requires \usepackage{array} in the preamble.
+\begin{longtable}{>{\ttfamily}l>{\ttfamily}ll}
+	\caption{Control the spaceship using the keyboard events (1)}
+	\label{tabAsteroidsEvents1}\\
+	\toprule
+	\textbf{event.type} &
+	\textbf{event.key} &
+	\textbf{Action} \\
+	\midrule
+	\endfirsthead
+	
+	\toprule
+	\textbf{event.type} &
+	\textbf{event.key} &
+	\textbf{Action} \\
+	\midrule
+	\endhead
+	
+	\midrule
+	\multicolumn{3}{r}{\emph{Continued on the next page}} \\
+	\endfoot
+	
+	\bottomrule
+	\endlastfoot
+	
+	KEYDOWN & K\_LEFT & Send a command to turn left. \\
+	
+	KEYDOWN & K\_RIGHT & Send a command to turn right. \\
+	
+	KEYDOWN & K\_UP & Switch on the spaceship's thrust. \\
+	
+	KEYUP & K\_UP & Switch off the spaceship's thrust. \\
+\end{longtable}
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v03/asteroids.py}{167}{191}{python}{Asteroids (\reqref{reqVectorSpaceshipRotationSkip}) -- \texttt{Game.watch\_for\_events()}}{srcVectorGameWatch03}
+
+\begin{wrapfigure}[12]{r}{7.0cm}%
+	\begin{center}%
+		\vspace{-2em}%
+		\myfigure{vector04.png}{0.3}{Vectors -- spaceship}{picVector04}%
+	\end{center}%
+\end{wrapfigure}%
+There is one more design change to make. So far, drawing a red arrow to show direction and speed has been handled by \texttt{draw\_velocity()} in the \texttt{Asteroid} class. But we need exactly the same functionality for the spaceship.
+
+So I moved \texttt{draw\_velocity()} to \texttt{Game}. I also added a check of the velocity vector's length at the start, in \zeiref{asteroid0314}, because a vector of length~0 cannot be normalized.
+
+This also makes sense for the display: a vector of length~0 gives us no red arrow to draw. It represents zero speed and has no defined direction.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v03/asteroids.py}{211}{223}{python}{Asteroids (\reqref{reqVectorSpaceshipRotationSkip}) -- \texttt{Game.draw\_velocity()}}{srcVectorGameDrawVolocity03}
+
+Now we just need to add this to \texttt{draw()}. Lines~\ref{asteroid0315} and~\ref{asteroid0316} draw the particles and the spaceship. Note that lines~\ref{asteroid0317} and~\ref{asteroid0318} call \texttt{draw\_velocity()} from the \texttt{Game} class, rather than methods from \texttt{Asteroid} or \texttt{Spaceship}.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v03/asteroids.py}{200}{209}{python}{Asteroids (\reqref{reqVectorSpaceshipRotationSkip}) -- \texttt{Game.draw()}}{srcVectorGameDraw03}
+
+In \abbref[vref]{picVector04}, you can see the spaceship on the right, along with its particle trail and direction vector.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Spaceship with Continuous Rotation and Stop Function}\label{secVectorSpaceshipRotationStop}
+
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/05%20Vector/v04}
+\end{diskbox}
+
+\br{Continuous rotation + stop function}{reqVectorSpaceshipRotationStop}
+ 
+\begin{enumerate}
+	\item Rotation is continuous rather than happening in \SI{15}{\degree} steps.
+	\item Pressing \keys{$\downarrow$} starts an automatic stopping maneuver or cancels it if it is already active.
+\end{enumerate}
+\er
+
+In version~04, we add two features to our spaceship's controls: continuous rotation based on elapsed time and an automatic braking maneuver. The basic movement using velocity vectors stays the same. Braking, in particular, shows how much work \texttt{Vector2} saves us.
+
+Let's start with continuous rotation. First, the meaning of \texttt{ROTATION\_SPEED} in \texttt{config.py} changes. In version~03, each turn command added \SI{15}{\degree} directly to the angle or subtracted it. This made the spaceship turn in fixed steps. In version~04, the value~180 represents an actual angular velocity of \SI{180}{\degree\per\second}.
+
+\newpage
+\lstsource{src/01 Techniques/05 Working with Vectors/v04/config.py}{7}{9}{python}{Asteroids (\reqref{reqVectorSpaceshipRotationStop}) -- \texttt{config.py}}{srcVectorConfig04}
+
+The \texttt{rotate()} method now handles the actual rotation. A control command first sets the desired direction: a negative value means turning left, and a positive value means turning right. Releasing either of the two arrow keys sets the angular velocity back to~0. In \zeiref{asteroid0401}, the change in angle is calculated as follows:
+\begin{codebox}
+	self.angle += self.rotation * cfg.DELTATIME
+\end{codebox}
+
+At 60~frames per second ($\Delta t \approx 1/60$) and an angular velocity of 180~degrees per second, for example, the angle changes by about 3~degrees per frame:
+\[
+	\mysi{180}{\frac{\degree}{\second}} \times \mysi{\frac{1}{60}}{\frac{\second}{frame}} = \mysi{\frac{180}{60}}{\frac{\degree \times \second}{\second \times frame}} = \mysi{3}{\frac{\degree}{frame}}
+\]
+If a frame takes longer, the change in angle is larger accordingly. Rotation therefore depends on elapsed time rather than the number of frames.
+
+\begin{hintbox}
+	This approach is very similar to the time-based movement described in \secref[vref]{secDeltatime}.
+\end{hintbox}
+
+Since \texttt{move()} calls \texttt{rotate()} every frame, the spaceship keeps turning as long as a rotation direction is set. The expression in \zeiref{asteroid0402}
+\begin{codebox}
+	self.angle %= 360
+\end{codebox}
+keeps the angle in the range from~\SI{0}{\degree} up to, but not including,~\SI{360}{\degree}. The spaceship image is then rotated to match.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v04/asteroids.py}{117}{127}{python}{Asteroids (\reqref{reqVectorSpaceshipRotationStop}) -- \texttt{Spaceship.rotate()}}{srcVectorSpaceshipRotate04}
+
+The second addition is the automatic stopping function. Pressing \keys{$\downarrow$} toggles the \texttt{self.is\_stopping} flag. While this mode is active, the spaceship appears green, and \texttt{move()} calls \texttt{stop()} every frame.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v04/asteroids.py}{129}{136}{python}{Asteroids (\reqref{reqVectorSpaceshipRotationStop}) -- \texttt{Spaceship.move()}}{srcVectorSpaceshipMove04}
+
+The spaceship should slow down by applying thrust against its direction of travel. First, it needs to work out how fast it is moving and which way to turn for braking. Its current velocity is already stored as a vector in \texttt{self.speed}. With
+\begin{codebox}
+	speed = self.speed.length()
+\end{codebox}
+we find its length in \zeiref{asteroid0403} -- the speed in pixels per second, regardless of the direction of travel. Without \texttt{Vector2}, we would have to add the squares of the two velocity components and then take the square root.
+
+If the speed is at most~\SI{10}{\pxsec} -- slow enough for our purposes -- we consider the braking maneuver complete and set the velocity \emph{exactly} to~0 in \zeiref{asteroid0404}:
+\begin{codebox}
+	self.speed = pygame.Vector2(0, 0)
+\end{codebox}
+
+The zero vector sets both velocity components to zero at once. We also switch off rotation and thrust and leave stopping mode. This small threshold prevents the spaceship from endlessly trying to correct an ever smaller remaining velocity.
+
+If the spaceship is still moving faster than this, \zeiref{asteroid0405} calculates the orientation needed for braking:
+\begin{codebox}
+	target_angle = pygame.Vector2(0, -1).angle_to(-self.speed) % 360
+\end{codebox}
+
+Here, we use two advantages of vector notation at once. The expression \texttt{-self.speed} reverses both components of the velocity vector. The new vector therefore points exactly opposite to the current direction of travel. For example, a velocity of $(100, -50)$ becomes $(-100, 50)$.
+
+We then use \texttt{angle\_to()}\pygindex{math!Vector2!angle\_to()|underline}\randnotiz{angle\_to()} to find the angle from the upward-pointing reference vector $(0, -1)$ to this opposite vector. This angle tells us which way the spaceship should face to apply braking thrust. We do not need separate cases for the four directions of movement or a trigonometric calculation of our own.
+
+Next, the code works out how far the spaceship still needs to turn:
+\begin{codebox}
+	angle_difference = (target_angle - self.angle + 180) % 360 - 180
+\end{codebox}
+
+This calculation puts the angle difference in the range from~\SI{-180}{\degree} up to, but not including,~\SI{180}{\degree}. This lets us choose the shorter way around. For example, if the current orientation is~\SI{350}{\degree} and the target is~\SI{10}{\degree}, the spaceship only needs to turn~\SI{20}{\degree} to the right.
+
+In \zeiref{asteroid0406}, we also use the angular velocity and elapsed time to calculate how far the spaceship can turn within one frame:
+\begin{codebox}
+	frame_rotation = cfg.ROTATION_SPEED * cfg.DELTATIME
+\end{codebox}
+
+Once the remaining angle difference is no more than twice this value, the spaceship snaps to the target angle, stops turning, and switches on the thrust. Otherwise, it keeps turning right or left, depending on the sign of the angle difference.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v04/asteroids.py}{158}{176}{python}{Asteroids (\reqref{reqVectorSpaceshipRotationStop}) -- \texttt{Spaceship.stop()}}{srcVectorSpaceshipStop04}
+
+The braking uses the same vector calculation as normal acceleration (\zeiref{asteroid0407} + \zeiref{asteroid0408}):
+\begin{codebox}
+	direction = pygame.Vector2(0, -1).rotate(self.angle)
+	...
+	self.speed += direction * self.thrust * cfg.DELTATIME
+\end{codebox}
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v04/asteroids.py}{148}{156}{python}{Asteroids (\reqref{reqVectorSpaceshipRotationStop}) -- \texttt{Spaceship.thrusting()}}{srcVectorSpaceshipThrusting04}
+
+\begin{hintbox}[Summary]
+	\begin{wrapfigure}[12]{r}{7.0cm}%
+		\begin{center}%
+			\vspace{-2em}%
+			\myfigure{vector05.png}{0.3}{Vectors -- stop function}{picVector05}%
+		\end{center}%
+	\end{wrapfigure}%
+		\texttt{rotate()} turns the reference vector into a direction vector that matches the spaceship's orientation. Its length stays at one. Multiplying it by the thrust and elapsed time gives us the change in velocity for the current frame.
+	
+	During the braking maneuver, this change points against the existing velocity. Adding it therefore shortens the velocity vector: the spaceship slows down. Acceleration and braking use the same calculation; what matters is the direction of the thrust.
+	
+	Splitting the work into \texttt{rotate()}, \texttt{thrusting()}, \texttt{stop()}, and \texttt{wrap()} makes each task easier to follow. The automatic controls can use the same methods as the keyboard controls.
+	
+	\textbf{\texttt{Vector2} ties these tasks together by providing a consistent way to represent direction and velocity.}
+\end{hintbox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Bullets and Maximum Speed}\label{secVectorBullets}
+
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/05%20Vector/v05}
+\end{diskbox}
+
+\br{Bullets + maximum speed}{reqVectorBullets}
+
+\begin{enumerate}
+	\item Pressing \keys{F} fires a bullet in the direction the spaceship is facing. The bullet's firing velocity should be combined with the spaceship's current velocity.
+	\item The spaceship's speed is limited to \SI{600}{\pxsec}.
+\end{enumerate}
+\er
+
+Let's start with a few small changes in \texttt{config.py}. In \zeiref{asteroid0501}, we set the spaceship's speed limit with
+\begin{codebox}
+	MAX_SPEED = 600
+\end{codebox}
+
+and in \zeiref{asteroid0502}, we define the bullet's firing speed with
+\begin{codebox}
+	BULLET_SPEED = 250
+\end{codebox}
+\lstsource{src/01 Techniques/05 Working with Vectors/v05/config.py}{1}{99}{python}{Asteroids (\reqref{reqVectorBullets}) -- \texttt{config.py}}{srcVectorConfig05}
+
+Following the \gls{topdownparadigm}, we will start in \texttt{Game}. We create a sprite group for the bullets, just as we did for the particles (\zeiref{asteroid0503}). In the next line, we pass this group to the spaceship as the second argument. Of course, this means we will also need to update the constructor signature of \texttt{Spaceship}.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v05/asteroids.py}{210}{228}{python}{Asteroids (\reqref{reqVectorBullets}) -- \texttt{Game.\_\_init\_\_()}}{srcVectorGameInit05}
+
+In \texttt{watch\_for\_events()}, \zeiref{asteroid0504} detects a press of~\keys{F} and sends the \verb#"fire"# command to the spaceship through \texttt{update()}.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v05/asteroids.py}{266}{270}{python}{Asteroids (\reqref{reqVectorBullets}) -- \texttt{Game.watch\_for\_events()}}{srcVectorGameWatchForEvents05}
+
+I'll leave adding the corresponding lines to \texttt{update()} and \texttt{draw()} in \texttt{Game} to you -- by now, that should come naturally ;-)
+
+Now for the additions to \texttt{Spaceship}. As mentioned above, we update the signature of \texttt{\_\_init\_\_()} (\zeiref{asteroid0507}) and store the bullet sprite group in an attribute (\zeiref{asteroid0508}).
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v05/asteroids.py}{101}{122}{python}{Asteroids (\reqref{reqVectorBullets}) -- \texttt{Spaceship.\_\_init\_\_()}}{srcVectorSpaceshipInit05}
+
+When \texttt{update()} receives the \verb#"fire"# command (\zeiref{asteroid0509}), it calls \texttt{fire()}.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v05/asteroids.py}{124}{138}{python}{Asteroids (\reqref{reqVectorBullets}) -- \texttt{Spaceship.update()}}{srcVectorSpaceshipUpdate05}
+
+And now we have reached the part that actually fires a bullet! The \texttt{fire()} method starts by calculating the firing direction:
+\begin{codebox}
+	direction = pygame.Vector2(0, -1).rotate(self.angle)
+\end{codebox}
+
+The vector $(0, -1)$ points upwards in screen coordinates. This matches the spaceship's original orientation. Calling \texttt{rotate(self.angle)} turns this vector to match the current orientation. Its length stays at~1 (a unit vector!).
+
+The left-hand diagram in \abbref[vref]{picBulletGeometry} shows how we use this to find the bullet's starting position~$\vec{P}_{\mathrm{bullet}}$. We start at the spaceship's center~$\vec{P}_{\mathrm{ship}}$. Multiplying the direction vector by 18 gives us a displacement of 18 pixels in the direction the spaceship is facing. We add this displacement to the center, so the bullet appears at the spaceship's tip. When we turn the ship, this offset automatically turns with it. We do not need to calculate the horizontal and vertical offsets ourselves.
+\begin{codebox}
+	bullet_position = pygame.Vector2(self.rect.center) + direction * 18
+\end{codebox}
+
+The right-hand diagram in \abbref[vref]{picBulletGeometry} explains the bullet's velocity~$\vec{v}_{\mathrm{bullet}}$. Here, we combine two velocities. \texttt{self.speed} ($\vec{v}_{\mathrm{ship}}$) describes the spaceship's existing movement.
+
+The expression \texttt{direction * cfg.BULLET\_SPEED} ($\vec{v}_{\mathrm{firing}}$) describes the extra velocity the bullet receives relative to the spaceship when fired. Adding these two vectors gives us~$\vec{v}_{\mathrm{bullet}}$ -- stored as \texttt{bullet\_speed} in the code.
+\begin{codebox}
+	bullet_speed = self.speed + direction * cfg.BULLET_SPEED
+\end{codebox}
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v05/asteroids.py}{203}{207}{python}{Asteroids (\reqref{reqVectorBullets}) -- \texttt{Spaceship.fire()}}{srcVectorSpaceshipFire05}
+
+\begin{figure}[htbp]
+	\centering
+	\begin{tikzpicture}[
+		>=Stealth,
+		every node/.style={font=\small},
+		vector/.style={->, very thick}
+		]
+		
+		% Left panel: spawn position
+		\begin{scope}
+			\node[font=\bfseries] at (0, 3.4)
+			{Where does the bullet start?};
+			
+			% Spaceship pointing upwards
+			\draw[thick, blue]
+			(0, 0.65) -- (-0.5, -0.45)
+			-- (0.5, -0.45) -- cycle;
+			
+			\coordinate (S) at (0, 0);
+			\coordinate (B) at (0, 1.25);
+			
+			\fill (S) circle (2pt);
+			\node[left=7pt] at (S)
+			{$\vec{P}_{\mathrm{ship}}$};
+			
+			\draw[vector, blue] (S) -- (B)
+			node[midway, right=5pt]
+			{$18\,\mathrm{px}\cdot\vec{d}$};
+			
+			\fill[red] (B) circle (2.5pt);
+			\node[left=7pt] at (B)
+			{$\vec{P}_{\mathrm{bullet}}$};
+			
+			\draw[vector, blue] (0, 1.6) -- (0, 2.5);
+			\node[right] at (0, 2.05)
+			{Firing direction $\vec{d}$};
+			
+			%\node[align=center] at (0, -1.15) {The bullet starts 18 pixels	ahead of the ship's center.};
+		\end{scope}
+		
+		% Right panel: velocity addition
+		\begin{scope}[xshift=8cm]
+			\node[font=\bfseries] at (0.8, 3.4)
+			{Which way does the bullet fly?};
+			
+			\coordinate (O) at (-1, -0.3);
+			\coordinate (V) at (3, -0.3);
+			\coordinate (F) at (-1, 2.2);
+			\coordinate (R) at (3, 2.2);
+			
+			% Parallelogram construction
+			\draw[dashed, gray] (F) -- (R);
+			\draw[vector, blue, dashed] (V) -- (R);
+			
+			\draw[vector, black] (O) -- (V)
+			node[midway, below=5pt]
+			{$\vec{v}_{\mathrm{ship}}$};
+			
+			\draw[vector, blue] (O) -- (F)
+			node[midway, left=5pt]
+			{$\vec{v}_{\mathrm{firing}}$};
+			
+			\draw[vector, red] (O) -- (R)
+			node[midway, right=5pt]
+			{$\vec{v}_{\mathrm{bullet}}$};
+			
+			\fill (O) circle (2pt);
+			
+			%\node[align=center] at (0.8, -1.15)	{Ship velocity + firing velocity = bullet velocity in the game world.};
+		\end{scope}
+		
+	\end{tikzpicture}
+	\caption{Vectors -- bullet spawn position and velocity}
+	\label{picBulletGeometry}
+\end{figure}
+
+
+For example, if the spaceship is moving to the right at \SI{200}{\pxsec} and fires upwards at \SI{250}{\pxsec}, we get:
+
+\[
+\vec{v}_{\mathrm{bullet}}
+=
+\vec{v}_{\mathrm{ship}} + \vec{v}_{\mathrm{firing}}
+=
+\begin{pmatrix} 200 \\ 0 \end{pmatrix}\,\frac{\mathrm{px}}{\mathrm{s}}
++
+\begin{pmatrix} 0 \\ -250 \end{pmatrix}\,\frac{\mathrm{px}}{\mathrm{s}}
+=
+\begin{pmatrix} 200 \\ -250 \end{pmatrix}\,\frac{\mathrm{px}}{\mathrm{s}}.
+\]
+
+The bullet travels diagonally up and to the right on the screen, even though the spaceship is pointing upwards. When fired, it inherits the ship's sideways movement. From the perspective of the spaceship, which keeps moving at a constant velocity, the bullet travels straight upwards.
+
+\texttt{Vector2} handles this entire addition component by component. We can work directly with the two movements instead of writing a separate formula for each coordinate. Finally, \texttt{fire()} passes the calculated starting position and velocity to the new \texttt{Bullet} object and adds it to the bullet group.
+
+All that is left is to limit the spaceship's maximum speed. While accelerating in \texttt{thrusting()}, we check this speed limit in \zeiref{asteroid0510}. The new method here is \texttt{pygame\-.math\-.Vector2\-.scale\_to\_length()}\pygindex{math!Vector2!scale\_to\_length()|underline}\randnotiz{scale\_to\_length()}. It changes the \emph{length of a vector without changing its direction}. For our velocity vector, this means the spaceship keeps moving in the same direction, but at a different speed. Both components are multiplied by the same factor, so their ratio stays the same.
+
+Let's take this velocity vector as an example:
+\begin{codebox}
+	self.speed = pygame.Vector2(300, 400)
+\end{codebox}
+
+Its length is 500. To reduce the speed to 400, we need the following scale factor:
+
+\[
+f = \frac{\text{desired length}}{\text{current length}}
+= \frac{400}{500}
+= 0.8
+\]
+
+\texttt{scale\_to\_length(400)} multiplies both components by this factor:
+
+\[
+\vec{v}_{\mathrm{new}}
+= 0.8 \cdot
+\begin{pmatrix} 300 \\ 400 \end{pmatrix}
+= \begin{pmatrix} 240 \\ 320 \end{pmatrix}
+\]
+
+The new vector has a length of 400 and still points in the same direction.
+
+Keep in mind that this method does not automatically enforce a maximum speed. It sets the vector to the specified length. A vector of length~200 would actually be made longer by \texttt{scale\_to\_length(400)}. That is why we only call the method after the check in \zeiref{asteroid0510}.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v05/asteroids.py}{171}{181}{python}{Asteroids (\reqref{reqVectorBullets}) -- \texttt{Spaceship.thrusting()}}{srcVectorSpaceshipThrusting05}
+
+\begin{hintbox}[length\_squared()\pygindex{math!Vector2!length\_squared()} in \zeiref{asteroid0510}]
+	In thrusting(), we check whether the spaceship exceeds its maximum speed:
+	
+	\begin{codebox}
+		if self.speed.length_squared() > cfg.MAX_SPEED ** 2:
+	\end{codebox}
+	
+	Normally, the length of a velocity vector is calculated like this:
+	\[
+	|\vec{v}| = \sqrt{v_x^2 + v_y^2}
+	\]
+	
+	\texttt{length\_squared()}, on the other hand, directly returns the squared length, $v^2_x + v_y^2$. \textbf{This saves us from calculating the square root}. To keep the comparison valid, we also need to square the maximum allowed speed.
+\end{hintbox}
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Marking Target}\label{secVectorSpaceshipMarkingTarget}
+
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/05%20Vector/v06}
+\end{diskbox}
+
+\br{Marking a target}{reqVectorSpaceshipMarkingTarget}
+
+\begin{enumerate}
+	\item Right-clicking an asteroid selects it as a target.
+	\item A selected asteroid is filled with yellow.
+	\item Right-clicking an area without an asteroid clears the selection.
+	\item Right-clicking another asteroid switches the selection to that asteroid.
+	\item If several asteroids overlap at the mouse position, the first one is selected.
+	\item The spaceship always turns to face the selected asteroid.
+	\item If \texttt{SHOW\_VELOCITY} is set to \true, a brown line is drawn from the spaceship's nose to the center of the selected asteroid.
+\end{enumerate}
+\er
+
+Most of the code for this feature does not involve vectors yet. We can handle it using what we learned in the introductory chapters, so I will keep the explanation of these additions fairly short.
+
+We add the two required color definitions to \texttt{config.py}, in the last two lines of \texttt{MYCOLORS}.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v06/config.py}{23}{26}{python}{Asteroids (\reqref{reqVectorSpaceshipMarkingTarget}) -- \texttt{config.py}}{srcVectorConfig06}
+
+In \texttt{watch\_for\_events()}, we detect a right-click and call \texttt{select\_asteroid()}.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v06/asteroids.py}{295}{296}{python}{Asteroids (\reqref{reqVectorSpaceshipMarkingTarget}) -- \texttt{Game.watch\_for\_events()}}{srcVectorGameWatch06}
+
+The \texttt{select\_asteroid()} method checks whether there is an asteroid at the given mouse position and selects it as the spaceship's target. Clicking anywhere inside the asteroid's shape should count as a hit. Clicking a transparent area outside that shape should not, even if the click is still inside the surrounding rectangle.
+
+First, we clear the previous selection. If a target is already selected, its appearance is restored to \emph{normal}, and
+\begin{codebox}
+	spaceship.target = None
+\end{codebox}
+clears the target.
+\begin{codebox}
+	spaceship.rotation = 0
+\end{codebox}
+resets the rotation.
+
+The second loop checks the asteroids for a hit. First,\pygindex{FRect!collidepoint()}\randnotiz{collidepoint()}
+\begin{codebox}
+	asteroid.rect.collidepoint(position)
+\end{codebox}
+checks whether the clicked point lies inside the surrounding rectangle. This check is simple and fast, but it does not yet account for the asteroid's actual shape: the transparent corners of its image are also part of this rectangle.
+
+For a more precise check, we use the \texttt{selection\_mask} created in the constructor. Think of this mask as a grid that stores just one of two values for each pixel: 1 means the pixel belongs to the selectable area, and 0 means it does not.
+
+The mask is created from the selection image using
+\begin{codebox}
+	pygame.mask.from_surface(self.selected_image)
+\end{codebox}
+(see \zeiref{asteroid0602} in \srcref[vref]{srcVectorAsteroidInit06}). The important detail is that this image contains a filled asteroid. Its entire interior is therefore included in the mask, even though the normal image only shows the outline. The transparent areas outside the polygon are excluded.
+
+Before we can query the mask, we need to convert the mouse position to local image coordinates. The given \texttt{position} refers to the game window, whereas the mask starts at its own top-left corner with coordinates~$(0,0)$. So we subtract the position of the asteroid's top-left corner using
+
+\begin{codebox}
+	pygame.Vector2(position) - pygame.Vector2(asteroid.rect.topleft)
+\end{codebox}
+
+For example, if this corner is at $(300,200)$ and the mouse is at $(320,215)$, we get the local position $(20,15)$. We therefore need to check the pixel located~\SI{20}{\pixel} to the right and~\SI{15}{\pixel} below the top-left corner of the asteroid image. The following calls to \texttt{int()} convert the components to integer pixel coordinates.
+
+This is exactly the pixel queried by\pygindex{mask!Mask.get\_at()}\randnotiz{get\_at()}
+\begin{codebox}
+	asteroid.selection_mask.get_at(pixel)
+\end{codebox}
+The method returns the stored value, either~0 or~1. In an \texttt{if} condition, Python treats~0 as \false\ and~1 as \true. The condition is therefore only met when the clicked pixel actually belongs to the asteroid's selectable area. The earlier rectangle check ensures that we do not query coordinates outside the mask.
+
+If we find a hit, we store the asteroid in \texttt{spaceship.target}. We also cancel braking mode with
+\begin{codebox}
+	spaceship.is_stopping = False
+\end{codebox}
+and make the selection visible using \texttt{asteroid.selected\_image}. The following \texttt{break} ends the search. If several asteroids overlap at the clicked position, we therefore select the first matching asteroid in the group's order. If none is hit, the target stays set to \texttt{None}.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v06/asteroids.py}{303}{317}{python}{Asteroids (\reqref{reqVectorSpaceshipMarkingTarget}) -- \texttt{Game.select\_target()}}{srcVectorGameSelectTarget06}
+
+In \zeiref{asteroid0603}, we add a call to \texttt{draw\_target()} in \texttt{draw()}. This method draws the line between the spaceship and its target.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v06/asteroids.py}{325}{336}{python}{Asteroids (\reqref{reqVectorSpaceshipMarkingTarget}) -- \texttt{Game.draw()()}}{srcVectorGameDraw06}
+
+The \texttt{draw\_target()} method draws a line from the spaceship's tip to the center of the selected target asteroid. This makes it clear which target the spaceship is currently tracking. The check \texttt{spaceship.target is not None} ensures that a target has actually been selected. Without a target, no line is drawn.
+
+To find the line's starting point, we need the position of the spaceship's tip. First, we use \texttt{pygame.Vector2(0, -1)} to create a unit vector pointing straight upwards. This matches the spaceship's orientation at an angle of~\SI{0}{\degree}. We then use \texttt{rotate(spaceship\-.angle)} to rotate this vector to match the spaceship's current orientation. The resulting vector, \texttt{direction}, describes the direction the spaceship is facing and still has a length of~1.
+
+In our spaceship model, the tip is \SI{18}{\pixel} from the center. So we multiply \texttt{direction} by~18 and add this offset to the center position, \texttt{spaceship.rect.center}. We store the result in \texttt{tip}. This makes the connecting line start at the spaceship's tip rather than its center.
+
+Finally, \texttt{pygame.draw.line()} draws the line on \texttt{self.screen}. We use the configuration entry \texttt{cfg.MYCOLORS["target\_line"]} for its color. The starting point is \texttt{tip}, and the endpoint is the center of the target asteroid. The final argument,~2, sets the line width to two pixels.
+
+The line shows the connection to the target, whether or not the spaceship is already facing it. The method does not change the spaceship's orientation or movement; it simply makes the current target selection visible.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v06/asteroids.py}{352}{359}{python}{Asteroids (\reqref{reqVectorSpaceshipMarkingTarget}) -- \texttt{Game.draw\_target()()}}{srcVectorGameDrawTarget06}
+
+What happens inside the spaceship? First, we define the \texttt{self.target} attribute in the constructor. This stores the selected target -- an asteroid -- if there is one.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v06/asteroids.py}{128}{128}{python}{Asteroids (\reqref{reqVectorSpaceshipMarkingTarget}) -- \texttt{Spaceship.\_\_init\_\_()}}{srcVectorSpaceshipInit06}
+
+We extend \texttt{move()} so the spaceship either turns in response to keyboard input or turns to face its target. The latter task is handled by \texttt{aim\_at\_target()}.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v06/asteroids.py}{159}{169}{python}{Asteroids (\reqref{reqVectorSpaceshipMarkingTarget}) -- \texttt{Spaceship.move()}}{srcVectorSpaceshipMove06}
+
+The \texttt{aim\_at\_target()} method turns the spaceship towards the selected asteroid. Rather than instantly snapping to face the target, it should turn at the specified rotation speed. The \texttt{pygame.math.Vector2}\pygindex{math!Vector2} class handles much of the calculation for us.
+
+First, we need the direction from the spaceship to the target. We convert the centers of both objects to \texttt{Vector2} objects and subtract the spaceship's position from the asteroid's position:
+\begin{codebox}
+	offset = (pygame.Vector2(self.target.rect.center) - pygame.Vector2(self.rect.center))
+\end{codebox}
+
+Subtracting two vectors subtracts their matching components. For example, if the spaceship is at $(300,200)$ and the asteroid is at $(450,100)$, we get the vector $(150,-100)$. From the spaceship, the target is therefore~\SI{150}{\pixel} to the right and~\SI{100}{\pixel} upwards. The vector \texttt{offset} describes both the direction to the target and its distance. For aiming, we only need the direction.
+
+This calculation illustrates an important use of vectors: subtracting the starting position from the target position gives us a vector pointing from the starting point to the target. We do not need to calculate the horizontal and vertical offsets separately.
+
+With
+\begin{codebox}
+	self.rotation = 0
+\end{codebox}
+we first reset the previous angular velocity. The method then uses the current target position to decide whether to turn and in which direction. This prevents a turn from a previous call from continuing unintentionally.
+
+Before calculating an angle, we use
+\begin{codebox}
+	offset.length_squared() > 0
+\end{codebox}
+to check whether the direction vector has a length greater than~0. The method \texttt{length\-\_squared()}\pygindex{math!Vector2!length\_squared()}\randnotiz{length\-\_squared()} returns the sum of the squared components:
+\[
+|\overrightarrow{offset}|^2 = offset_x^2 + offset_y^2.
+\]
+
+Unlike \texttt{length()}\pygindex{math!Vector2!length()}\randnotiz{length()}, it does not calculate a square root. That extra calculation is unnecessary when we only want to know whether the vector's length is greater than~0. If the two centers are at exactly the same position, we get the zero vector $(0,0)$. Since it has no defined direction, we do not calculate a new target direction in that case.
+
+For a nonzero vector, we then calculate the target angle:
+\begin{codebox}
+	target_angle = pygame.Vector2(0, -1).angle_to(offset) % 360
+\end{codebox}
+
+The vector \texttt{pygame.Vector2(0, -1)} points straight upwards. It represents our spaceship's orientation at an angle of~\SI{0}{\degree}. The method \texttt{angle\_to()}\pygindex{math!Vector2!angle\_to()} finds the signed rotation angle from this reference vector to \texttt{offset}. This gives us exactly the angle the spaceship needs to face the asteroid.
+
+Here, \texttt{Vector2} takes care of the actual angle calculation. We do not need to rearrange sine and cosine formulas or handle the different combinations of positive and negative components ourselves. We do not need to normalize \texttt{offset} either: the angle depends on its direction, not its length.
+
+The expression \texttt{\% 360} puts the calculated angle in the range from~$0^\circ$ up to, but not including,~$360^\circ$. For example, $-90^\circ$ becomes the equivalent angle $270^\circ$. This keeps the target angle and the spaceship's angle in the same range. Since the positive y-axis points downwards on the screen, a positive rotation angle in our program means turning clockwise.
+
+Now we know the desired target angle, but we still need to decide which way the spaceship should turn. Simple subtraction is not enough. For example, if the spaceship's angle is $350^\circ$ and the target is at $10^\circ$, \texttt{target\_angle - self.angle} initially gives us $-340^\circ$. But a turn of just $20^\circ$ in the other direction would do the job.
+
+So we calculate the angle difference using:
+\begin{codebox}
+	angle_difference = (target_angle - self.angle + 180) % 360 - 180
+\end{codebox}
+
+This expression puts the difference in the range from~$-180^\circ$ up to, but not including,~$180^\circ$. It therefore describes the shortest turn towards the target. In our implementation, a positive difference means turning right, and a negative difference means turning left. At exactly $180^\circ$, both ways are equally long; the expression chooses $-180^\circ$.
+
+Next, we calculate the maximum angle the spaceship can turn through during the current frame:
+\begin{codebox}
+	frame_rotation = cfg.ROTATION_SPEED * cfg.DELTATIME
+\end{codebox}
+
+The rotation speed is given in degrees per second. Multiplying it by the time since the previous frame gives us the rotation angle for this frame. For example, at a rotation speed of $180^\circ$ per second and an elapsed time of $0.02$~seconds, this angle is $3.6^\circ$. Using \texttt{DELTATIME} keeps the rotation speed largely independent of the frame rate.
+
+We then use
+\begin{codebox}
+	abs(angle_difference) <= frame_rotation
+\end{codebox}
+to check whether the target orientation can be reached within this turn step. The function \texttt{abs()} returns the magnitude of the angle difference, regardless of its sign. If the remaining turn is small enough, we set \texttt{self.angle} directly to \texttt{target\_angle}. This prevents the spaceship from overshooting the target direction and then constantly switching between left and right turns.
+
+If the angle difference is still larger, its sign determines the direction of rotation. The \texttt{rotate()} method then turns the spaceship right or left at the specified rotation speed.
+
+There is one important detail about our \texttt{rotate()} method: it not only changes the angle, but also updates the spaceship's rotated image. If we set the target angle directly with
+\begin{codebox}
+	self.angle = target_angle
+\end{codebox}
+we therefore need to update the image too. In the corrected version, we do this by calling \texttt{self.rotate()}. Since \texttt{self.rotation} is still~0 in this branch, the angle we just set stays unchanged.
+
+The target direction is recalculated from the current positions on every call. This allows the spaceship to track a moving asteroid. However, the method only changes its orientation. Its velocity remains unchanged for now: without extra thrust, the spaceship can keep drifting in one direction while its nose already points towards the target.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v06/asteroids.py}{213}{226}{python}{Asteroids (\reqref{reqVectorSpaceshipMarkingTarget}) -- \texttt{Spaceship.aim\_at\_target()}}{srcVectorSpaceshipAimAtTarget06}
+
+We add the asteroid's second color variant in the constructor.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v06/asteroids.py}{24}{38}{python}{Asteroids (\reqref{reqVectorSpaceshipMarkingTarget}) -- \texttt{Asteroid.\_\_init\_\_()}}{srcVectorAsteroidInit06}
+
+\begin{longtable}{>{\ttfamily}l>{\ttfamily}lp{8.5cm}}
+	\caption{Control the spaceship using the keyboard and mouse events (2)}
+	\label{tabAsteroidsEvents2}\\
+	\toprule
+	\textbf{event.type} &
+	\shortstack[l]{\textbf{event.key}\\
+		\textbf{event.button}} &
+	\textbf{Action} \\
+	\midrule
+	\endfirsthead
+	
+	\toprule
+	\textbf{event.type} &
+	\shortstack[l]{\textbf{event.key}\\
+		\textbf{event.button}} &
+	\textbf{Action} \\
+	\midrule
+	\endhead
+	
+	\midrule
+	\multicolumn{3}{r}{\emph{Continued on the next page}} \\
+	\endfoot
+	
+	\bottomrule
+	\endlastfoot
+	
+	KEYDOWN & K\_1 to K\_5 &
+	Add an asteroid of the size assigned to the key. \\
+	
+	KEYDOWN & K\_DOWN &
+	Toggle the automatic braking maneuver
+	and stop tracking the target. \\
+	
+	KEYDOWN & K\_ESCAPE &
+	Exit the program. \\
+	
+	KEYDOWN & K\_f &
+	Fire a bullet in the direction the spaceship is facing.
+	The bullet also inherits the spaceship's velocity. \\
+	
+	KEYDOWN & K\_F1 &
+	Toggle the display of velocity vectors and the
+	connecting line to the selected asteroid. \\
+	
+	KEYDOWN & K\_LEFT &
+	Send a command to turn left. \\
+	
+	KEYDOWN & K\_RIGHT &
+	Send a command to turn right. \\
+	
+	KEYDOWN & K\_SPACE &
+	Remove the oldest asteroid,
+	if there is one. \\
+	
+	KEYDOWN & K\_UP &
+	Switch on the spaceship's thrust. \\
+	
+	KEYUP & K\_LEFT &
+	Stop the manual left turn. Automatic
+	tracking of a selected asteroid stays active. \\
+	
+	KEYUP & K\_RIGHT &
+	Stop the manual right turn. Automatic
+	tracking of a selected asteroid stays active. \\
+	
+	KEYUP & K\_UP &
+	Switch off the spaceship's thrust.
+	Its existing velocity stays unchanged. \\
+	
+	MOUSEBUTTONDOWN & 3 &
+	Right-click to select the first asteroid hit
+	and make the spaceship turn towards it automatically.
+	This replaces any existing selection.
+	Clicking empty space clears the selection. \\
+	
+	QUIT &  &
+	Exit the program when the window is closed. \\
+	
+\end{longtable}
+
+
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Collision Warning}\label{secVectorCollisionWarning}
+
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/05%20Vector/v07}
+\end{diskbox}
+
+\br{Collision Warning}{reqVectorCollisionWarning}
+
+\begin{enumerate}
+	\item All asteroids predicted to collide with the spaceship within a given time, assuming their direction and speed stay unchanged, should be colored light blue.
+	\item The prediction time window should be set to \SI{2}{\second} in \texttt{config.py}.
+\end{enumerate}
+\er
+
+First things first: in config.py, we set \texttt{COLLISION\_WARNING\_TIME} to \SI{2}{\second} in \zeiref{asteroid0701} and define the warning color in \zeiref{asteroid0702}.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v07/config.py}{01}{99}{python}{Asteroids (\reqref{reqVectorCollisionWarning}) -- \texttt{config.py}}{srcVectorConfig07}
+
+\newpage
+We now prepare a third image in the asteroid's constructor (\zeiref{asteroid0703} to~\ref{asteroid0704}).
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v07/asteroids.py}{27}{36}{python}{Asteroids (\reqref{reqVectorCollisionWarning}) -- \texttt{Asteroid.\_\_init\_\_()}}{srcVectorAsteroidInit07}
+
+In \zeiref{asteroid0705}, we add a call to \texttt{update\_collision\_warnings()} in \texttt{update()}.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v07/asteroids.py}{322}{327}{python}{Asteroids (\reqref{reqVectorCollisionWarning}) -- \texttt{Game.update()}}{srcVectorAsteroidUpdate07}
+
+\texttt{update\_collision\_warnings()} only handles how the asteroids are colored. The actual collision prediction happens in \texttt{collision\_expected()}, which is called in \zeiref{asteroid0706}.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v07/asteroids.py}{329}{337}{python}{Asteroids (\reqref{reqVectorCollisionWarning}) -- \texttt{Game.update\_collision\_warnings()}}{srcVectorAsteroidCollWarning07}
+
+The \texttt{collision\_expected()} method checks whether an asteroid and the spaceship would touch within the next \texttt{COLLISION\_WARNING\_TIME} seconds. We assume that both keep their current speed and direction of movement. This simplified version does not account for objects wrapping around to the opposite edge of the screen.
+
+\begin{hintbox}
+	To keep the calculation straightforward, we approximate both objects as circles. We are therefore not checking for a pixel-perfect collision between the triangle and the asteroid polygon. Instead, we check whether the distance between their centers becomes less than or equal to the sum of their radii at any point.
+\end{hintbox}
+
+\newpage
+First, the method calculates the vector from the spaceship to the asteroid:
+\begin{codebox}
+	offset = pygame.Vector2(asteroid.rect.center) - pygame.Vector2(spaceship.rect.center)
+\end{codebox}
+
+Subtracting two position vectors gives us a connecting vector, called \texttt{offset} here. It tells us both which direction the asteroid is in \emph{and} how far away it is. In the diagram, this is the dark arrow from the spaceship's center to the asteroid's current center ($t = 0$).
+
+Next, we calculate the relative velocity:
+\begin{codebox}
+	relative_speed = asteroid.speed - spaceship.speed
+\end{codebox}
+
+A change of perspective helps here: we look at the movement from the spaceship's point of view. In this frame of reference, the spaceship is stationary, and the asteroid moves past it with \texttt{relative\_speed}. This leaves us with just one movement to examine.
+
+For example, if both objects move at the same speed in the same direction, the subtraction gives us the zero vector. Their distance then stays unchanged. If the asteroid is moving towards the spaceship, the relative velocity vector \texttt{relative\_speed} describes this approach. In the diagram, the orange arrow shows the resulting displacement over the entire prediction time window.
+
+The following lines calculate the sum of the two assumed collision radii. This also works when the width and height are different:
+\begin{codebox}
+radius = max(asteroid.rect.size) / 2
+radius += max(spaceship.rect.size) / 2
+\end{codebox}
+
+For each object, we use half of its larger image dimension. In the diagram (\abbref[vref]{picCollisionExpectedSimple}), the dashed circle around the spaceship has the combined radius \texttt{radius}. As soon as the asteroid's center reaches this circle, the two assumed collision circles touch or overlap. This lets us simplify the two-circle collision check to checking whether a single point reaches one circle.
+
+Now we need to find out \emph{when} the objects come closest to each other. For this, we use the \gls{dotproduct}:
+\begin{codebox}
+closest_time = 0.0
+if relative_speed.length_squared() > 0:
+    closest_time = -offset.dot(relative_speed) / relative_speed.length_squared()
+\end{codebox}
+
+The dot product \texttt{offset.dot(relative\_speed)}\pygindex{math!Vector2!dot()|underline}\randnotiz{dot()} connects the asteroid's current relative position with its relative movement. Its sign already tells us something useful: a negative value means the distance is initially decreasing, while a positive value means it is already increasing.
+
+The full calculation gives us the time of the smallest distance along the straight relative flight path. Think of it as finding the point on this path that is closest to the spaceship. In the diagram, the brown connecting arrow is perpendicular to the orange flight path at that point. This geometric property is what lies behind the formula.
+
+With \texttt{length\_squared()}\pygindex{math!Vector2!length\_squared()}\randnotiz{length\-\_squared()}, we get the squared length of the relative velocity vector. Checking that this value is greater than~0 prevents division by~0. If both objects have the same velocity, their relative position does not change. We then only need to check their current distance, so \texttt{closest\_time} stays at~0.
+
+However, the calculated time could be in the past or beyond our prediction time window. So we clamp it to the allowed range:
+
+\begin{codebox}
+closest_time = pygame.math.clamp(
+    closest_time, 0.0, max(0.0, cfg.COLLISION_WARNING_TIME)
+)
+\end{codebox}
+
+If the time is in the past, we use the current time, zero. If it is beyond the end of the prediction window, we use the window's end time. This ensures that we always check the smallest distance within the time window we are interested in.
+
+Using this time, we calculate the future connecting vector:
+\begin{codebox}
+	closest_offset = offset + relative_speed * closest_time
+\end{codebox}
+
+This line follows the same principle as our earlier movement calculations: current relative position plus relative velocity times time. \texttt{Vector2} multiplies both velocity components by the time value, then adds the resulting displacement to the matching components of \texttt{offset}.
+
+In the diagram, the result is the brown arrow \texttt{closest\_offset}. The faint asteroid outline shows the corresponding position. Keep in mind that we are calculating in the spaceship's frame of reference: this is the predicted position relative to the ship, not necessarily the asteroid's actual future position on the screen.
+
+Finally, we compare the smallest distance with the sum of the collision radii:
+\begin{codebox}
+	return closest_offset.length_squared() <= radius ** 2
+\end{codebox}
+
+We compare the squared values on both sides, so we do not need a square root to calculate the distance. If the squared length of \texttt{closest\_offset} is no greater than \texttt{radius ** 2}, the method returns \texttt{True}: the assumed circles are expected to touch or overlap within the prediction window.
+
+\begin{hintbox}
+	We do not need to test lots of future positions. Vector subtraction, the dot product, and vector addition give us the key time and distance directly. That is the advantage of vector calculations here: instead of tracking two moving objects separately, we can simply examine their relative movement.
+\end{hintbox}
+
+\begin{figure}[htbp]
+	\centering
+	\begin{tikzpicture}[
+		>=Stealth,
+		line cap=round,
+		line join=round,
+		scale=1.2,
+		every node/.style={font=\small}
+		]
+		\coordinate (ship) at (0, -4);
+		\coordinate (asteroid) at (6, 1.2);
+		\coordinate (closest) at (0, 1.2);
+		\coordinate (end) at (-2, 1.2);
+		
+		% Sum of the collision radii
+		\draw[dashed, gray]	(ship) circle (1.4);
+		\draw[<->, gray](ship) -- (-0.99, -2.99) node[midway, sloped, below=5pt] {radius};
+		
+		% Spaceship and its approximate collision circle
+		\draw[gray] 	(ship) circle (0.6);
+		\draw[thick, blue] (0, -3.45) -- (-0.4, -4.4) -- (0.4, -4.4) -- cycle;
+		
+		% Current asteroid position
+		\begin{scope}[shift={(asteroid)}]
+			\draw[gray]	(0, 0) circle (0.8);
+			\draw[thick, red, fill=red!12]
+			(-0.3, 0.72) --
+			(0.35, 0.65) --
+			(0.74, 0.15) --
+			(0.48, -0.56) --
+			(-0.2, -0.73) --
+			(-0.72, -0.25) --
+			(-0.64, 0.38) -- cycle;
+		\end{scope}
+		
+		% Asteroid at the time of closest approach
+		\begin{scope}[shift={(closest)}]
+			\draw[dashed, red!60] (0, 0) circle (0.8);
+			\draw[red!40]
+			(-0.3, 0.72) --
+			(0.35, 0.65) --
+			(0.74, 0.15) --
+			(0.48, -0.56) --
+			(-0.2, -0.73) --
+			(-0.72, -0.25) --
+			(-0.64, 0.38) -- cycle;
+		\end{scope}
+		
+		% Initial relative position
+		\draw[->, thick, black!65] (ship) -- (asteroid)	node[midway, sloped, below=5pt] {offset};
+		
+		% Relative displacement over the prediction interval
+		\draw[->, very thick, orange!80!black]
+		(asteroid) -- (end)
+		node[midway, above=30pt, align=center] {
+			$relative\_speed \times \SI{2}{\second}$
+		};
+		
+		% Smallest relative separation
+		%\draw[->, thick, brown]	(ship) -- (closest)	node[midway, left=5pt] {\texttt{closest\_offset}};
+		\draw[->, thick, brown]	(ship) -- (closest)	node[midway, sloped, below=5pt] {closest\_offset};
+		
+		% Right-angle marker
+		\draw[brown] (0, 0.98) -- (0.22, 0.98) -- (0.22, 1.2);
+		
+		% Reference points and their labels
+		\fill (ship) circle (1.5pt);
+		\node[below=25pt, align=center] at (ship) {\texttt{spaceship.rect.center}};
+		
+		\fill[red] (asteroid) circle (1.5pt);
+		\node[above right=-5pt ] at (asteroid) {$t = 0$};
+		\node[below=25pt, align=center] at (asteroid) {\texttt{asteroid.rect.center}};
+		
+		\fill[brown] (closest) circle (1.8pt);
+		\node[above right=-5pt, brown] at (closest) {$t = closest\_time$};
+		
+		\node[below left=5pt, align=right] at (end) {$t = \SI{2}{\second}$};
+		
+	\end{tikzpicture}
+	\caption[Vectors -- collision prediction in the spaceship's reference frame]{Vectors -- collision prediction in the spaceship's reference frame\\ \SI{2}{\second} = \texttt{COLLISION\_WARNING\_TIME}}
+	\label{picCollisionExpectedSimple}
+\end{figure}
+
+You can see the result in \abbref[vref]{picVector06}. As the spaceship approaches from the top right, collisions with two asteroids are predicted. These asteroids are highlighted in the warning color.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v07/asteroids.py}{339}{349}{python}{Asteroids (\reqref{reqVectorCollisionWarning}) -- \texttt{Game.update\_collision\_expected()}}{srcVectorAsteroidCollExpected07}
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Collision Prediction}\label{secVectorCollisionPrediction}
+
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/05%20Vector/v08}
+\end{diskbox}
+
+\br{Collision Prediction}{reqVectorCollisionPrediction}
+
+\begin{enumerate}
+	\item When the velocity vectors are displayed, mark the predicted collision location, if any, between the asteroid and the spaceship.
+	\item Draw two lines connecting the asteroid and the spaceship to the predicted collision location.
+	\item Use magenta for both lines and the collision marker.
+\end{enumerate}
+\er
+
+As we have done several times before, we add the color to the \texttt{MYCOLORS} dictionary in \texttt{config.py}.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v08/config.py}{26}{28}{python}{Asteroids (\reqref{reqVectorCollisionPrediction}) -- \texttt{config.py}}{srcVectorConfig08}
+
+We can implement this fairly easily using the logic we already have. The basic idea is to add a new method, \texttt{collision\_positions()}, that not only detects a possible collision but also calculates the predicted positions of both objects. Then \texttt{collision\_expected()} only needs to check whether these positions were returned:
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v08/asteroids.py}{339}{340}{python}{Asteroids (\reqref{reqVectorCollisionPrediction}) -- \texttt{Game.collision\_expected()}}{srcVectorGameCollisionExpected08}
+
+Let's now take a look at \texttt{collision\_positions()}. It is essentially a slightly adapted and extended version of \srcref[vref]{srcVectorAsteroidCollExpected07}. From \zeiref{asteroid0802} onwards, we simply reuse the results of the earlier calculations.
+
+Once we have identified a possible collision, we calculate the predicted positions of both objects in \zeiref{asteroid0802} and \zeiref{asteroid0803}. For each object, we use the familiar relationship:
+\[
+\text{future position}
+=
+\text{current position}
++
+\text{velocity} \times \text{time}.
+\]
+
+The variable \texttt{closest\_time} holds the previously calculated time of closest approach within our prediction window. Multiplying the asteroid's velocity vector by this time gives us its displacement vector. This describes how far and in which direction the asteroid will move by then. Adding its current center position gives us the predicted position, \texttt{asteroid\_pos}.
+
+Once again, this shows how useful \texttt{Vector2} is: multiplication by time and addition to the position are handled automatically for both components. We do not need to calculate the future x- and y-coordinates separately. We then use the spaceship's velocity vector in the same way to find its future position, \texttt{spaceship\_pos}. The prediction assumes that both objects keep their current velocities. Any thrust applied in the meantime or wrapping around the screen edges is not taken into account.
+
+In \zeiref{asteroid0804}, the two positions are returned together as a tuple. These are the center positions of both objects at the same point in time. They do not have to be identical: our collision check accounts for the objects' sizes, so a sufficiently small distance between their centers already counts as a possible collision.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v08/asteroids.py}{342}{358}{python}{Asteroids (\reqref{reqVectorCollisionPrediction}) -- \texttt{Game.collision\_positions()}}{srcVectorGameCollisionPositions08}
+
+For the display, we use \texttt{draw\_collision\_prediction()}. It first calls \texttt{collision\_pos\-itions()}. If this method returns \texttt{None}, no collision is expected within the prediction window, so \texttt{return} immediately exits the drawing method.
+
+Otherwise, we unpack the returned tuple into \texttt{asteroid\_position} and \texttt{spaceship\_pos\-ition}. We then draw two magenta lines: the first runs from the asteroid's current center to its predicted position, and the second runs from the spaceship's current center to its predicted position. Both lines therefore show the distances traveled over the same period of time.
+
+To place a shared marker, we then calculate the midpoint between the two predicted positions:
+
+\[
+\vec p_{\mathrm{marker}}
+=
+\frac{\vec p_{\mathrm{asteroid}}
+	+ \vec p_{\mathrm{spaceship}}}{2}.
+\]
+
+This calculation is also straightforward with \texttt{Vector2}: we add the two position vectors and divide the result by~2. At this point, \texttt{pygame.draw.circle()} draws a filled magenta circle with a radius of~\SI{5}{\pixel}.
+
+This marker helps us visualize the predicted collision location. However, it is not an exactly calculated contact point between the polygon outlines. It shows the midpoint between the object centers at the time of closest approach, which is not necessarily the time of first contact.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v08/asteroids.py}{377}{386}{python}{Asteroids (\reqref{reqVectorCollisionPrediction}) -- \texttt{Game.draw\_collision\_predictions()}}{srcVectorGameDrawCollisionPrediction08}
+
+In \texttt{draw()}, this visual aid is only called when \texttt{SHOW\_VELOCITY} is \texttt{True}. Each asteroid is then checked for a possible collision with the spaceship, and the prediction is drawn if needed.
+
+You can see this in \abbref[vref]{picVector07}. The spaceship approaches from the bottom left and flies towards the top right. The two relevant asteroids approach from above. The left magenta point marks the predicted collision location for the leftmost asteroid, and the point beside it marks the prediction for the second asteroid. These markers show the midpoints between the predicted object centers at the time of closest approach, using our circle approximation. They are not exact contact points between the pixel outlines!
+
+\myezweihbild{vector06}{0.3}{Vectors -- warning}{picVector06}{vector07}{0.3}{Vectors -- prediction}{picVector07}
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Reflection}\label{secVectorReflection}
+
+\begin{diskbox}
+	\url{https://github.com/adamsralf/pygame_book/tree/main/src/01%20Techniques/05%20Vector/v09}
+\end{diskbox}
+
+\br{Reflection}{reqVectorReflection}
+The bullets should bounce off the slanted walls in a physically correct way.
+\er
+
+\begin{longtable}{>{\ttfamily}l>{\ttfamily}lp{8cm}}
+	\caption{Colors used to visualize reflections}
+	\label{tabAsteroidsReflectionColors}\\
+	\toprule
+	\textbf{Key} & \textbf{Color Value} & \textbf{Meaning} \\
+	\midrule
+	\endfirsthead
+	
+	\toprule
+	\textbf{Key} & \textbf{Color Value} & \textbf{Meaning} \\
+	\midrule
+	\endhead
+	
+	\midrule
+	\multicolumn{3}{r}{\emph{Continued on the next page}} \\
+	\endfoot
+	
+	\bottomrule
+	\endlastfoot
+	
+	wall
+	& (50, 50, 50)
+	& Wall segments \\
+	
+	wall\_normal
+	& blue
+	& Wall normal; indicates the wall's orientation \\
+	
+	bounce\_incoming
+	& orange
+	& Bullet's velocity vector before the bounce \\
+	
+	bounce\_normal
+	& blue
+	& Component of the incoming velocity perpendicular to the wall \\
+	
+	bounce\_tangent
+	& green
+	& Component of the incoming velocity parallel to the wall \\
+	
+	bounce\_outgoing
+	& magenta
+	& Velocity vector after the bounce and marker at the contact point \\
+\end{longtable}
+
+In \texttt{config.py}, we define four walls in \texttt{WALL\_SEGMENTS} in \zeiref{asteroid0902}. Since I want to visualize the reflection using guide lines, I use \texttt{BOUNCE\_DISPLAY\_TIME} to set how many seconds they remain visible after a bounce -- here,~\SI{0.8}{\second} (\zeiref{asteroid0903}).
+
+Starting at \zeiref{asteroid0901}, we add the color values from \tabref[vref]{tabAsteroidsReflectionColors} to \texttt{MYCOLORS}.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v09/config.py}{1}{99}{python}{Asteroids (\reqref{reqVectorReflection}) -- \texttt{config.py}}{srcVectorConfig08}
+
+I will also explain this feature using a top-down approach. In \texttt{Game}, we create the four wall segments in \zeiref{asteroid0904} and store them in a list. abgespeichert.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v09/asteroids.py}{307}{309}{python}{Asteroids (\reqref{reqVectorReflection}) -- \texttt{Game.\_\_init\_\_()}}{srcVectorGameInit09}
+
+The constructor of \texttt{Wall} takes the start and end points and uses them to calculate the edge vector (\texttt{edge}), its length (\texttt{length}), a unit vector along the edge (\texttt{tangent}), and the edge's \gls{normalvector} (\texttt{normal}). I will explain what we need these for later.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v09/asteroids.py}{94}{102}{python}{Asteroids (\reqref{reqVectorReflection}) -- \texttt{Wall.\_\_init\_\_()}}{srcVectorWallInit09}
+
+The \texttt{draw()} method displays the wall on the surface passed to it:
+\begin{codebox}
+pygame.draw.line(surface, cfg.MYCOLORS["wall"], self.start, self.end, 3)
+\end{codebox}
+
+The line runs from \texttt{self.start} to \texttt{self.end}, using the wall color from \texttt{cfg.MYCOLORS}. The final argument sets its width to three pixels. Since both endpoints are \texttt{Vector2} objects, we can pass them directly to the drawing function.
+
+If \texttt{cfg.SHOW\_VELOCITY} is enabled, the method also displays the wall's normal direction. First, it calculates the midpoint of the wall:
+\begin{codebox}
+	center = (self.start + self.end) / 2
+\end{codebox}
+
+Adding the two position vectors and dividing by~2 gives us the position halfway between them. Once again, \texttt{Vector2} handles both coordinates together.
+
+Starting at this midpoint, we draw a short line in the normal direction:
+\begin{codebox}
+pygame.draw.line(surface, cfg.MYCOLORS["wall_normal"], 
+                 center, center + self.normal * 30, 2)
+\end{codebox}
+
+The normal vector has a length of~1 because it was created by rotating the normalized tangent vector. Multiplying it by~30 therefore gives us a line exactly \SI{30}{\pixel} long, perpendicular to the wall.
+
+This line helps us see the wall's normal direction. It is a visual aid only: changing its displayed length does not affect the collision calculation or the reflection.
+
+\begin{hintbox}[A Normal Line, Not an Arrow]
+	This method draws the normal as a plain line without an arrowhead. Its direction runs from the wall's midpoint to \texttt{center + self.normal * 30}.
+	
+	Which side of the wall it points towards depends on the order of the wall's endpoints. Reversing the endpoints reverses the normal. For our reflection and contact-time calculations, either orientation works.
+\end{hintbox}
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v09/asteroids.py}{118}{123}{python}{Asteroids (\reqref{reqVectorReflection}) -- \texttt{Wall.draw()}}{srcVectorWallDraw09}
+
+We have seen how \texttt{Bullet.update()} asks each wall whether a contact will occur during the remaining frame time. The actual calculation takes place in \texttt{Wall.hit\_time()}.
+
+The method receives three values: the projectile's current \texttt{position}, its velocity \texttt{speed}, and the available time \texttt{duration}. It returns the time until contact if the projectile reaches the wall segment within that period. Otherwise, it returns \texttt{None}.
+
+The method does not move the projectile or change its velocity. It only answers the question: when would this movement reach this wall? First, we calculate the velocity component in the wall's normal direction:
+\begin{codebox}
+	normal_speed = speed.dot(self.normal)
+\end{codebox}
+
+The normal is perpendicular to the wall and has a length of~1. Taking the dot product with it gives us a signed speed across the wall. Movement parallel to the wall does not contribute to this value.
+
+The sign tells us which way the projectile is moving relative to the normal. For this calculation, either sign is allowed: our wall can be hit from either side.
+
+If the normal speed is zero, the projectile is moving parallel to the wall or is stationary. It cannot cross the wall's line, so the method returns \texttt{None}:
+\begin{codebox}
+if abs(normal_speed) < 1e-9:
+    return None
+\end{codebox}
+
+Instead of checking for exact equality with zero, we use a small tolerance. The value \texttt{1e-9} means $10^{-9}$, or $0.000000001$. Values this close to zero are treated as zero. This also avoids dividing by an extremely small number in the next step.
+
+Next, we calculate when the projectile would reach the infinite line through the wall:
+\begin{codebox}
+	time = (self.start - position).dot(self.normal) / normal_speed
+\end{codebox}
+
+The vector \texttt{self.start - position} points from the projectile to the wall's starting point. Taking its dot product with the unit normal gives us the signed distance to the wall's line, measured perpendicular to the wall.
+
+Dividing this signed distance by the signed normal speed gives us the time until the projectile reaches that line:
+\[
+t
+=
+\frac{
+	(\vec p_{\mathrm{wall}}-\vec p)
+	\cdot \vec n
+}{
+	\vec v \cdot \vec n
+}.
+\]
+
+This is the familiar relationship between distance, speed, and time. We simply apply it in the direction perpendicular to the wall.
+
+Here, \texttt{Vector2} saves us from writing separate intersection formulas for horizontal, vertical, and slanted walls. Vector subtraction and two dot products handle all three cases.
+
+\begin{hintbox}[Why Either Normal Direction Works]
+	If we reverse the normal, both dot products change sign. The numerator and denominator are therefore both multiplied by~$-1$, so their ratio stays the same.
+	
+	The calculated contact time does not depend on which side the normal points towards.
+\end{hintbox}
+
+Reaching the wall's line is only relevant if it happens during the time we are currently examining:
+\begin{codebox}
+if not 1e-9 < time <= duration:
+    return None
+\end{codebox}
+
+A negative time describes an intersection behind us along the current trajectory. A time greater than \texttt{duration} means the projectile would reach the line too late. We also exclude times at or extremely close to zero. This helps prevent the same contact from being processed repeatedly immediately after a bounce.
+
+Only a contact sufficiently far in the future and no later than \texttt{duration} passes this check. For a valid time, we calculate the corresponding position:
+\begin{codebox}
+	contact = position + speed * time
+\end{codebox}
+
+This is the same movement formula we have used throughout the chapter: current position plus velocity times time. However, this position lies on the infinite line through the wall. We still need to check whether it lies between the wall's endpoints. To find where the contact lies along the wall, we use its tangent:
+\begin{codebox}
+	along_wall = (contact - self.start).dot(self.tangent)
+\end{codebox}
+
+The vector \texttt{contact - self.start} points from the wall's starting point to the calculated contact position. Since \texttt{self.tangent} is a unit vector along the wall, the dot product gives us the signed distance along it.
+
+A value of~0 corresponds to the starting point. A value of \texttt{self.length} corresponds to the endpoint. Values between them lie on the wall segment:
+\begin{codebox}
+if 0 <= along_wall <= self.length:
+    return time
+return None
+\end{codebox}
+
+If the contact lies within these limits, the method returns its time. Otherwise, the projectile crosses the wall's extended line beyond one of its endpoints, so there is no hit on this segment.
+
+\begin{hintbox}[What Exactly Is Being Checked?]
+	This calculation treats the projectile as a moving point at its center and the wall as a line segment with no thickness.
+	
+	The visible size of the bullet and the three-pixel width used to draw the wall are not included in the contact calculation. A projectile already resting on the wall is also not handled as a new contact at time zero.
+\end{hintbox}
+
+The calculation therefore has three main steps: find when the projectile reaches the wall's line, check whether that time is within the available period, and check whether the contact lies on the actual segment. \texttt{Bullet.update()} then uses the returned times to choose the earliest contact.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v09/asteroids.py}{104}{116}{python}{Asteroids (\reqref{reqVectorReflection}) -- \texttt{Wall.hit\_time()}}{srcVectorHitTimeDraw09}
+
+We only need to adjust \texttt{update()} in \texttt{Game} so that, in \zeiref{asteroid0905}, the walls are passed as an argument to the \texttt{Bullet} class's \texttt{update()} method.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v09/asteroids.py}{383}{388}{python}{Asteroids (\reqref{reqVectorReflection}) -- \texttt{Game.update()}}{srcVectorGameUpdate09}
+
+The \texttt{Bullet.update()} method moves a projectile across the playing field. If it hits a wall, its direction changes so that it bounces off. The method also handles multiple wall contacts within a single frame.
+The \texttt{pygame.Vector2} class makes these calculations much easier. Instead of handling the x- and y-coordinates separately, we can work with complete vectors.
+
+At the start of the method, we store the projectile's current position as a vector. \texttt{position} holds this position as a two-dimensional vector. \texttt{remaining} tells us how much time is still available for movement in the current frame.
+\begin{codebox}
+position = pygame.Vector2(self.rect.center)
+remaining = cfg.DELTATIME
+\end{codebox}
+
+If there is no wall contact, we calculate the new position in \zeiref{asteroid0906} as follows:
+\begin{codebox}
+	position += self.speed * remaining
+\end{codebox}
+
+Starting at \zeiref{asteroid0907}, we check each wall to see whether the projectile will hit it within the remaining time. \texttt{hit\_time()} calculates the time until a possible wall contact. \texttt{Bullet.update()} keeps track of the wall that would be hit first.
+\begin{codebox}
+for wall in walls:
+    time = wall.hit_time(position, self.speed, remaining)
+    if time is not None and (hit_wall is None or time < first_time):
+        first_time, hit_wall = time, wall
+\end{codebox}
+
+We then move the projectile exactly to this contact point:
+\begin{codebox}
+	position += self.speed * first_time
+\end{codebox}
+
+In \abbref[vref]{picReflectionWall}, this corresponds to the path from the starting point \texttt{position} to the contact point on the wall.
+The remaining time in the frame is used later to continue the movement after the reflection.
+
+At the contact point, we need to change the projectile's direction of movement. To do this, we split the velocity vector into two components:
+\begin{itemize}
+	\item Normal component (\texttt{normal\_part}): \\the part of the velocity \emph{perpendicular} to the wall.
+	\item Tangential component (\texttt{tangent\_part}): \\the part of the velocity \emph{parallel} to the wall.
+\end{itemize}
+Starting at \zeiref{asteroid0908}, we calculate these components with:
+\begin{codebox}
+    incoming = self.speed.copy()
+    normal_part = incoming.project(hit_wall.normal)
+    tangent_part = incoming - normal_part
+\end{codebox}
+
+The method \texttt{project()}\pygindex{math!Vector2!project()|underline}\randnotiz{project()} is a particularly useful feature of \texttt{Vector2}. It projects the velocity vector onto the wall's normal vector.
+This gives us the normal component directly, without having to calculate its x- and y-components ourselves.
+We then get the tangential component through a simple vector subtraction:
+\[
+\vec v_{\mathrm{tangential}}
+=
+\vec v_{\mathrm{incoming}}
+-
+\vec v_{\mathrm{normal}}
+\]
+
+Thanks to \texttt{Vector2}, this subtraction also works directly with complete vectors.
+
+In an ideal bounce off a wall, the tangential component stays unchanged, while the normal component reverses direction.
+This gives us:
+\[
+\vec v_{\mathrm{reflected}}
+=
+\vec v_{\mathrm{tangential}}
+-
+\vec v_{\mathrm{normal}}
+\]
+
+In our program, \texttt{Vector2} handles the entire reflection calculation in \zeiref{asteroid0909}. The method \texttt{reflect()}\pygindex{math!Vector2!reflect()}\randnotiz{reflect()} calculates the reflected velocity vector using the wall's normal vector. The big advantage is that we do not need to find the angle of incidence or calculate sines and cosines. The wall's slope does not require any special handling in our Python code either. The same statement works for horizontal, vertical, and slanted walls.
+\begin{codebox}
+	self.speed = incoming.reflect(hit_wall.normal)
+\end{codebox}
+
+\begin{hintbox}
+	We therefore do not need the previously calculated normal and tangential components for the reflection itself. Our program stores them so we can draw the different vectors to illustrate what happens.
+\end{hintbox}
+
+
+After the reflection, we subtract the time already used from the frame's remaining time in \zeiref{asteroid0910}:
+\begin{codebox}
+	remaining -= first_time
+\end{codebox}
+
+The surrounding \forSchleife\ (\zeiref{asteroid0911}) then allows further wall contacts within the same frame: A frame covers a short period of time during which the bullet travels a certain distance. If it hits a wall early in the frame, there is still time left for movement. With its reflected velocity, it may reach another wall during that remaining time. For example:
+\begin{itemize}
+	\item The frame lasts \SI{20}{ms}.
+	\item After \SI{5}{ms}, the bullet hits the first wall and bounces off.
+	\item There are still \SI{15}{ms} left for it to keep moving and possibly bounce again.
+\end{itemize}
+This is especially likely at high speeds, with walls close together, or during longer frames.
+
+If we only handled the first contact, we would have to discard the remaining movement time, making the bullet appear to slow down, or let it keep moving without checking for another collision. It could then pass through a second wall.
+
+That is why \texttt{Bullet.update()} repeats the process: find the earliest contact, move to that point, reflect the velocity, and continue with the remaining time. In our code, \texttt{range(8)} limits this to a maximum of eight contacts per frame. The value~8 was chosen more or less arbitrarily (a suggestion from Codex!).
+
+If there is no further contact, the projectile continues moving at its new velocity for the remaining time. Finally, we apply the calculated position in \zeiref{asteroid0912}:
+\begin{codebox}
+	self.rect.center = position
+\end{codebox}
+
+The last two lines stay unchanged and remove bullets that leave the playing field.
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v09/asteroids.py}{137}{166}{python}{Asteroids (\reqref{reqVectorReflection}) -- \texttt{Bullet.update()}}{srcVectorBulletUpdate09}
+
+\begin{figure}[htbp]
+	\centering
+\begin{tikzpicture}[
+	>=Stealth,
+	font=\small,
+	point/.style={circle, fill=black, inner sep=1.6pt},
+	pathline/.style={thick},
+	vec/.style={->, very thick},
+	helpvec/.style={->, thick, dashed}
+	]
+	
+	% Farben
+	\definecolor{wallcol}{RGB}{70,70,70}
+	\definecolor{normalcol}{RGB}{0,90,200}
+	\definecolor{incomingcol}{RGB}{235,140,0}
+	\definecolor{normalpartcol}{RGB}{210,30,30}
+	\definecolor{tangentcol}{RGB}{0,150,70}
+	\definecolor{outgoingcol}{RGB}{200,0,140}
+	\definecolor{remaincol}{RGB}{120,80,200}
+	
+	% Koordinaten
+	\coordinate (S) at (1.2,4.2);   % Start
+	\coordinate (C) at (5.0,2.2);   % Contact
+	\coordinate (N) at (7.2,2.2);   % Normalenrichtung
+	\coordinate (T) at (5.0,0.2);   % Tangentialrichtung
+	\coordinate (R) at (1.1,0.2);   % reflektierte Bewegung
+	
+	% Wand
+	\draw[line width=2.2pt, wallcol] (5.0,0.4) -- (5.0,5.2);
+	\node[wallcol, right] at (5.1,5.0) {wall};
+	
+	% Start- und Treffpunkt
+	\node[point, label=above left:{position}] at (S) {};
+	%\node[point, label=below right:{Treffpunkt}] at (C) {};
+	
+	% Weg bis zum Treffpunkt
+	\draw[pathline, gray!60, dashed] (S) -- (C);
+	
+	% Einfallender Geschwindigkeitsvektor
+	\draw[vec, incomingcol] (S) -- (C) node[midway, sloped, above] {incoming};
+	
+	% Normalenvektor der Wand
+	\draw[vec, normalcol] (C) -- (N) node[left=15pt, above] {hit\_wall.normal};
+	
+	% Tangentialanteil
+	\draw[vec, tangentcol] (C) -- (T) node[pos=0.9, sloped, above] {tangent\_part};
+	
+	% Normalanteil
+	\draw[vec, normalpartcol] (C) -- ++(3.8,0) node[left, below] {normal\_part};
+	
+	% Reflektierter Geschwindigkeitsvektor
+	\draw[vec, outgoingcol] (C) -- (R)	node[pos=0.7, sloped, above] {self.speed};
+	
+	% Restbewegung nach der Reflexion
+	\draw[helpvec, remaincol] (R) -- ++(-1.3,-0.7) node[midway, sloped, above] {remaining $*$};
+	
+	% Kleine Markierung für outward-Verschiebung
+	\draw[helpvec, gray!80] (C) -- ++(-0.32,0) node[left] {\scriptsize outward * 0.001};
+	
+	% first_time-Hinweis entlang des ersten Wegstücks
+	%\node[fill=white, inner sep=1pt] at (3.0,3.35) {first\_time};
+	
+\end{tikzpicture}
+	\caption{Vectors -- reflection at slanted walls (details)}
+\label{picReflectionWall}
+\end{figure}
+
+The \texttt{draw\_bounce\_vectors()} method shows what happens when a bullet bounces off a wall. It draws the incoming velocity vector, its normal and tangential components, and the reflected velocity vector.
+
+The actual movement and reflection calculations have already taken place in \texttt{Bullet.update()}. Our drawing method uses the results stored there to display the latest bounce as colored arrows for a short time.
+
+Once again, this shows how useful \texttt{Vector2} is: we can use it not only to calculate movement, but also to build the geometric parts of an arrow using simple vector operations.
+
+So let's take a closer look at this method -- we do not actually need it for the game, but there is plenty to learn from it.
+
+But first, let me point out that the method is called from \texttt{draw()} in \zeiref{asteroid0913}:
+
+\lstsource{src/01 Techniques/05 Working with Vectors/v09/asteroids.py}{421}{439}{python}{Asteroids (\reqref{reqVectorReflection}) -- \texttt{Game.draw()}}{srcVectorGameDraw09}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Which Bullets Have a Visible Reflection?}
+
+First, the method loops through all bullets still present:
+\begin{codebox}
+for bullet in self.bullets:
+    if bullet.bounce_vectors is None or bullet.bounce_remaining <= 0:
+        continue
+\end{codebox}
+
+Not every bullet has hit a wall yet. Until a bounce occurs, \texttt{bullet.bounce\_vectors} contains \texttt{None}.
+In that case, there are no reflection vectors to draw.
+
+The second condition checks whether the display time has already run out. \texttt{bounce\_re\-main\-ing} holds the time left for the display.
+If this value is less than or equal to~0, the visual aid is skipped too.
+
+The \texttt{continue} statement immediately starts the next iteration of the outer loop. The current bullet is skipped, while the other bullets are still checked.
+
+When a bullet bounces, \texttt{Bullet.update()} sets the display time to \texttt{cfg.BOUNCE\_DIS\-PLAY\-\_TIME}. Each subsequent update reduces it by \texttt{cfg.DELTATIME}. This keeps the reflection visible for a short time, even though the bullet is already moving on.
+
+\subsubsection*{Unpacking the Stored Results}
+
+For a bullet whose reflection is still visible, we unpack the stored values into five variables:
+
+\begin{codebox}
+	contact, incoming, normal_part, tangent_part, outgoing = bullet.bounce_vectors
+\end{codebox}
+
+This assignment unpacks the stored tuple. The order matches the order in which \texttt{Bullet.update()} stored the values.
+
+\begin{longtable}{>{\ttfamily}lp{12cm}}
+	\caption{Stored values for the reflection display}
+	\label{tabVectorBounceStoredValues}\\
+	\toprule
+	\normalfont\textbf{Variable} & \textbf{Meaning} \\
+	\midrule
+	\endfirsthead
+	
+	\toprule
+	\normalfont\textbf{Variable} & \textbf{Meaning} \\
+	\midrule
+	\endhead
+	
+	\midrule
+	\multicolumn{2}{r}{\emph{Continued on the next page}} \\
+	\endfoot
+	
+	\bottomrule
+	\endlastfoot
+	
+	contact
+	& The stored position of the wall contact.
+	It serves as the shared reference point for the display. \\
+	
+	incoming
+	& The velocity vector immediately before
+	the bounce. \\
+	
+	normal\_part
+	& The component of the incoming velocity
+	perpendicular to the wall. \\
+	
+	tangent\_part
+	& The component of the incoming velocity
+	parallel to the wall. \\
+	
+	outgoing
+	& The velocity vector immediately after
+	the reflection. \\
+	
+\end{longtable}
+
+Here, \texttt{contact} is a position. The other four values are velocity vectors. Although all five values are stored as \texttt{Vector2} objects, they have different meanings. The stored contact point stays at the wall. The visual aid therefore does not follow the bullet's current position, but keeps showing the situation at the bounce location.
+
+\subsubsection*{Marking the Contact Point}
+
+First, the method draws a small circle:
+\begin{codebox}
+pygame.draw.circle(
+    self.screen,
+    cfg.MYCOLORS["bounce_outgoing"],
+    contact,
+    4
+)
+\end{codebox}
+
+The circle is centered at \texttt{contact} and has a radius of four pixels. Since no line width is specified, it is filled. Its color is read from the color dictionary using the key \texttt{"bounce\_out\-going"}. This gives the contact point the same magenta color as the reflected velocity vector.
+
+\subsubsection*{Drawing Four Vectors with the Same Logic}
+
+Next, we loop through the four velocity vectors together with their color keys:
+\begin{codebox}
+for vector, key in (
+    (incoming, "bounce_incoming"),
+    (normal_part, "bounce_normal"),
+    (tangent_part, "bounce_tangent"),
+    (outgoing, "bounce_outgoing")
+):
+\end{codebox}
+
+Each entry consists of a vector and a key for \texttt{cfg.MYCOLORS}.
+As we loop through the entries, these two parts are assigned to the variables \texttt{vector} and \texttt{key}.
+
+This means we only need to write the drawing code below once. The same calculation produces the orange incoming arrow, the blue normal component, the green tangential component, and the magenta reflected arrow, one after another.
+
+\subsubsection*{Skipping Zero-Length Vectors}
+
+Before drawing, we check whether the current vector has a nonzero length:
+\begin{codebox}
+if vector.length_squared() == 0:
+    continue
+\end{codebox}
+
+A velocity component can indeed be zero. For example, if a bullet hits a wall exactly head-on, its velocity has no component parallel to the wall. The tangential component is then the zero vector.
+
+Such a vector does not need an arrow. Also, the \texttt{normalize()} method used later would not be able to determine a direction from it.
+
+With \texttt{length\_squared()}, we check the sum of the squared components:
+\[
+|\vec v|^2 = v_x^2 + v_y^2.
+\]
+
+We do not need to calculate a square root just to check whether the length is zero.
+
+Here, \texttt{continue} applies to the inner loop: it skips only the current vector. The other vectors for the same bullet can still be drawn.
+
+\subsubsection*{Finding the Arrow's Start and End Points}
+
+For the display, we scale down the velocity vector by a factor of~0.15:
+\begin{codebox}
+start = contact - vector * 0.15 if key == "bounce_incoming" else contact
+end = contact if key == "bounce_incoming" else contact + vector * 0.15
+\end{codebox}
+
+These two lines use conditional expressions. The incoming vector needs different start and end points from the other vectors. The incoming arrow should point towards the contact point, so its tip sits directly on the wall:
+\begin{codebox}
+start = contact - incoming * 0.15
+end = contact
+\end{codebox}
+
+Subtracting the scaled velocity vector places the starting point behind the contact point, against the incoming direction of movement. The other three arrows start at the contact point and extend in the direction of their respective vectors:
+\begin{codebox}
+start = contact
+end = contact + vector * 0.15
+\end{codebox}
+
+Keep in mind that the incoming arrow still points in the direction of \texttt{incoming}. We simply shift its starting point so that its end lies exactly at the contact point. In both cases, we have:
+\[
+\vec p_{\mathrm{end}}
+-
+\vec p_{\mathrm{start}}
+=
+0.15 \cdot \vec v.
+\]
+
+All arrows use the same scale factor, so their lengths remain comparable: twice the speed produces an arrow shaft that is twice as long. At a speed of \SI{200}{\pxsec}, for example, the displayed arrow is \SI{30}{\pixel} long.
+\begin{hintbox}[Display Scale]
+	The factor~0.15 sets the scale of the visual aid. The arrow's length corresponds to the distance that would be traveled in \SI{0.15}{\second} at the given velocity.
+	
+	This value is independent of the display duration \texttt{BOUNCE\_DISPLAY\_TIME} and of the actual remaining movement within the current frame.
+\end{hintbox}
+
+\subsubsection*{Finding the Direction for the Arrowhead}
+
+Here, an arrow consists of a line and a triangular head. The arrowhead should always have the same size, regardless of the velocity vector's length. So we first create a unit vector:
+\begin{codebox}
+	direction = vector.normalize()
+\end{codebox}
+
+\texttt{normalize()} returns a new vector pointing in the same direction as \texttt{vector}, but with a length of~1. The original velocity vector stays unchanged.
+
+We can now use this unit vector to specify fixed pixel distances along the arrow's direction. Without normalization, the arrowhead's size would depend on the speed.
+
+\newpage
+\subsubsection*{Calculating the Midpoint of the Arrowhead's Base}
+
+The arrow's tip is at \texttt{end}. The opposite side of the triangle should sit \SI{7}{\pixel} behind it:
+\begin{codebox}
+	base = end - direction * 7
+\end{codebox}
+
+Since \texttt{direction} has a length of~1, \texttt{direction * 7} is exactly seven pixels long. Subtracting it moves us seven pixels back from the arrow's tip, against the arrow's direction. So \texttt{base} is the midpoint of the triangle's rear side.
+
+\subsubsection*{Creating a Sideways Offset}
+
+For the two rear corners of the arrowhead, we also need a direction perpendicular to the arrow \texttt{direction}:
+\begin{codebox}
+	side = direction.rotate(90) * 4
+\end{codebox}
+
+The method \texttt{rotate(90)} turns the direction vector through a right angle. The new vector is therefore perpendicular to the arrow's direction.
+
+Rotation preserves its length. After multiplying by~4, \texttt{side} therefore has a length of four pixels. We find the two rear corners by adding and subtracting this sideways offset:
+\[
+\vec p_{\mathrm{corner\,1}}
+=
+\vec p_{\mathrm{base}} + \vec s,
+\qquad
+\vec p_{\mathrm{corner\,2}}
+=
+\vec p_{\mathrm{base}} - \vec s.
+\]
+
+They lie on opposite sides of the arrow's axis. Together, they form a base eight pixels wide. The three corners of the arrowhead are therefore:
+\begin{codebox}
+end
+base + side
+base - side
+\end{codebox}
+
+\begin{hintbox}[What Makes This Calculation So Handy?]
+	The arrowhead automatically adjusts to any arrow direction. Whether the vector points upwards, to the left, or diagonally across the screen makes no difference to the drawing code.
+	
+	\texttt{normalize()} gives us the direction along the arrow, and \texttt{rotate(90)} gives us the perpendicular direction. Multiplication sets fixed distances, while addition and subtraction give us the required corner points.
+	
+	We do not need to calculate any angles ourselves using sine and cosine.
+\end{hintbox}
+
+\subsubsection*{Drawing the Line and Arrowhead}
+
+Once all the points have been calculated, we read the matching color from the dictionary:
+\begin{codebox}
+	color = cfg.MYCOLORS[key]
+\end{codebox}
+
+The method then draws the arrow shaft:
+\begin{codebox}
+	pygame.draw.line(self.screen, color, start, end, 2)
+\end{codebox}
+
+The line runs from \texttt{start} to \texttt{end} and is two pixels wide. The arrowhead is drawn as a filled triangle:
+\begin{codebox}
+pygame.draw.polygon(
+    self.screen,
+    color,
+    (end, base + side, base - side)
+)
+\end{codebox}
+
+The three positions passed in are exactly the corner points we calculated earlier. Since no line width is specified, \texttt{pygame.draw.polygon()} fills the triangle completely. The line and triangle share the same color and together form the visible vector arrow.
+
+\subsubsection*{Reading the Displayed Vectors}
+
+We can interpret the finished display as follows:
+
+\begin{itemize}
+	\item The orange \textcolor{orange}{$\rightarrow$}  shows the velocity before the bounce. Its tip ends at the contact point.
+	
+	\item The blue \textcolor{blue}{$\rightarrow$}  shows the normal component of the incoming velocity. It is perpendicular to the wall. It may point in the opposite direction to the stored wall normal vector.
+	
+	\item The green \textcolor{green}{$\rightarrow$}  shows the tangential component. It runs parallel to the wall.
+	
+	\item The magenta \textcolor{magenta}{$\rightarrow$}  shows the velocity after the bounce. It starts at the contact point.
+\end{itemize}
+
+The two components satisfy the relationship
+\[
+\vec v_{\mathrm{incoming}}
+=
+\vec v_{\mathrm{normal}}
++
+\vec v_{\mathrm{tangential}}.
+\]
+
+After an ideal reflection, we instead have
+\[
+\vec v_{\mathrm{outgoing}}
+=
+-\vec v_{\mathrm{normal}}
++
+\vec v_{\mathrm{tangential}}.
+\]
+
+So the normal component reverses direction, while the tangential component stays unchanged. The colored arrows make exactly this relationship visible.
+
+\subsubsection*{A Snapshot of the Latest Bounce}
+
+The method draws the vectors stored at the moment of contact. It does not recalculate them from the current position of the bullet as it continues moving.
+
+When another bounce occurs, the stored values are replaced and the display timer starts again. Each bullet therefore shows only its latest stored bounce.
+
+Since the method loops through \texttt{self.bullets}, the visual aid also disappears when the corresponding bullet is removed from the group, even if its display time has not yet run out.
+
+\begin{hintbox}[Vector2 as a Drawing Tool]
+	\texttt{draw\_bounce\_vectors()} shows us that vectors are useful for more than just game physics. The same operations can also build visual aids: a velocity vector defines the arrow shaft, a normalized vector gives the arrowhead's direction, and a vector rotated by \SI{90}{\degree} determines its sideways extent.
+	
+	The entire arrow geometry is built using scaling, addition, subtraction, normalization, and rotation.
+\end{hintbox}
+
+\myebild{vector08}{0.7}{Vectors -- reflection at slanted walls}{picVector08}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Summary}\label{secVectorSummary}
+
+In this chapter, we expanded a simple Asteroids example step by step. Starting with steadily drifting asteroids, we added a controllable spaceship with thrust particles, an automatic braking maneuver, bullets, target aiming, collision prediction, and finally reflections off slanted walls.
+
+The common tool behind all these additions is \texttt{pygame.math.Vector2}. This class combines two components into one object and provides useful arithmetic operations and methods. This lets us work directly with positions, directions, and velocities in our code.
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Position, Direction and Velocity}
+
+A \texttt{Vector2} object\pygindex{math!Vector2} stores an x-component and a y-component. What these components mean depends on how we use them in the program.
+
+\begin{longtable}{lp{11cm}}
+	\caption{Different meanings of a \texttt{Vector2} object}
+	\label{tabVectorSummaryMeanings}\\
+	\toprule
+	\textbf{Use} & \textbf{Meaning} \\
+	\midrule
+	\endfirsthead
+	
+	\toprule
+	\textbf{Use} & \textbf{Meaning} \\
+	\midrule
+	\endhead
+	
+	\midrule
+	\multicolumn{2}{r}{\emph{Continued on the next page}} \\
+	\endfoot
+	
+	\bottomrule
+	\endlastfoot
+	
+	Position
+	& Describes a location in the game window, such as the center of an asteroid. The components are given in pixels. \\
+	
+	Displacement
+	& Describes the difference between two positions: how far and in which direction an object is moved. \\
+	
+	Direction
+	& Describes an orientation. A unit vector has a length of~1 and lets us specify direction and magnitude	separately. \\
+	
+	Velocity
+	& Describes both the direction of travel and the speed.	The components are given in pixels per second. \\
+	
+	Acceleration
+	& Describes how velocity changes per second. In our example, it comes from the direction the spaceship is facing and the thrust strength. \\
+	
+\end{longtable}
+
+The constructor accepts either individual components or an existing pair of coordinates:
+
+\begin{codebox}
+position = pygame.Vector2(self.rect.center)
+speed = pygame.Vector2(100, -50)
+direction = pygame.Vector2(0, -1)
+\end{codebox}
+
+Here, \texttt{pygame.Vector2} is the short form of \texttt{pygame.math.Vector2}.
+
+In screen coordinates, the x-coordinate increases to the right and the y-coordinate increases downwards. The vector $(0,-1)$ therefore points upwards. Positive rotation angles in \texttt{Vector2.rotate()} appear as clockwise turns on the screen.
+
+\begin{hintbox}[Facing Direction and Direction of Travel]
+	The direction the spaceship faces and the direction it travels are two different things. \texttt{direction} describes where the spaceship is pointing and which way its thrust acts. \texttt{self.speed}, on the other hand, describes its actual movement. Turning the spaceship therefore does not automatically change its flight path.
+\end{hintbox}
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Calculating with Complete Vectors}
+
+Even the usual arithmetic operators make many tasks simpler. \texttt{Vector2} handles both components together.
+
+\begin{longtable}{>{\ttfamily}lp{11cm}}
+	\caption{Vector operations used in the chapter}
+	\label{tabVectorSummaryOperations}\\
+	\toprule
+	{\normalfont\textbf{Expression}} & \textbf{Meaning and Use} \\
+	\midrule
+	\endfirsthead
+	
+	\toprule
+	{\normalfont\textbf{Expression}} & \textbf{Meaning and Use} \\
+	\midrule
+	\endhead
+	
+	\midrule
+	\multicolumn{2}{r}{\emph{Continued on the next page}} \\
+	\endfoot
+	
+	\bottomrule
+	\endlastfoot
+	
+	position + offset
+	& Moves a position by a displacement vector.
+	We use this, for example, to find the starting positions of bullets and thrust particles. \\
+	
+	target - position
+	& Returns the connecting vector from the starting position to the target position. It points towards the target, and its length gives us the distance. \\
+	
+	speed * dt
+	& Calculates the displacement over the time interval \texttt{dt}. \\
+	
+	direction * thrust
+	& Creates an acceleration vector from a unit vector and a thrust strength. \\
+	
+	speed + extra
+	& Combines velocities. A bullet, for example, inherits the spaceship's velocity and receives an additional firing velocity. \\
+	
+	-speed
+	& Reverses the velocity vector's direction without changing its magnitude. We need this opposite direction for automatic braking. \\
+	
+	(a + b) / 2
+	& Calculates the midpoint between two positions. In this chapter, we use it to place a marker between the predicted object centers. \\
+\end{longtable}
+
+The basic movement calculation is:
+\[
+\vec p_{\mathrm{new}}
+=
+\vec p_{\mathrm{old}}
++
+\vec v \cdot \Delta t.
+\]
+
+We can express this relationship directly in code:
+
+\begin{codebox}
+position = pygame.Vector2(self.rect.center)
+position += self.speed * cfg.DELTATIME
+self.rect.center = position
+\end{codebox}
+
+Using \texttt{DELTATIME}~($\Delta t$) makes the displacement depend on elapsed time. At a constant velocity, an object therefore travels the same distance per second, largely independently of the frame rate.
+
+The \texttt{FRect} used in this chapter also preserves the fractional parts of the calculated position.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Important Vector2 Methods}
+
+The following overview summarizes the methods used in this chapter. For each one, the key question is which game task it helps us express simply.
+
+\begin{longtable}{>{\ttfamily}lp{5.2cm}p{5.2cm}}
+	\caption{\texttt{Vector2} methods and their applications}
+	\label{tabVectorSummaryMethods}\\
+	\toprule
+	{\normalfont\textbf{Method}}
+	& \textbf{Effect}
+	& \textbf{Use} \\
+	\midrule
+	\endfirsthead
+	
+	\toprule
+	{\normalfont\textbf{Method}}
+	& \textbf{Effect}
+	& \textbf{Use} \\
+	\midrule
+	\endhead
+	
+	\midrule
+	\multicolumn{3}{r}{\emph{Continued on the next page}} \\
+	\endfoot
+	
+	\bottomrule
+	\endlastfoot
+	
+	length()
+	& Returns the vector's length: $\sqrt{x^2+y^2}$.
+	& Find a speed or distance. \\
+	
+	length\_squared()
+	& Returns the squared length: $x^2+y^2$. No square root is needed.
+	& Detect zero vectors and compare speeds and distances with squared limits. \\
+	
+	normalize()
+	& Returns a new vector pointing in the same direction with a length of~1. The original vector stays unchanged.
+	& Use a direction independently of the original vector's length, for example when drawing arrowheads. \\
+	
+	rotate(angle)
+	& Returns a new vector rotated through the given angle in degrees. Its length stays the same.
+	& Create directions of travel, facing directions, and scattered particle movements. \\
+	
+	angle\_to(other)
+	& Returns the signed rotation angle from this vector to the other vector, in degrees.
+	& Turn the spaceship towards a target or against its direction of travel. \\
+	
+	scale\_to\_length(s)
+	& Sets the existing vector's length to~\texttt{s}. For positive~\texttt{s}, its direction stays the same.
+	& Reduce a speed that exceeds the limit to the maximum allowed value. \\
+	
+	dot(other)
+	& Returns the dot product $x_1x_2+y_1y_2$, which is a number.
+	& Tell whether objects are approaching or moving apart, and calculate the time of closest approach. \\
+	
+	copy()
+	& Creates an independent copy of the vector.
+	& Preserve the incoming velocity for the reflection display. \\
+	
+	project(other)
+	& Returns the projection of this vector onto the direction of the other vector.
+	& Find the velocity component perpendicular to the wall. \\
+	
+	reflect(normal)
+	& Returns the vector reflected off a wall defined by its normal vector.
+	& Make bullets bounce off horizontal, vertical, and slanted walls. \\
+\end{longtable}
+
+\begin{hintbox}[Return a Value or Change the Vector?]
+In the calls used here, \texttt{normalize()}, \texttt{rotate()}, \texttt{project()}, and \texttt{reflect()} return new vectors.	We need to store the result or use it directly in another calculation.
+	
+\texttt{scale\_to\_length()}, on the other hand, changes the existing vector directly. We therefore do not assign its return value to a velocity variable.
+\end{hintbox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Defining Direction and Speed Separately}
+
+For the asteroids, we first choose a speed and an angle. We create a vector pointing to the right with the desired length, then rotate it:
+\begin{codebox}
+	speed = pygame.Vector2(totalspeed, 0).rotate(angle)
+\end{codebox}
+
+\texttt{rotate()} calculates the matching horizontal and vertical components. We do not need to apply sine and cosine ourselves.
+
+For the spaceship, we start with an upward-pointing unit vector instead:
+\begin{codebox}
+	direction = pygame.Vector2(0, -1).rotate(self.angle)
+\end{codebox}
+
+This vector describes only the direction the spaceship is facing. By multiplying it, we can use it for different tasks:
+\begin{codebox}
+tip = pygame.Vector2(self.rect.center) + direction * 18
+acceleration = direction * self.thrust
+firing_speed = direction * cfg.BULLET_SPEED
+\end{codebox}
+
+The same direction vector therefore determines the position of the spaceship's tip, the direction of thrust, and the firing direction.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Acceleration, Braking and Maximum Speed}
+
+Thrust changes the existing velocity:
+\[
+\vec v_{\mathrm{new}}
+=
+\vec v_{\mathrm{old}}
++
+\vec d \cdot a \cdot \Delta t.
+\]
+
+\begin{codebox}
+	self.speed += direction * self.thrust * cfg.DELTATIME
+\end{codebox}
+
+The existing movement is preserved and combined with the change in velocity caused by thrust. Sideways thrust therefore changes the flight path gradually. Without thrust, the spaceship keeps drifting at its existing velocity.
+
+For automatic braking, we first find the direction opposite to the current movement:
+
+\begin{codebox}
+	target_angle = pygame.Vector2(0, -1).angle_to(-self.speed) % 360
+\end{codebox}
+
+Once the spaceship is facing this way, its thrust acts against the direction of travel. Acceleration and braking therefore use the same velocity calculation. The difference lies in the direction of the thrust.
+
+Limiting the speed takes two steps:
+
+\begin{codebox}
+if self.speed.length_squared() > cfg.MAX_SPEED ** 2:
+    self.speed.scale_to_length(cfg.MAX_SPEED)
+\end{codebox}
+
+First, we check whether the maximum speed has been exceeded. Only then do we set the vector to the allowed length. \texttt{scale\_to\_length()} does not check a limit itself: without the condition, it would also lengthen slower velocity vectors to the specified length.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Combining Movements}
+
+When fired, a projectile receives an additional velocity relative to the spaceship:
+
+\begin{codebox}
+	bullet_speed = self.speed + direction * cfg.BULLET_SPEED
+\end{codebox}
+
+The projectile therefore inherits the spaceship's existing movement. If the ship is moving to the right and fires upwards, the bullet travels diagonally up and to the right on the screen.
+
+We use the same principle for thrust particles. Their velocity combines the ship's velocity with an extra backwards ejection velocity. A random rotation of the direction vector creates the spread of the particle trail.
+
+We can also use this approach to find positions relative to an object:
+\begin{codebox}
+center = pygame.Vector2(self.rect.center)
+bullet_position = center + direction * 18
+particle_position = center - direction * 15
+\end{codebox}
+
+The offsets automatically rotate with the direction the spaceship is facing. We do not need separate calculations for the horizontal and vertical distances.
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Aiming at a Target}
+
+We find the direction to a target by subtracting the two positions:
+\begin{codebox}
+offset = pygame.Vector2(self.target.rect.center) - pygame.Vector2(self.rect.center)
+\end{codebox}
+
+The vector \texttt{offset} points from the spaceship to the target. We could use \texttt{length()} to find the distance. For aiming, we only need its direction:
+\begin{codebox}
+if offset.length_squared() > 0:
+    target_angle = (pygame.Vector2(0, -1).angle_to(offset) % 360)
+\end{codebox}
+
+We do not need to normalize the vector before calculating this angle. The check prevents us from trying to find a target direction when both positions are identical.
+
+To make the spaceship take the shorter turn towards the target, we put the angle difference in the range from $-180^\circ$ up to, but not including, $180^\circ$:
+
+\begin{codebox}
+	angle_difference = (target_angle - self.angle + 180) % 360 - 180
+\end{codebox}
+
+The turn per frame is then limited by the angular velocity and \texttt{DELTATIME}. This control logic builds on the angle calculation provided by \texttt{Vector2}.
+
+Vector subtraction also helps when selecting a target with the mouse. Subtracting the image's top-left corner converts a window position to a local position within the asteroid image:
+\begin{codebox}
+local_position = pygame.Vector2(position) - pygame.Vector2(asteroid.rect.topleft)
+\end{codebox}
+
+After converting this local position to integer pixel coordinates, we can use it to query the mask.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Predicting Collisions}
+
+For collision prediction, we look at the movement relative to the spaceship:
+\begin{codebox}
+offset = (pygame.Vector2(asteroid.rect.center) - pygame.Vector2(spaceship.rect.center))
+relative_speed = asteroid.speed - spaceship.speed
+\end{codebox}
+
+This turns two moving objects into a single relative movement. The future connecting vector is:
+\[
+\vec r(t)
+=
+\vec r_0
++
+\vec v_{\mathrm{rel}} \cdot t.
+\]
+
+We use the dot product to find the time of closest approach along the straight relative flight path:
+\[
+t_{\mathrm{closest}}
+=
+-\frac{
+	\vec r_0 \cdot \vec v_{\mathrm{rel}}
+}{
+	|\vec v_{\mathrm{rel}}|^2
+}.
+\]
+
+\begin{codebox}
+closest_time = 0.0
+if relative_speed.length_squared() > 0:
+    closest_time = (-offset.dot(relative_speed)	/ relative_speed.length_squared())
+\end{codebox}
+
+If the relative velocity is zero, the distance stays unchanged. We then only need to check the current positions.
+
+We clamp the calculated time to the desired prediction window:
+\begin{codebox}
+closest_time = pygame.math.clamp(
+    closest_time,
+    0.0,
+    max(0.0, cfg.COLLISION_WARNING_TIME)
+)
+closest_offset = offset + relative_speed * closest_time
+\end{codebox}
+
+\texttt{pygame.math.clamp()} is a helper function for numbers, not a method of \texttt{Vector2}.
+
+For the circle approximation used in this chapter, we compare the smallest distance with the sum of the collision radii. Again, comparing the squared values is enough:
+\begin{codebox}
+	collision = closest_offset.length_squared() <= radius ** 2
+\end{codebox}
+
+We find the future center positions using the same movement formula as in a normal position update:
+\begin{codebox}
+asteroid_pos = (pygame.Vector2(asteroid.rect.center) + asteroid.speed * closest_time)
+spaceship_pos = (pygame.Vector2(spaceship.rect.center) + spaceship.speed * closest_time)
+marker = (asteroid_pos + spaceship_pos) / 2
+\end{codebox}
+
+\begin{hintbox}[What the Prediction Tells Us]
+	The calculation assumes constant velocities. Any later thrust, changes of direction, or wrapping around the screen edges are not taken into account.
+	
+	The objects are approximated as circles. The marker between the predicted centers illustrates the situation at the time of closest approach. It is not an exactly calculated contact point between the polygon outlines and does not necessarily mark	the first contact.
+\end{hintbox}
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Reflection at Walls}
+
+A wall is defined by its endpoints. Subtracting them gives us the edge vector. Normalizing this vector gives us the tangent direction; a vector perpendicular to it defines the wall's normal.
+
+When a bullet bounces, we can split its incoming velocity into a normal component and a tangential component:
+\begin{codebox}
+incoming = self.speed.copy()
+normal_part = incoming.project(hit_wall.normal)
+tangent_part = incoming - normal_part
+\end{codebox}
+
+\texttt{project()} gives us the component perpendicular to the wall. Subtracting it leaves the component parallel to the wall.
+
+In an ideal bounce, the tangential component stays unchanged, while the normal component reverses direction:
+\[
+\vec v_{\mathrm{incoming}}
+=
+\vec v_{\mathrm{tangential}}
++
+\vec v_{\mathrm{normal}},
+\qquad
+\vec v_{\mathrm{reflected}}
+=
+\vec v_{\mathrm{tangential}}
+-
+\vec v_{\mathrm{normal}}.
+\]
+
+A single method handles the actual reflection:
+\begin{codebox}
+	self.speed = incoming.reflect(hit_wall.normal)
+\end{codebox}
+
+We do not need to calculate the angle of incidence or write different formulas for horizontal, vertical, and slanted walls. In an ideal bounce, the speed stays the same. The separately calculated normal and tangential components help illustrate what happens in this chapter. We do not need to calculate them before calling \texttt{reflect()}.
+
+To handle movement correctly within the frame, we first move the projectile to the earliest wall contact:
+\begin{codebox}
+	position += self.speed * first_time
+\end{codebox}
+
+After the reflection, we subtract the time already used:
+\begin{codebox}
+	remaining -= first_time
+\end{codebox}
+
+The remaining time is available for movement at the new velocity and any further wall contacts. \texttt{reflect()} calculates the new velocity; our program logic handles finding the contact point and keeping track of the remaining time.
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Important Rules}
+
+\begin{itemize}
+	\item A zero vector has a length of~0 and no defined direction. Before normalizing a vector or using it in a calculation that depends on its direction, we therefore check that it is nonzero.
+	
+	\item \texttt{normalize()} and setting a vector to a specified length with \texttt{scale\_to\_length()} require a nonzero starting vector.
+	
+	\item The direction vector passed to \texttt{project()} and the normal vector passed to \texttt{reflect()} must not be zero vectors.
+	
+	\item If we only need to compare magnitudes, \texttt{length\_squared()} is enough. The corresponding limit must then be squared too.
+	
+	\item \texttt{Vector2} objects are mutable. A simple assignment does not create an independent copy. For that, we use \texttt{copy()}.
+	
+	\item \texttt{Vector2.rotate()} and \texttt{pygame.transform.rotate()} use different signs for the visible direction of rotation. In our spaceship example, we therefore rotate the image using the negative direction angle.
+\end{itemize}
+
+\begin{hintbox}[What Does Vector2 Handle for Us?]
+	\texttt{Vector2} handles the matching calculations for both components and provides commonly needed	geometric operations. Movement becomes position plus velocity times time, finding a target direction becomes a difference between positions, and a bounce becomes a call to \texttt{reflect()}.
+	
+	Our job is still to decide what the vectors represent, which units to use, how the controls work, and which assumptions our game model makes. The class helps us express these decisions directly and clearly in code.
+\end{hintbox}

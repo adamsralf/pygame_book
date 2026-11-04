@@ -26,7 +26,7 @@ Loading is done using the function \texttt{pygame.image.load()}\pygindex{image!l
 	Unlike in school mathematics, the origin is not at the lower left, but at the upper left. 
 \end{hintbox}
 
-\myebild{invader01.png}{0.8}{Load and blit bitmaps, Version 1.0}{picInvader01}
+\myebild{invader01.png}{0.8}{Load and blit bitmaps, version 1.0}{picInvader01}
 
 We now want to adapt the bitmaps a bit to better suit our needs. First, the documentation recommends converting the bitmap into a format that is easier for Pygame to process after loading.
 In addition, I want to adjust the size ratios of the two bitmaps, because the enemy appears too large compared to the defender.
@@ -132,7 +132,7 @@ The left position \texttt{alien\_left} has to be determined individually for eac
 \end{lstlisting}
 
 
-\myebild{invader04b.png}{0.8}{Bitmaps positioning alien, Version 1}{picInvader04b}
+\myebild{invader04b.png}{0.8}{Bitmaps positioning alien, version 1}{picInvader04b}
 
 The entire remaining space after the last alien can now be distributed before, between, and after the aliens in such a way that the spacing is the same between the aliens, between the leftmost alien and the left edge of the screen, and between the rightmost alien and the right edge of the screen. So how many gaps are there? First of all, the two outer gaps on the far left and far right -- that makes~2:
 
@@ -188,7 +188,7 @@ Now we only need to adjust the calculation of \texttt{alien\_left}. First, we sh
 	   screen.blit(alien_image, alien_pos)
 \end{lstlisting}
 
-\myebild{invader04c.png}{0.8}{Bitmaps positioning alien, Version 2}{picInvader04c}
+\myebild{invader04c.png}{0.8}{Bitmaps positioning alien, version 2}{picInvader04c}
 
 Now the distance from one left edge to the next, which previously consisted only of the width of the alien, must be extended by the spacing \texttt{space\_between\_aliens}:
 
@@ -202,7 +202,7 @@ Now the distance from one left edge to the next, which previously consisted only
 
 And just like that, everything fits (see \abbref[vref]{picInvader04d}).
 
-\myebild{invader04d.png}{0.8}{Bitmaps positioning alien, Version 3}{picInvader04d}
+\myebild{invader04d.png}{0.8}{Bitmaps positioning alien, version 3}{picInvader04d}
 
 \begin{hintbox}[Why am I explaining this in so much detail?]
 	Not because it’s particularly difficult, but because when you’re just starting out with programming, it’s easy to feel overwhelmed when trying to understand other people’s source code. Where do numbers like {–1} even come from? This step-by-step approach is meant to reassure you. Complex solutions are often built from many small, simple pieces put together.

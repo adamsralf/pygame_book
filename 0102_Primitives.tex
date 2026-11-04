@@ -168,7 +168,7 @@ Unfortunately, these cannot be shown very well using images here, so: program it
 
 In this example, we combine graphic primitives, object-oriented design, and simple mathematics to create a small animated scene.
 
-\myebild{landscape_sun.png}{0.5}{Example: Drawing a Landscape}{picLandscape00}
+\myebild{landscape_sun.png}{0.5}{Example: Drawing a landscape}{picLandscape00}
 
 I~would like to create a small animated landscape that should look like in \abbref[vref]{picLandscape00}. The sun should rise on the left, move across the sky, and set on the right. The blue color of the sky should also change depending on the time of day.
 
@@ -197,8 +197,8 @@ All that remains is to integrate it into \texttt{main()} in the same way as \tex
 
 \lstsource{src/00 Introduction/02 Primitives/landscape/v03/landscape.py}{26}{52}{python}{Landscape, Version 3.0, \texttt{main()}}{srcLandscape03b}
 
-\myezweihbild{landscape_sun02.png}{0.45}{Drawing a Landscape (2)}{picLandscape02}%
-{landscape_sun03.png}{0.45}{Drawing a Landscape (3)}{picLandscape03}
+\myezweihbild{landscape_sun02.png}{0.45}{Drawing a landscape (2)}{picLandscape02}%
+{landscape_sun03.png}{0.45}{Drawing a landscape (3)}{picLandscape03}
 
 The class \texttt{Tree} consists of two parts: a tree trunk and a leafy crown. The tree trunk is created in \texttt{draw()} using a rectangle, and the leafy crown is created using a circle. I~will not show the integration into \texttt{main()} here, since it is completely analogous to the integration of \texttt{Meadow} and \texttt{Sky}. Only the order needs to be considered, because the tree is supposed to appear in the foreground. The tree should look like the one shown in \abbref[vref]{picLandscape04}.
 
@@ -213,7 +213,7 @@ The basic principle of the class \texttt{House} is the same as for the other cla
 
 \lstsource{src/00 Introduction/02 Primitives/landscape/v05/landscape.py}{40}{54}{python}{Landscape, Version 5.0, Class \texttt{House}}{srcLandscape05a}
 
-\myezweihbild{landscape_sun04.png}{0.45}{Drawing a Landscape (4)}{picLandscape04}{landscape_sun05.png}{0.45}{Drawing a Landscape (5)}{picLandscape05}
+\myezweihbild{landscape_sun04.png}{0.45}{Drawing a landscape (4)}{picLandscape04}{landscape_sun05.png}{0.45}{Drawing a landscape (5)}{picLandscape05}
 
 In its basic shape, the sun is a simple yellow filled circle. However, we want it to move across the sky. Therefore, we need a start position below the horizon (see \zeiref{srcLandscape0601}) and a method \texttt{update()} that calculates the new position of the sun in each frame.
 
@@ -326,4 +326,4 @@ Please have a look at \url{https://pyga.me/docs/ref/draw.html} and then try to s
 	\item Try to draw the Moonlander like in \abbref[vref]{picMoonlander00} using only the functions in \texttt{pygame.\-draw}. Of course, you may also choose any other non-trivial object instead.
 \end{enumerate}
 
-\myebild{moonlander00.png}{1.0}{Drawing a Moonlander}{picMoonlander00}
+\myebild{moonlander00.png}{1.0}{Drawing a moonlander}{picMoonlander00}
