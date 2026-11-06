@@ -19,9 +19,9 @@ class Circle:
         self.speedy += Circle.GRAVITY
         self.posx += self.speedx
         self.posy += self.speedy
-        if self.posx - self.radius < 0:             # Left side out§\label{srcCircles0501}§
+        if self.posx + self.radius < 0:             # Left side out§\label{srcCircles0501}§
             self.todelete = True
-        elif self.posx + self.radius > window.size[0]:  # Right side out§\label{srcCircles0502}§
+        elif self.posx - self.radius > window.size[0]:  # Right side out§\label{srcCircles0502}§
             self.todelete = True
         elif self.posy - self.radius > window.size[1]:  # Bottom out§\label{srcCircles0503}§
             self.todelete = True
