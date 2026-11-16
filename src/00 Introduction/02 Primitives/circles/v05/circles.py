@@ -48,7 +48,7 @@ def main():
             for i in range(5):                      # 5 particles at once§\label{srcCircles0504}§
                 circles.append(Circle(pygame.mouse.get_pos()))
 
-        todelete = []                               # Temporary storag§\label{srcCircles0505}§
+        todelete = []                               # Temporary storage§\label{srcCircles0505}§
         for p in circles:
             p.update(window)
             if p.todelete:                          # Marked for deletion?§\label{srcCircles0506}§

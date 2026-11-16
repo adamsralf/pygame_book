@@ -39,7 +39,7 @@ The game itself -- just like all future games -- runs inside a \gls{mainloop}\in
 
 \begin{hintbox}[Inside this loop, three things will always happen in the future:]
 \begin{itemize}
-	\item Reading and processing events: As shown in \zeiref{srcStart0007}f., mouse, keyboard, or game events are detected and passed on to the game elements. In our case, only clicking the X in the upper right corner of the window is registered.
+	\item Reading and processing events: As shown in \zeiref{srcStart0007}, mouse, keyboard, or game events are detected and passed on to the game elements. In our case, only clicking the X in the upper right corner of the window is registered.
 
 	\item Updating the state of the game elements: Based on the events detected above and the current states of the game elements, the new states are determined (the player moves, a projectile bounces off, points increase, etc.). In our case, only the \gls{flag}\index{Flag} \texttt{running} of the main program loop is set to \false.
 	

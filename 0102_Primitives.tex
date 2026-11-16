@@ -30,7 +30,7 @@ rectangle. There are several ways to define a rectangle in Pygame. Since we will
 
 
 In \zeiref{srcPrimitives03}, \texttt{pygame.draw.rect()}\pygindex{draw!rect()}\randnotiz{rect()}\index{Rectangle|underline}\index{Graphic primitives!Rectangle|underline} draws a filled rectangle. The \Gls{semantik} of the parameters should be self-explanatory.
-The call in \zeiref{srcPrimitives04}, however, is different. The first parameter after the rectangle -- here~\texttt{3} -- specifies the thickness of the line. If this parameter is given and greater than~0, the rectangle is no longer filled. The value~\texttt{10} specifies the rounding of the corners. Here, a value between~0 and $min(width, height)/2$ can be used, as this value corresponds to the radius of the corner rounding.
+The call in \zeiref{srcPrimitives04}, however, is different. The first parameter after the rectangle -- here~\texttt{3} -- specifies the thickness of the line. If this parameter is given and greater than~0, the rectangle is no longer filled. The value~\texttt{5} specifies the rounding of the corners. Here, a value between~0 and $min(width, height)/2$ can be used, as this value corresponds to the radius of the corner rounding.
 
 \begin{hintbox}[Hint]
 	The class \texttt{Rect} is not a drawn rectangle, but merely a container for information that is relevant for a rectangle. More in \kapref[vref]{secRect}.
@@ -39,7 +39,7 @@ The call in \zeiref{srcPrimitives04}, however, is different. The first parameter
 More general than a rectangle is a \Gls{polygon}. A polygon\index{Graphic primitives!Polygon|underline}\index{Polygon|underline} is a closed chain of lines that is defined in Pygame by its points. Similar to rectangles, there are filled (\zeiref{srcPrimitives06}) and unfilled (\zeiref{srcPrimitives07}) variants. Both are drawn using \texttt{pygame.draw.polygon()}\randnotiz{polygon()}\pygindex{draw!polygon()}. 
 
 \begin{warningbox}[Warning]
-	Be careful with the line thickness: the lines grow outward, which can quickly lead to ugly offsets at the corners. Try it out by changing the value~\texttt{2} to~\texttt{5}.
+	Be careful with the line thickness: the lines grow outward, which can quickly lead to ugly offsets at the corners. Try it out by changing the value~\texttt{1} to~\texttt{5}.
 \end{warningbox}
 
 For individual lines\index{Line|underline}\index{Graphic primitives!Line|underline},
@@ -72,7 +72,7 @@ Using graphic primitives, it is possible to create dynamic effects, such as part
 
 Let us first build a small program that draws a circle at the mouse position. The class \texttt{Circle} (see \zeiref{srcCircles0101}) contains all the information I~need to draw circles: position, radius, and color. The position is defined via a constructor argument. In the method \texttt{draw()}, the screen output is encapsulated.
 
-The function \texttt{main()} now contains a lot of familiar elements, but also a few new ones. In \zeiref{srcCircles0101}, the screen size is stored in a list, because we still need this information at another place, namely in \zeiref{srcCircles0103}. Below that, in \zeiref{srcCircles0104}, a list for storing the circles is defined.
+The function \texttt{main()} now contains a lot of familiar elements, but also a few new ones. In \zeiref{srcCircles0102}, the screen size is stored in a tuple, because we still need this information at another place, namely in \zeiref{srcCircles0103}. Below that, in \zeiref{srcCircles0104}, a list for storing the circles is defined.
 
 Inside the main loop, \zeiref{srcCircles0105} checks whether the left mouse button\randnotiz{\texttt{get\_pressed()}}\pygindex{mouse!get\_pressed()|underline} has been pressed. If so, a circle is drawn at the mouse position\randnotiz{\texttt{get\_pos()}}\pygindex{mouse!get\_pos()}. After that, the screen is filled with white color and the circles stored in the container are drawn.
 
@@ -152,7 +152,7 @@ Try to guess the number of loop iterations of the following program:
 	values = [1, 2, 3]
 	for a in values:
 		values.append(a*10)
-	print(vlues)	
+	print(values)	
 \end{lstlisting}
 
 Even small changes to the parameters can already produce interesting visual effects.
